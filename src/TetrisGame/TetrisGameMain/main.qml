@@ -44,6 +44,28 @@ Window {
         x: 167
         y: 201
         edgeLength: 20
+        boxGradient: null
+    }
+
+    OneBox {
+        x: 293
+        y: 201
+        edgeLength: 20
+        lightOff: true
+    }
+
+    OneBox {
+        x: 146
+        y: 282
+        edgeLength: 20
+        lightOff: true
+    }
+
+    OneBox {
+        x: 167
+        y: 282
+        edgeLength: 20
+        lightOff: true
     }
 
 
