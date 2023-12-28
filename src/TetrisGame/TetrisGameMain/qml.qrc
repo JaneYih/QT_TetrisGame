@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/qt/qml/tetrisgamemain">
         <file>main.qml</file>
+        <file>OneBox.qml</file>
     </qresource>
 </RCC>

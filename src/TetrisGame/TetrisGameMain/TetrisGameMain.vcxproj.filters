@@ -21,6 +21,9 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="qml">
+      <UniqueIdentifier>{4c3e399a-17e5-4c93-8235-206300c331e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -29,9 +32,13 @@
     <QtRcc Include="qml.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="main.qml">
-      <Filter>Source Files</Filter>
+      <Filter>qml</Filter>
     </None>
-
+    <None Include="OneBox.qml">
+      <Filter>qml</Filter>
+    </None>
   </ItemGroup>
 </Project>
