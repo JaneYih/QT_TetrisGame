@@ -19,6 +19,7 @@ Item {
     Rectangle {
         id: outsideRect
         anchors.fill: parent
+        anchors.margins: 1
         //color: "snow"
         border.color: "black"
         border.width: 1.2
@@ -52,6 +53,19 @@ Item {
         }
         color: lightOff ? "darkgrey" : "black"
         gradient: lightOff ? null : rectGradient
+    }
+
+    function moveUp(stepCount){
+        onebox.y -= stepCount*edgeLength;
+    }
+    function moveDown(stepCount){
+        onebox.y += stepCount*edgeLength;
+    }
+    function moveLeft(stepCount){
+        onebox.x -= stepCount*edgeLength;
+    }
+    function moveRight(stepCount){
+        onebox.x += stepCount*edgeLength;
     }
 }
 
