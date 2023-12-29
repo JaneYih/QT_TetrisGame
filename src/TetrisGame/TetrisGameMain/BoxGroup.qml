@@ -211,7 +211,8 @@ Item {
     }
 
     function createBoxGroupShape_Random(){
-        var rand =  Math.random() * 10 + 1; //1~10随机数
+        var now = new Date();
+        var rand =  Math.random(now.getSeconds()) * 10 + 1; //1~10随机数
         var typeNum = rand % (BoxGroup.BoxShape.Shape_Random - 1);
         boxGroup.groupType = typeNum + 1;
     }
