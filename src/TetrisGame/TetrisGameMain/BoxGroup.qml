@@ -4,7 +4,6 @@ Item {
     id: boxGroup
     height: 100
     width: 100
-
     enum BoxShape {
         None = 0,
         Shape_I = 1,
@@ -264,6 +263,28 @@ Item {
                 }
             }
         }
+    }
+
+    function moveUp(stepCount){
+
+    }
+    function moveDown(stepCount){
+
+    }
+    function moveLeft(stepCount){
+
+    }
+    function moveRight(stepCount){
+
+    }
+    function moveRotate() {
+        boxGroup.transformOrigin.x = boxGroup.anchorRotate.x;
+        boxGroup.transformOrigin.y = boxGroup.anchorRotate.y;
+
+        var r = boxGroup.rotation;
+        r += 90;
+        r = r >= 360 ? 0 : r;
+        boxGroup.rotation = r;
     }
 }
 
