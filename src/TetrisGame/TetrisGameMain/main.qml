@@ -10,18 +10,6 @@ Window {
     height: 480
     title: "TetrisGameMain"
     color: "#8aece3"
-    Text {
-        anchors.fill: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.bold: true
-        font.pointSize: 42
-        text: "Tetris"
-        anchors.leftMargin: 376
-        anchors.topMargin: 9
-        anchors.rightMargin: 0
-        anchors.bottomMargin: 259
-    }
 
     OneBox{
         x: 147
@@ -109,6 +97,67 @@ Window {
         text: qsTr("上")
         onClicked: {
             testBox.moveUp(1);
+        }
+    }
+
+    BoxGroup {
+        x: 26
+        y: 32
+        groupType: BoxGroup.BoxShape.Shape_I
+    }
+    BoxGroup {
+        x: 127
+        y: 19
+        groupType: BoxGroup.BoxShape.Shape_O
+    }
+
+    BoxGroup {
+        x: 215
+        y: 9
+        groupType: BoxGroup.BoxShape.Shape_L
+    }
+
+    BoxGroup {
+        x: 290
+        y: 19
+        groupType: BoxGroup.BoxShape.Shape_S
+    }
+
+    BoxGroup {
+        x: 396
+        y: 19
+        groupType: BoxGroup.BoxShape.Shape_Z
+    }
+
+    BoxGroup {
+        x: 531
+        y: 9
+        groupType: BoxGroup.BoxShape.Shape_J
+    }
+
+    BoxGroup {
+        x: 26
+        y: 119
+        groupType: BoxGroup.BoxShape.Shape_T
+    }
+
+    BoxGroup {
+        id: randomBoxGroup
+        x: 147
+        y: 109
+        groupType: BoxGroup.BoxShape.Shape_Random
+    }
+
+    Timer{
+        id: randTimer
+        interval: 500
+        running: true
+        repeat: true
+        property bool flag: false
+        onTriggered: {
+            flag = !flag;
+            randomBoxGroup.groupType = BoxGroup.BoxShape.Shape_Random;
+            randomBoxGroup.x += flag ? -50 : 50;
         }
     }
 }

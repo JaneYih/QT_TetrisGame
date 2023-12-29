@@ -40,5 +40,8 @@
     <None Include="OneBox.qml">
       <Filter>qml</Filter>
     </None>
+    <None Include="BoxGroup.qml">
+      <Filter>qml</Filter>
+    </None>
   </ItemGroup>
 </Project>
