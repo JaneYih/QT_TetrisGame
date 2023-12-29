@@ -13,8 +13,10 @@
 *.userprefs
 
 # Build results
+*bit-[Dd]ebug/
 [Dd]ebug/
 [Dd]ebugPublic/
+*bit-[Rr]elease/
 [Rr]elease/
 [Rr]eleases/
 #x64/
