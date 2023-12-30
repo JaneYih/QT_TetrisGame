@@ -266,26 +266,32 @@ Item {
     }
 
     function moveUp(stepCount){
-
+        y -= stepCount*oneBoxEdgeLength;
     }
     function moveDown(stepCount){
-
+        y += stepCount*oneBoxEdgeLength;
     }
     function moveLeft(stepCount){
-
+        x -= stepCount*oneBoxEdgeLength;
     }
     function moveRight(stepCount){
-
+        x += stepCount*oneBoxEdgeLength;
     }
-    function moveRotate() {
-        boxGroup.transformOrigin.x = boxGroup.anchorRotate.x;
-        boxGroup.transformOrigin.y = boxGroup.anchorRotate.y;
 
-        var r = boxGroup.rotation;
+    function moveRotate() {
+        var r = rotationItem.angle;
         r += 90;
         r = r >= 360 ? 0 : r;
-        boxGroup.rotation = r;
+        rotationItem.angle = r;
+        rotationItem.origin.x = boxGroup.anchorRotate.x;
+        rotationItem.origin.y = boxGroup.anchorRotate.y;
+        boxGroup.transform = rotationItem;
     }
+    Rotation {
+        id: rotationItem
+        angle: 0
+    }
+
 }
 
 

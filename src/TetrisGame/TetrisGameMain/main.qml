@@ -75,7 +75,8 @@ Window {
         height: 33
         text: qsTr(" 左")
         onClicked: {
-            testBox.moveLeft(1);
+            //testBox.moveLeft(1);
+            ttt.moveLeft(1);
         }
     }
 
@@ -88,7 +89,8 @@ Window {
         height: 33
         text: qsTr("右")
         onClicked: {
-            testBox.moveRight(1);
+            //testBox.moveRight(1);
+            ttt.moveRight(1);
         }
     }
 
@@ -101,7 +103,8 @@ Window {
         height: 33
         text: qsTr("下")
         onClicked: {
-            testBox.moveDown(1);
+            //testBox.moveDown(1);
+            ttt.moveDown(1);
         }
     }
 
@@ -115,24 +118,28 @@ Window {
         height: 26
         text: qsTr("上")
         onClicked: {
-            testBox.moveUp(1);
+            ///testBox.moveUp(1);
+            ttt.moveUp(1);
         }
     }
 
     BoxGroup {
+        id: iii
         x: oneBoxEdgeLength * 2
         y: oneBoxEdgeLength * 2
         z: 2
         groupType: BoxGroup.BoxShape.Shape_I
     }
     BoxGroup {
+        id: ooo
         x: oneBoxEdgeLength * 2
-        y: oneBoxEdgeLength * 4
+        y: oneBoxEdgeLength * 5
         z: 2
         groupType: BoxGroup.BoxShape.Shape_O
     }
 
     BoxGroup {
+        id: l
         x: 215
         y: 9
         z: 2
@@ -140,6 +147,7 @@ Window {
     }
 
     BoxGroup {
+        id: sss
         x: 290
         y: 19
         z: 2
@@ -147,6 +155,7 @@ Window {
     }
 
     BoxGroup {
+        id: zzz
         x: 396
         y: 19
         z: 2
@@ -162,8 +171,9 @@ Window {
     }
 
     BoxGroup {
+        id: ttt
         x: oneBoxEdgeLength * 2
-        y: oneBoxEdgeLength * 8
+        y: oneBoxEdgeLength * 9
         z: 2
         groupType: BoxGroup.BoxShape.Shape_T
     }
@@ -196,7 +206,13 @@ Window {
         z: 2
         text: qsTr("旋转")
         onClicked: {
+            iii.moveRotate();
+            l.moveRotate();
             lll.moveRotate();
+            sss.moveRotate();
+            zzz.moveRotate();
+            ooo.moveRotate();
+            ttt.moveRotate();
         }
     }
 
