@@ -139,7 +139,7 @@ Window {
     }
 
     BoxGroup {
-        id: l
+        id: lll
         x: 215
         y: 9
         z: 2
@@ -163,7 +163,7 @@ Window {
     }
 
     BoxGroup {
-        id: lll
+        id: jjj
         x: oneBoxEdgeLength * 5
         y: oneBoxEdgeLength * 14
         z: 2
@@ -189,7 +189,7 @@ Window {
     Timer{
         id: randTimer
         interval: 500
-        running: true
+        running: false
         repeat: true
         property bool flag: false
         onTriggered: {
@@ -206,14 +206,21 @@ Window {
         z: 2
         text: qsTr("旋转")
         onClicked: {
-            iii.moveRotate();
-            l.moveRotate();
-            lll.moveRotate();
-            sss.moveRotate();
-            zzz.moveRotate();
-            ooo.moveRotate();
+            //iii.moveRotate();
+            //lll.moveRotate();
+            //jjj.moveRotate();
+            //sss.moveRotate();
+            //zzz.moveRotate();
+            //ooo.moveRotate();
             ttt.moveRotate();
         }
+    }
+    //标记
+    Rectangle {
+        id: boxGroupRangeMarker
+        anchors.fill: ttt
+        color: "deeppink"
+        visible: true
     }
 
 

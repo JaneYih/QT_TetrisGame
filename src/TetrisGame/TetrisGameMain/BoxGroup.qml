@@ -25,6 +25,7 @@ Item {
     property Component oneboxComponent: null //小方块组件
     property int oneBoxEdgeLength: 20 //小方块边长
     property point anchorRotate: Qt.point(0, 0) //旋转锚点
+    property alias outlineRect: outlineRect
 
     //旋转锚点标记
     Rectangle {
@@ -35,6 +36,21 @@ Item {
         width: 3
         color: "blue"
         visible: true
+    }
+    //外边框
+    Rectangle {
+        id: outlineRect
+        anchors.fill: boxGroup
+        border.color: "red"
+        border.width: 3
+        opacity: 0.3
+        color: "transparent"
+        visible: true
+    }
+    //旋转-对象
+    Rotation {
+        id: rotationItem
+        angle: 0
     }
 
     Component.onCompleted: {
@@ -113,6 +129,7 @@ Item {
         boxGroup.height = oneBoxEdgeLength * 3;
         boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength*2);
     }
+
     function createBoxGroupShape_L(){
         for (var row = 0; row < boxArray.length; row++){
             var colLength = boxArray[row].length;
@@ -132,6 +149,7 @@ Item {
         boxGroup.height = oneBoxEdgeLength * 3;
         boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength*2);
     }
+
     function createBoxGroupShape_O(){
         for (var row = 0; row < boxArray.length; row++){
             var colLength = boxArray[row].length;
@@ -151,6 +169,7 @@ Item {
         boxGroup.height = oneBoxEdgeLength * 2;
         boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
     }
+
     function createBoxGroupShape_S(){
         for (var row = 0; row < boxArray.length; row++){
             var colLength = boxArray[row].length;
@@ -170,6 +189,7 @@ Item {
         boxGroup.height = oneBoxEdgeLength * 2;
         boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
     }
+
     function createBoxGroupShape_T(){
         for (var row = 0; row < boxArray.length; row++){
             var colLength = boxArray[row].length;
@@ -189,6 +209,7 @@ Item {
         boxGroup.height = oneBoxEdgeLength * 2;
         boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
     }
+
     function createBoxGroupShape_Z(){
         for (var row = 0; row < boxArray.length; row++){
             var colLength = boxArray[row].length;
@@ -233,10 +254,10 @@ Item {
         if (boxArray[row][col] !== null){
             boxArray[row][col].x = boxGroup.oneBoxEdgeLength * col;
             boxArray[row][col].y = boxGroup.oneBoxEdgeLength * row;
+            boxArray[row][col].name = "boxUnit_%1_%2".arg(row).arg(col);
         }
         return true;
     }
-
 
     function destroyOneBox(row, col){
         if (boxArray[row][col] !== null){
@@ -268,12 +289,15 @@ Item {
     function moveUp(stepCount){
         y -= stepCount*oneBoxEdgeLength;
     }
+
     function moveDown(stepCount){
         y += stepCount*oneBoxEdgeLength;
     }
+
     function moveLeft(stepCount){
         x -= stepCount*oneBoxEdgeLength;
     }
+
     function moveRight(stepCount){
         x += stepCount*oneBoxEdgeLength;
     }
@@ -286,12 +310,21 @@ Item {
         rotationItem.origin.x = boxGroup.anchorRotate.x;
         rotationItem.origin.y = boxGroup.anchorRotate.y;
         boxGroup.transform = rotationItem;
-    }
-    Rotation {
-        id: rotationItem
-        angle: 0
-    }
 
+        //boxGroup.height *= 1.2;
+        //boxGroup.width *= 1.2;
+
+        for (var i in boxGroup.children){
+            var curChild = boxGroup.children[i];
+            var name = "%1".arg(curChild.name);
+            if (curChild === anchorRotatePoint){
+                console.log("anchorRotatePoint:x=%2,y=%3".arg(curChild.x).arg(curChild.y));
+            }
+            else if (name.indexOf("boxUnit") !== -1){
+                console.log("%1:x=%2,y=%3".arg(name).arg(curChild.x).arg(curChild.y));
+            }
+        }
+    }
 }
 
 

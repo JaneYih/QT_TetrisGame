@@ -3,6 +3,7 @@
 
 Item {
     id: onebox
+    property string name: ""
     property int edgeLength: 20 //边长
     property real gapRatio: 0.2 //空白间隙与边长的占比
     property bool lightOff: false //颜色亮灭控制开关
