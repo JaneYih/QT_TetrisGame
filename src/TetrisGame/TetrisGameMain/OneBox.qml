@@ -4,6 +4,8 @@
 Item {
     id: onebox
     property string name: ""
+    property int row: 0 //位于boxGroup的哪一行(0~3)
+    property int col: 0 //位于boxGroup的哪一列(0~3)
     property int edgeLength: 20 //边长
     property real gapRatio: 0.2 //空白间隙与边长的占比
     property bool lightOff: false //颜色亮灭控制开关

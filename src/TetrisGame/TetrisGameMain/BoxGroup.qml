@@ -16,18 +16,13 @@ Item {
         Shape_Random
     }
     property int groupType: BoxGroup.BoxShape.None //方块组形状
-    property var boxArray: [ //小方块二维数组
-        [null, null, null, null],
-        [null, null, null, null],
-        [null, null, null, null],
-        [null, null, null, null]
-    ]
+    property var boxArray: [null, null, null, null]//小方块一维数组
     property Component oneboxComponent: null //小方块组件
     property int oneBoxEdgeLength: 20 //小方块边长
-    property point anchorRotate: Qt.point(0, 0) //旋转锚点
+    //property point anchorRotate: Qt.point(0, 0) //旋转锚点
     property alias outlineRect: outlineRect
 
-    //旋转锚点标记
+    /*//旋转锚点标记
     Rectangle {
         id: anchorRotatePoint
         x: anchorRotate.x
@@ -36,7 +31,7 @@ Item {
         width: 3
         color: "blue"
         visible: true
-    }
+    }*/
     //外边框
     Rectangle {
         id: outlineRect
@@ -47,18 +42,13 @@ Item {
         color: "transparent"
         visible: true
     }
-    //旋转-对象
-    Rotation {
-        id: rotationItem
-        angle: 0
-    }
 
     Component.onCompleted: {
 
     }
 
     onGroupTypeChanged: {
-        createBoxGroup(boxGroup.groupType);
+        createBoxGroup(groupType);
     }
 
     function createBoxGroup(type){
@@ -93,148 +83,103 @@ Item {
         }
     }
 
-    function createBoxGroupShape_I(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if (row === 0) {
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
+    function createBoxGroupShape(postArray){
+        if (boxArray.length !== postArray.length){
+            return false;
+        }
+
+        var rowMax = 0;
+        var colMax = 0;
+        for (var i in postArray){
+            var row = postArray[i].x;
+            rowMax = Math.max(rowMax, row);
+            var col = postArray[i].y;
+            colMax = Math.max(colMax, col);
+            if (boxArray[i] !== null){
+                boxArray[i].row = row;
+                boxArray[i].col = col;
+                boxArray[i].x = col * oneBoxEdgeLength;
+                boxArray[i].y = row * oneBoxEdgeLength;
+            }
+            else {
+                boxArray[i] = createOneBox(row, col);
             }
         }
-        boxGroup.width = oneBoxEdgeLength * 4;
-        boxGroup.height = oneBoxEdgeLength * 1;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength*2, 0);
+
+        width = oneBoxEdgeLength * (colMax+1);
+        height = oneBoxEdgeLength * (rowMax+1);
+        //anchorRotate = Qt.point(oneBoxEdgeLength*2, 0);
+        return true;
+    }
+
+    function createBoxGroupShape_I(){
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 0));
+        postArray.push(Qt.point(0, 1));
+        postArray.push(Qt.point(0, 2));
+        postArray.push(Qt.point(0, 3));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_J(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if ((row === 0 && col === 1)
-                    || (row === 1 && col === 1)
-                    || (row === 2 && col === 0)
-                    || (row === 2 && col === 1)){
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
-            }
-        }
-        boxGroup.width = oneBoxEdgeLength * 2;
-        boxGroup.height = oneBoxEdgeLength * 3;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength*2);
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 1));
+        postArray.push(Qt.point(1, 1));
+        postArray.push(Qt.point(2, 0));
+        postArray.push(Qt.point(2, 1));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_L(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if ((row === 0 && col === 0)
-                    || (row === 1 && col === 0)
-                    || (row === 2 && col === 0)
-                    || (row === 2 && col === 1)){
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
-            }
-        }
-        boxGroup.width = oneBoxEdgeLength * 2;
-        boxGroup.height = oneBoxEdgeLength * 3;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength*2);
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 0));
+        postArray.push(Qt.point(1, 0));
+        postArray.push(Qt.point(2, 0));
+        postArray.push(Qt.point(2, 1));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_O(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if ((row === 0 && col === 0)
-                    || (row === 0 && col === 1)
-                    || (row === 1 && col === 0)
-                    || (row === 1 && col === 1)){
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
-            }
-        }
-        boxGroup.width = oneBoxEdgeLength * 2;
-        boxGroup.height = oneBoxEdgeLength * 2;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 0));
+        postArray.push(Qt.point(0, 1));
+        postArray.push(Qt.point(1, 0));
+        postArray.push(Qt.point(1, 1));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_S(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if ((row === 0 && col === 1)
-                    || (row === 0 && col === 2)
-                    || (row === 1 && col === 0)
-                    || (row === 1 && col === 1)){
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
-            }
-        }
-        boxGroup.width = oneBoxEdgeLength * 3;
-        boxGroup.height = oneBoxEdgeLength * 2;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 1));
+        postArray.push(Qt.point(0, 2));
+        postArray.push(Qt.point(1, 0));
+        postArray.push(Qt.point(1, 1));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_T(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if ((row === 0 && col === 0)
-                    || (row === 0 && col === 1)
-                    || (row === 0 && col === 2)
-                    || (row === 1 && col === 1)){
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
-            }
-        }
-        boxGroup.width = oneBoxEdgeLength * 3;
-        boxGroup.height = oneBoxEdgeLength * 2;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 0));
+        postArray.push(Qt.point(0, 1));
+        postArray.push(Qt.point(0, 2));
+        postArray.push(Qt.point(1, 1));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_Z(){
-        for (var row = 0; row < boxArray.length; row++){
-            var colLength = boxArray[row].length;
-            for (var col = 0; col < colLength; col++){
-                if ((row === 0 && col === 0)
-                    || (row === 0 && col === 1)
-                    || (row === 1 && col === 1)
-                    || (row === 1 && col === 2)){
-                    createOneBox(row, col);
-                }
-                else {
-                    destroyOneBox(row, col);
-                }
-            }
-        }
-        boxGroup.width = oneBoxEdgeLength * 3;
-        boxGroup.height = oneBoxEdgeLength * 2;
-        boxGroup.anchorRotate = Qt.point(oneBoxEdgeLength, oneBoxEdgeLength);
+        var postArray = new Array;
+        postArray.push(Qt.point(0, 0));
+        postArray.push(Qt.point(0, 1));
+        postArray.push(Qt.point(1, 1));
+        postArray.push(Qt.point(1, 2));
+        createBoxGroupShape(postArray);
     }
 
     function createBoxGroupShape_Random(){
         var now = new Date();
         var rand =  Math.random(now.getSeconds()) * 10 + 1; //1~10随机数
         var typeNum = rand % (BoxGroup.BoxShape.Shape_Random - 1);
-        boxGroup.groupType = typeNum + 1;
+        groupType = typeNum + 1;
     }
 
     function createOneBox(row, col){
@@ -242,46 +187,50 @@ Item {
             oneboxComponent = Qt.createComponent("OneBox.qml");
         }
 
-        if (boxArray[row][col] === null){
-            if (oneboxComponent.status === Component.Ready){
-                  boxArray[row][col] = oneboxComponent.createObject(boxGroup, {x: 0, y: 0, edgeLength: boxGroup.oneBoxEdgeLength});
-            }
-            else{
-                return false;
-            }
+        var newBox = null;
+        if (oneboxComponent.status === Component.Ready){
+            newBox = oneboxComponent.createObject(boxGroup, {x: 0, y: 0, edgeLength: oneBoxEdgeLength});
         }
 
-        if (boxArray[row][col] !== null){
-            boxArray[row][col].x = boxGroup.oneBoxEdgeLength * col;
-            boxArray[row][col].y = boxGroup.oneBoxEdgeLength * row;
-            boxArray[row][col].name = "boxUnit_%1_%2".arg(row).arg(col);
+        if (newBox !== null){
+            newBox.row = row;
+            newBox.col = col;
+            newBox.x = oneBoxEdgeLength * col;
+            newBox.y = oneBoxEdgeLength * row;
+            newBox.name = "boxUnit_%1_%2".arg(row).arg(col);
         }
-        return true;
+        return newBox;
     }
 
     function destroyOneBox(row, col){
-        if (boxArray[row][col] !== null){
-            boxArray[row][col].destroy();
-            boxArray[row][col] = null;
+        for (var i in boxArray){
+            if (boxArray[i] !== null){
+                if (boxArray[i].row === row
+                        && boxArray[i].col === col){
+                    boxArray[i].destroy();
+                    boxArray[i] = null;
+                    break;
+                }
+            }
         }
     }
 
     function destroyBoxGroupRow(row){
-        var rowData = boxArray[row];
-        if (rowData !== null){
-            for (var col = 0; col < rowData.length; col++){
-                destroyOneBox(row, col);
+        for (var i in boxArray){
+            if (boxArray[i] !== null){
+                if (boxArray[i].row === row){
+                    boxArray[i].destroy();
+                    boxArray[i] = null;
+                }
             }
         }
     }
 
     function destroyBoxGroup(){
-        for (var row = 0; row < boxArray.length; row++){
-            var rowData = boxArray[row];
-            if (rowData !== null){
-                for (var col = 0; col < rowData.length; col++){
-                    destroyOneBox(row, col);
-                }
+        for (var i in boxArray){
+            if (boxArray[i] !== null){
+                boxArray[i].destroy();
+                boxArray[i] = null;
             }
         }
     }
@@ -303,28 +252,28 @@ Item {
     }
 
     function moveRotate() {
-        var r = rotationItem.angle;
+        /*var r = rotationItem.angle;
         r += 90;
         r = r >= 360 ? 0 : r;
         rotationItem.angle = r;
-        rotationItem.origin.x = boxGroup.anchorRotate.x;
-        rotationItem.origin.y = boxGroup.anchorRotate.y;
+        rotationItem.origin.x = anchorRotate.x;
+        rotationItem.origin.y = anchorRotate.y;
         boxGroup.transform = rotationItem;
-
-        //boxGroup.height *= 1.2;
-        //boxGroup.width *= 1.2;
+        console.log("anchorRotatePoint:x=%2,y=%3".arg(anchorRotate.x).arg(anchorRotate.y));*/
 
         for (var i in boxGroup.children){
             var curChild = boxGroup.children[i];
             var name = "%1".arg(curChild.name);
-            if (curChild === anchorRotatePoint){
-                console.log("anchorRotatePoint:x=%2,y=%3".arg(curChild.x).arg(curChild.y));
-            }
-            else if (name.indexOf("boxUnit") !== -1){
+            if (name.indexOf("boxUnit") !== -1){
                 console.log("%1:x=%2,y=%3".arg(name).arg(curChild.x).arg(curChild.y));
             }
         }
     }
+    /*//旋转-对象
+    Rotation {
+        id: rotationItem
+        angle: 0
+    }*/
 }
 
 

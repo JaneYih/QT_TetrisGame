@@ -189,7 +189,7 @@ Window {
     Timer{
         id: randTimer
         interval: 500
-        running: false
+        running: true
         repeat: true
         property bool flag: false
         onTriggered: {
