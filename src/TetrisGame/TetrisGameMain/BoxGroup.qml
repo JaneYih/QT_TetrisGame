@@ -17,6 +17,19 @@ Item {
     }
     property int groupType: BoxGroup.BoxShape.None //方块组形状
     property var boxArray: [null, null, null, null]//小方块一维数组
+    property var shapePostArray: [ //[4个方块的行列坐标]、[旋转后原点偏移]
+        [[0,0], [0,0], [0,0], [0,0], [0,0]], //0度
+        [[0,0], [0,0], [0,0], [0,0], [0,0]], //90度
+        [[0,0], [0,0], [0,0], [0,0], [0,0]], //180度
+        [[0,0], [0,0], [0,0], [0,0], [0,0]]  //270度
+    ]
+    enum AngleFlag {
+        DEG_0 = 0,
+        DEG_90 = 1,
+        DEG_180 = 2,
+        DEG_270 = 3
+    }
+    property int shapePostIndex: BoxGroup.AngleFlag.DEG_0 //当前旋转序号
     property Component oneboxComponent: null //小方块组件
     property int oneBoxEdgeLength: 20 //小方块边长
     //property point anchorRotate: Qt.point(0, 0) //旋转锚点
@@ -51,6 +64,10 @@ Item {
         createBoxGroup(groupType);
     }
 
+    onShapePostIndexChanged: {
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], false);
+    }
+
     function createBoxGroup(type){
         switch (type){
         case BoxGroup.BoxShape.Shape_I:
@@ -83,26 +100,34 @@ Item {
         }
     }
 
-    function createBoxGroupShape(postArray){
-        if (boxArray.length !== postArray.length){
+    function createBoxGroupShape(postArray, bInit){
+        if (postArray === null) {
             return false;
         }
 
         var rowMax = 0;
         var colMax = 0;
         for (var i in postArray){
-            var row = postArray[i].x;
-            rowMax = Math.max(rowMax, row);
-            var col = postArray[i].y;
-            colMax = Math.max(colMax, col);
-            if (boxArray[i] !== null){
-                boxArray[i].row = row;
-                boxArray[i].col = col;
-                boxArray[i].x = col * oneBoxEdgeLength;
-                boxArray[i].y = row * oneBoxEdgeLength;
+            if (i >= 4){
+                if (!bInit){
+                    x += oneBoxEdgeLength * postArray[i][0];
+                    y += oneBoxEdgeLength * postArray[i][1];
+                }
             }
             else {
-                boxArray[i] = createOneBox(row, col);
+                var row = postArray[i][0];
+                rowMax = Math.max(rowMax, row);
+                var col = postArray[i][1];
+                colMax = Math.max(colMax, col);
+                if (boxArray[i] !== null){
+                    boxArray[i].row = row;
+                    boxArray[i].col = col;
+                    boxArray[i].x = col * oneBoxEdgeLength;
+                    boxArray[i].y = row * oneBoxEdgeLength;
+                }
+                else {
+                    boxArray[i] = createOneBox(row, col);
+                }
             }
         }
 
@@ -112,67 +137,79 @@ Item {
         return true;
     }
 
+    function setShapeDEGPost(deg, points){
+        //[4个方块的行列坐标]
+        boxGroup.shapePostArray[deg][0][0] = points[0][0];
+        boxGroup.shapePostArray[deg][0][1] = points[0][1];
+
+        boxGroup.shapePostArray[deg][1][0] = points[1][0];
+        boxGroup.shapePostArray[deg][1][1] = points[1][1];
+
+        boxGroup.shapePostArray[deg][2][0] = points[2][0];
+        boxGroup.shapePostArray[deg][2][1] = points[2][1];
+
+        boxGroup.shapePostArray[deg][3][0] = points[3][0];
+        boxGroup.shapePostArray[deg][3][1] = points[3][1];
+
+        //[旋转后原点偏移]
+        boxGroup.shapePostArray[deg][4][0] = points[4][0];
+        boxGroup.shapePostArray[deg][4][1] = points[4][1];
+    }
+
     function createBoxGroupShape_I(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 0));
-        postArray.push(Qt.point(0, 1));
-        postArray.push(Qt.point(0, 2));
-        postArray.push(Qt.point(0, 3));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[0,2],[0,3],  [-2,2]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[2,0],[3,0],  [2,-2]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[0,2],[0,3],  [-2,2]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[2,0],[3,0],  [2,-2]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_J(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 1));
-        postArray.push(Qt.point(1, 1));
-        postArray.push(Qt.point(2, 0));
-        postArray.push(Qt.point(2, 1));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,1],[1,1],[2,0],[2,1],  [1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[1,1],[1,2],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,0],[2,0],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[0,1],[0,2],[1,2],  [-1,0]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_L(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 0));
-        postArray.push(Qt.point(1, 0));
-        postArray.push(Qt.point(2, 0));
-        postArray.push(Qt.point(2, 1));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[1,0],[2,0],[2,1],  [1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[0,1],[0,2],[1,0],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,1],[2,1],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,2],[1,0],[1,1],[1,2],  [-1,0]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_O(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 0));
-        postArray.push(Qt.point(0, 1));
-        postArray.push(Qt.point(1, 0));
-        postArray.push(Qt.point(1, 1));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[1,0],[1,1],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[0,1],[1,0],[1,1],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,0],[1,1],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[0,1],[1,0],[1,1],  [0,0]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_S(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 1));
-        postArray.push(Qt.point(0, 2));
-        postArray.push(Qt.point(1, 0));
-        postArray.push(Qt.point(1, 1));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,1],[0,2],[1,0],[1,1],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[1,1],[2,1],  [1,-1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,1],[0,2],[1,0],[1,1],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[1,1],[2,1],  [1,-1]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_T(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 0));
-        postArray.push(Qt.point(0, 1));
-        postArray.push(Qt.point(0, 2));
-        postArray.push(Qt.point(1, 1));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[0,2],[1,1],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,1],[1,0],[1,1],[2,1],  [0,-1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,1],[1,0],[1,1],[1,2],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[1,1],[2,0],  [1,0]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_Z(){
-        var postArray = new Array;
-        postArray.push(Qt.point(0, 0));
-        postArray.push(Qt.point(0, 1));
-        postArray.push(Qt.point(1, 1));
-        postArray.push(Qt.point(1, 2));
-        createBoxGroupShape(postArray);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[1,1],[1,2],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,1],[1,0],[1,1],[2,0],  [1,-1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,1],[1,2],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,1],[1,0],[1,1],[2,0],  [1,-1]]);
+        createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_Random(){
@@ -260,6 +297,11 @@ Item {
         rotationItem.origin.y = anchorRotate.y;
         boxGroup.transform = rotationItem;
         console.log("anchorRotatePoint:x=%2,y=%3".arg(anchorRotate.x).arg(anchorRotate.y));*/
+
+        var r = shapePostIndex;
+        r++;
+        r = r > BoxGroup.AngleFlag.DEG_270 ? BoxGroup.AngleFlag.DEG_0 : r;
+        shapePostIndex = r;
 
         for (var i in boxGroup.children){
             var curChild = boxGroup.children[i];
