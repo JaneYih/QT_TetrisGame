@@ -31,20 +31,9 @@ Item {
     }
     property int shapePostIndex: BoxGroup.AngleFlag.DEG_0 //当前旋转序号
     property Component oneboxComponent: null //小方块组件
-    property int oneBoxEdgeLength: 20 //小方块边长
-    //property point anchorRotate: Qt.point(0, 0) //旋转锚点
+    property int oneBoxEdgeLength: 10 //小方块边长
     property alias outlineRect: outlineRect
 
-    /*//旋转锚点标记
-    Rectangle {
-        id: anchorRotatePoint
-        x: anchorRotate.x
-        y: anchorRotate.y
-        height: 3
-        width: 3
-        color: "blue"
-        visible: true
-    }*/
     //外边框
     Rectangle {
         id: outlineRect
@@ -53,18 +42,25 @@ Item {
         border.width: 3
         opacity: 0.3
         color: "transparent"
-        visible: true
+        visible: false
     }
 
     Component.onCompleted: {
 
     }
 
+    onOneBoxEdgeLengthChanged: {
+        //console.log("onOneBoxEdgeLengthChanged");
+        createBoxGroup(groupType);
+    }
+
     onGroupTypeChanged: {
+        //console.log("onGroupTypeChanged");
         createBoxGroup(groupType);
     }
 
     onShapePostIndexChanged: {
+        //console.log("onShapePostIndexChanged");
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], false);
     }
 
@@ -124,6 +120,7 @@ Item {
                     boxArray[i].col = col;
                     boxArray[i].x = col * oneBoxEdgeLength;
                     boxArray[i].y = row * oneBoxEdgeLength;
+                    boxArray[i].edgeLength = oneBoxEdgeLength;
                 }
                 else {
                     boxArray[i] = createOneBox(row, col);
@@ -133,7 +130,6 @@ Item {
 
         width = oneBoxEdgeLength * (colMax+1);
         height = oneBoxEdgeLength * (rowMax+1);
-        //anchorRotate = Qt.point(oneBoxEdgeLength*2, 0);
         return true;
     }
 
@@ -157,25 +153,25 @@ Item {
     }
 
     function createBoxGroupShape_I(){
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[0,2],[0,3],  [-2,2]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[2,0],[3,0],  [2,-2]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[0,2],[0,3],  [-2,2]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[2,0],[3,0],  [2,-2]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[0,2],[0,3],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[2,0],[3,0],  [1,-1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[0,2],[0,3],  [-1,1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[2,0],[3,0],  [1,-1]]);
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_J(){
         setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,1],[1,1],[2,0],[2,1],  [1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[1,1],[1,2],  [0,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,0],[2,0],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[1,1],[1,2],  [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,0],[2,0],  [1,0]]);
         setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[0,1],[0,2],[1,2],  [-1,0]]);
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_L(){
         setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[1,0],[2,0],[2,1],  [1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[0,1],[0,2],[1,0],  [0,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,1],[2,1],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[0,1],[0,2],[1,0],  [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,1],[2,1],  [1,0]]);
         setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,2],[1,0],[1,1],[1,2],  [-1,0]]);
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
@@ -197,10 +193,10 @@ Item {
     }
 
     function createBoxGroupShape_T(){
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[0,2],[1,1],  [-1,1]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,1],[1,0],[1,1],[2,1],  [0,-1]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[0,1],[0,2],[1,1],  [0,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,1],[1,0],[1,1],[2,1],  [0,0]]);
         setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,1],[1,0],[1,1],[1,2],  [0,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[1,1],[2,0],  [1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[1,0],[1,1],[2,0],  [0,0]]);
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
@@ -226,10 +222,11 @@ Item {
 
         var newBox = null;
         if (oneboxComponent.status === Component.Ready){
-            newBox = oneboxComponent.createObject(boxGroup, {x: 0, y: 0, edgeLength: oneBoxEdgeLength});
+            newBox = oneboxComponent.createObject(boxGroup, {x: 0, y: 0});
         }
 
         if (newBox !== null){
+            newBox.edgeLength = oneBoxEdgeLength;
             newBox.row = row;
             newBox.col = col;
             newBox.x = oneBoxEdgeLength * col;
@@ -249,6 +246,13 @@ Item {
                     break;
                 }
             }
+        }
+    }
+
+    function destroyOneBox_v2(index) {
+        if (index < boxArray.length) {
+            boxArray[index].destroy();
+            boxArray[index] = null;
         }
     }
 
@@ -272,50 +276,108 @@ Item {
         }
     }
 
-    function moveUp(stepCount){
+    //上移
+    //游戏区域边界矩形:gameAreaRect
+    function moveUp(stepCount, gameAreaRect){
         y -= stepCount*oneBoxEdgeLength;
+        if (isBeyondBorder(gameAreaRect)){
+            y += stepCount*oneBoxEdgeLength;
+        }
     }
 
-    function moveDown(stepCount){
+    //下移
+    //游戏区域边界矩形:gameAreaRect
+    function moveDown(stepCount, gameAreaRect){
         y += stepCount*oneBoxEdgeLength;
+        if (isBeyondBorder(gameAreaRect)){
+            y -= stepCount*oneBoxEdgeLength;
+        }
     }
 
-    function moveLeft(stepCount){
+    //左移
+    //游戏区域边界矩形:gameAreaRect
+    function moveLeft(stepCount, gameAreaRect){
         x -= stepCount*oneBoxEdgeLength;
+        if (isBeyondBorder(gameAreaRect)){
+            x += stepCount*oneBoxEdgeLength;
+        }
     }
 
-    function moveRight(stepCount){
+    //右移
+    //游戏区域边界矩形:gameAreaRect
+    function moveRight(stepCount, gameAreaRect){
         x += stepCount*oneBoxEdgeLength;
+        if (isBeyondBorder(gameAreaRect)){
+            x -= stepCount*oneBoxEdgeLength;
+        }
     }
 
-    function moveRotate() {
-        /*var r = rotationItem.angle;
-        r += 90;
-        r = r >= 360 ? 0 : r;
-        rotationItem.angle = r;
-        rotationItem.origin.x = anchorRotate.x;
-        rotationItem.origin.y = anchorRotate.y;
-        boxGroup.transform = rotationItem;
-        console.log("anchorRotatePoint:x=%2,y=%3".arg(anchorRotate.x).arg(anchorRotate.y));*/
+    //旋转
+    //游戏区域边界矩形:gameAreaRect
+    function moveRotate(gameAreaRect) {
+        var oldPostIndex = shapePostIndex;
+        var postIndex = shapePostIndex;
+        postIndex++;
+        postIndex = postIndex > BoxGroup.AngleFlag.DEG_270 ? BoxGroup.AngleFlag.DEG_0 : postIndex;
+        shapePostIndex = postIndex;
 
-        var r = shapePostIndex;
-        r++;
-        r = r > BoxGroup.AngleFlag.DEG_270 ? BoxGroup.AngleFlag.DEG_0 : r;
-        shapePostIndex = r;
+        if (isBeyondBorder(gameAreaRect)){
+            shapePostIndex = oldPostIndex;
+        }
+    }
 
-        for (var i in boxGroup.children){
-            var curChild = boxGroup.children[i];
-            var name = "%1".arg(curChild.name);
-            if (name.indexOf("boxUnit") !== -1){
-                console.log("%1:x=%2,y=%3".arg(name).arg(curChild.x).arg(curChild.y));
+    //边界触碰检测
+    //borderRect表示游戏边界矩形
+    function isBeyondBorder(borderRect){
+        var left = boxGroup.x;
+        var right = boxGroup.x + boxGroup.width;
+        var top = boxGroup.y;
+        var bottom = boxGroup.y + boxGroup.height;
+        if (left < borderRect.left
+            || right > borderRect.right
+            //|| top < borderRect.top
+            || bottom > borderRect.bottom) {
+            //console.log("超出边界");
+            return true;
+        }
+        return false;
+    }
+
+
+
+    //方块碰撞（下落触底、边界触碰）
+    //topBoxArray表示方块堆中最上面一层的box数组
+    function boxCrashed(topBoxArray){
+        var rowMax = height/oneBoxEdgeLength;
+        var colMax = width/oneBoxEdgeLength;
+        var boxMatrix = new Array; //方块组的BOX对象矩阵
+        for (var j=0; j<rowMax; j++ ){
+            var boxRow = new Array;
+            for (var k=0; k<colMax; k++ ){
+                boxRow.push(null);
+            }
+            boxMatrix.push(boxRow);
+        }
+
+        for (var i in boxArray){
+            var row = boxArray[i].row;
+            var col = boxArray[i].col;
+            var obj = new Object;
+            obj.boxArrayIndex = i;
+            obj.boxObj = boxArray[i];
+            boxMatrix[row][col] = obj;
+        }
+
+        //在topBoxArray中选出与方块组同垂直方位的几个box【最好是二次垂直下落不需要执行这个循环，因为垂直方位没有变化】
+        var topboxArr = new Array;
+        for (var b in topBoxArray) {
+            if (b !== null
+                 && b.x >= boxGroup.x
+                    && b.x < boxGroup.x+boxGroup.width) {
+                topboxArr.push(b);
             }
         }
     }
-    /*//旋转-对象
-    Rotation {
-        id: rotationItem
-        angle: 0
-    }*/
 }
 
 
