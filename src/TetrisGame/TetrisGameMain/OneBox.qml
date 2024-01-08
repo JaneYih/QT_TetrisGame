@@ -19,6 +19,15 @@ Item {
     opacity: 1
     z:1
 
+    onLightOffChanged: {
+        if (lightOff){
+            onebox.opacity = 0.3;
+        }
+        else{
+            onebox.opacity = 1;
+        }
+    }
+
     Rectangle {
         id: outsideRect
         anchors.fill: parent
@@ -37,7 +46,6 @@ Item {
         border.width: 0
         opacity: 1
         z:3
-
         property var rectGradient: Gradient {
             GradientStop {
                 position: 0

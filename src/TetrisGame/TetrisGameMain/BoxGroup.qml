@@ -33,6 +33,9 @@ Item {
     property Component oneboxComponent: null //小方块组件
     property int oneBoxEdgeLength: 10 //小方块边长
     property alias outlineRect: outlineRect
+    property alias autoMoveDownTimer: autoMoveDownTimer //自动下落定时器
+    property bool enableMove: true
+    signal backgroundBoxsLightUp();
 
     //外边框
     Rectangle {
@@ -276,53 +279,91 @@ Item {
         }
     }
 
+    //冻结方块组，禁止移动，转移小方块（释放方块组的小方块，将游戏区域的背景方块点亮）
+    function freezeBoxGroup() {
+        autoMoveDownTimer.running = false; //停止方块自动下落
+        enableMove = false;  //禁止移动
+        boxGroup.backgroundBoxsLightUp(); //将游戏区域的背景方块点亮
+        destroyBoxGroup();   //释放方块组的小方块
+    }
+
     //上移
     //游戏区域边界矩形:gameAreaRect
     function moveUp(stepCount, gameAreaRect){
-        y -= stepCount*oneBoxEdgeLength;
-        if (isBeyondBorder(gameAreaRect)){
-            y += stepCount*oneBoxEdgeLength;
+        if (enableMove){
+            y -= stepCount*oneBoxEdgeLength;
+            if (isBeyondBorder(gameAreaRect)){
+                y += stepCount*oneBoxEdgeLength;
+            }
         }
     }
 
     //下移
     //游戏区域边界矩形:gameAreaRect
     function moveDown(stepCount, gameAreaRect){
-        y += stepCount*oneBoxEdgeLength;
-        if (isBeyondBorder(gameAreaRect)){
-            y -= stepCount*oneBoxEdgeLength;
+        if (enableMove){
+            y += stepCount*oneBoxEdgeLength;
+            if (isBeyondBorder(gameAreaRect)){
+                y -= stepCount*oneBoxEdgeLength;
+                freezeBoxGroup();
+            }
         }
     }
+
+    Timer {
+        id: autoMoveDownTimer
+        interval: 1000
+        running: false
+        repeat: true
+        property var gameRect: null //游戏区域边界矩形
+        onTriggered: {
+            //console.log("autoMoveDownTimer.onTriggered");
+            moveDown(1, gameAreaRect);
+        }
+    }
+
+    //快速下移（坠落）
+    //游戏区域边界矩形:gameAreaRect
+     function moveQuickDown(gameAreaRect) {
+        //autoMoveDownTimer.gameRect = gameAreaRect;
+        autoMoveDownTimer.interval = 15;
+     }
 
     //左移
     //游戏区域边界矩形:gameAreaRect
     function moveLeft(stepCount, gameAreaRect){
-        x -= stepCount*oneBoxEdgeLength;
-        if (isBeyondBorder(gameAreaRect)){
-            x += stepCount*oneBoxEdgeLength;
+        if (enableMove){
+            x -= stepCount*oneBoxEdgeLength;
+            if (isBeyondBorder(gameAreaRect)){
+                x += stepCount*oneBoxEdgeLength;
+            }
         }
     }
 
     //右移
     //游戏区域边界矩形:gameAreaRect
     function moveRight(stepCount, gameAreaRect){
-        x += stepCount*oneBoxEdgeLength;
-        if (isBeyondBorder(gameAreaRect)){
-            x -= stepCount*oneBoxEdgeLength;
+        if (enableMove){
+            x += stepCount*oneBoxEdgeLength;
+            if (isBeyondBorder(gameAreaRect)){
+                x -= stepCount*oneBoxEdgeLength;
+            }
         }
     }
 
     //旋转
     //游戏区域边界矩形:gameAreaRect
     function moveRotate(gameAreaRect) {
-        var oldPostIndex = shapePostIndex;
-        var postIndex = shapePostIndex;
-        postIndex++;
-        postIndex = postIndex > BoxGroup.AngleFlag.DEG_270 ? BoxGroup.AngleFlag.DEG_0 : postIndex;
-        shapePostIndex = postIndex;
+        if (enableMove){
+            var oldPostIndex = shapePostIndex;
+            var postIndex = shapePostIndex;
+            postIndex++;
+            postIndex = postIndex > BoxGroup.AngleFlag.DEG_270 ? BoxGroup.AngleFlag.DEG_0 : postIndex;
+            shapePostIndex = postIndex;
 
-        if (isBeyondBorder(gameAreaRect)){
-            shapePostIndex = oldPostIndex;
+            if (isBeyondBorder(gameAreaRect)){
+                shapePostIndex = oldPostIndex;
+            }
         }
     }
 
@@ -335,7 +376,7 @@ Item {
         var bottom = boxGroup.y + boxGroup.height;
         if (left < borderRect.left
             || right > borderRect.right
-            //|| top < borderRect.top
+            || top < borderRect.top-3*oneBoxEdgeLength
             || bottom > borderRect.bottom) {
             //console.log("超出边界");
             return true;
@@ -343,10 +384,7 @@ Item {
         return false;
     }
 
-
-
-    //方块碰撞（下落触底、边界触碰）
-    //topBoxArray表示方块堆中最上面一层的box数组
+    //方块碰撞、下落触底
     function boxCrashed(topBoxArray){
         var rowMax = height/oneBoxEdgeLength;
         var colMax = width/oneBoxEdgeLength;
