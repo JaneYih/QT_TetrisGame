@@ -21,7 +21,7 @@ Window {
 
     Component.onCompleted: {
         createBoxBackground(gameAreaRowSize, gameAreaColSize);
-        curActiveBoxGroup = ttt;
+        ///curActiveBoxGroup = ttt;
     }
 
     /* 将游戏区域的背景方块点亮--槽函数*/
@@ -81,19 +81,16 @@ Window {
         if (curActiveBoxGroup !== null) {
             curActiveBoxGroup.autoMoveDownTimer.running = false; //禁止多个方块组同时下落
         }
-
         curActiveBoxGroup = boxgroup;
+    }
 
+    onCurActiveBoxGroupChanged: {
         if (curActiveBoxGroup !== null) {
             //设置方块组自动下落
             curActiveBoxGroup.autoMoveDownTimer.gameRect = gameAreaRect;
             curActiveBoxGroup.autoMoveDownTimer.interval = 500;
             curActiveBoxGroup.autoMoveDownTimer.running = true;
         }
-    }
-
-    onCurActiveBoxGroupChanged: {
-
     }
 
     BoxGroup {

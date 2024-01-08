@@ -326,7 +326,7 @@ Item {
     //游戏区域边界矩形:gameAreaRect
      function moveQuickDown(gameAreaRect) {
         //autoMoveDownTimer.gameRect = gameAreaRect;
-        autoMoveDownTimer.interval = 15;
+        autoMoveDownTimer.interval = 10;
      }
 
     //左移
