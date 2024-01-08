@@ -37,6 +37,9 @@ Item {
     property bool enableMove: true
     signal backgroundBoxsLightUp();
 
+    property var gameAreaRect: null //游戏区域矩形
+    property var backgroundBoxArray: null //游戏区域背景方块二维数组
+
     //外边框
     Rectangle {
         id: outlineRect
@@ -49,7 +52,7 @@ Item {
     }
 
     Component.onCompleted: {
-
+        console.log("创建一个方块组");
     }
 
     onOneBoxEdgeLengthChanged: {
@@ -277,6 +280,7 @@ Item {
                 boxArray[i] = null;
             }
         }
+        console.log("释放一个方块组");
     }
 
     //冻结方块组，禁止移动，转移小方块（释放方块组的小方块，将游戏区域的背景方块点亮）
@@ -288,22 +292,20 @@ Item {
     }
 
     //上移
-    //游戏区域边界矩形:gameAreaRect
-    function moveUp(stepCount, gameAreaRect){
+    function moveUp(stepCount){
         if (enableMove){
             y -= stepCount*oneBoxEdgeLength;
-            if (isBeyondBorder(gameAreaRect)){
+            if (isCrashed()){
                 y += stepCount*oneBoxEdgeLength;
             }
         }
     }
 
     //下移
-    //游戏区域边界矩形:gameAreaRect
-    function moveDown(stepCount, gameAreaRect){
+    function moveDown(stepCount){
         if (enableMove){
             y += stepCount*oneBoxEdgeLength;
-            if (isBeyondBorder(gameAreaRect)){
+            if (isCrashed()){
                 y -= stepCount*oneBoxEdgeLength;
                 freezeBoxGroup();
             }
@@ -315,45 +317,39 @@ Item {
         interval: 1000
         running: false
         repeat: true
-        property var gameRect: null //游戏区域边界矩形
         onTriggered: {
             //console.log("autoMoveDownTimer.onTriggered");
-            moveDown(1, gameAreaRect);
+            moveDown(1);
         }
     }
 
     //快速下移（坠落）
-    //游戏区域边界矩形:gameAreaRect
-     function moveQuickDown(gameAreaRect) {
-        //autoMoveDownTimer.gameRect = gameAreaRect;
+     function moveQuickDown() {
         autoMoveDownTimer.interval = 10;
      }
 
     //左移
-    //游戏区域边界矩形:gameAreaRect
-    function moveLeft(stepCount, gameAreaRect){
+    function moveLeft(stepCount){
         if (enableMove){
             x -= stepCount*oneBoxEdgeLength;
-            if (isBeyondBorder(gameAreaRect)){
+            if (isCrashed()){
                 x += stepCount*oneBoxEdgeLength;
             }
         }
     }
 
     //右移
-    //游戏区域边界矩形:gameAreaRect
-    function moveRight(stepCount, gameAreaRect){
+    function moveRight(stepCount){
         if (enableMove){
             x += stepCount*oneBoxEdgeLength;
-            if (isBeyondBorder(gameAreaRect)){
+            if (isCrashed()){
                 x -= stepCount*oneBoxEdgeLength;
             }
         }
     }
 
     //旋转
-    //游戏区域边界矩形:gameAreaRect
-    function moveRotate(gameAreaRect) {
+    function moveRotate() {
         if (enableMove){
             var oldPostIndex = shapePostIndex;
             var postIndex = shapePostIndex;
@@ -361,10 +357,20 @@ Item {
             postIndex = postIndex > BoxGroup.AngleFlag.DEG_270 ? BoxGroup.AngleFlag.DEG_0 : postIndex;
             shapePostIndex = postIndex;
 
-            if (isBeyondBorder(gameAreaRect)){
+            if (isCrashed()){
                 shapePostIndex = oldPostIndex;
             }
         }
+    }
+
+    function isCrashed() {
+        if (boxGroup.backgroundBoxArray === null
+                || boxGroup.gameAreaRect === null){
+            return false;  //如果还没传入这两个数据，则不检测碰撞
+        }
+
+        return (isBeyondBorder(boxGroup.gameAreaRect)
+                || boxMountainCrashed(boxGroup.backgroundBoxArray, boxGroup.gameAreaRect.y, boxGroup.gameAreaRect.x))
     }
 
     //边界触碰检测
@@ -384,37 +390,25 @@ Item {
         return false;
     }
 
-    //方块碰撞、下落触底
-    function boxCrashed(topBoxArray){
-        var rowMax = height/oneBoxEdgeLength;
-        var colMax = width/oneBoxEdgeLength;
-        var boxMatrix = new Array; //方块组的BOX对象矩阵
-        for (var j=0; j<rowMax; j++ ){
-            var boxRow = new Array;
-            for (var k=0; k<colMax; k++ ){
-                boxRow.push(null);
-            }
-            boxMatrix.push(boxRow);
-        }
+    //方块与游戏区域背景的点亮方块重叠（即：与方块山的碰撞检测）
+    function boxMountainCrashed(backgroundArray, gameAreaY, gameAreaX) {
+        var bCrashed = false;
+        //var rowIndexMax = height/oneBoxEdgeLength - 1;
+        //var colIndexMax = width/oneBoxEdgeLength - 1;
 
-        for (var i in boxArray){
-            var row = boxArray[i].row;
-            var col = boxArray[i].col;
-            var obj = new Object;
-            obj.boxArrayIndex = i;
-            obj.boxObj = boxArray[i];
-            boxMatrix[row][col] = obj;
-        }
-
-        //在topBoxArray中选出与方块组同垂直方位的几个box【最好是二次垂直下落不需要执行这个循环，因为垂直方位没有变化】
-        var topboxArr = new Array;
-        for (var b in topBoxArray) {
-            if (b !== null
-                 && b.x >= boxGroup.x
-                    && b.x < boxGroup.x+boxGroup.width) {
-                topboxArr.push(b);
+        var originRow = (y - gameAreaY) / oneBoxEdgeLength;
+        var originCol = (x - gameAreaX) / oneBoxEdgeLength;
+        for (var i in boxArray) {
+            var row = originRow + boxArray[i].row;
+            var col = originCol + boxArray[i].col;
+            if (row >= 0 && col >= 0) {
+                if (!backgroundArray[row][col].lightOff) {
+                    bCrashed = true;
+                    break;
+                }
             }
         }
+        return bCrashed;
     }
 }
 

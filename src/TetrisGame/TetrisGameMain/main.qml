@@ -11,12 +11,12 @@ Window {
     color: "#8aece3"
     property int oneBoxEdge: 20 //小方块边长
     property Component oneboxComponent: null
-    property var backgroundArray: null //游戏区域背景方块二维数组
     property int gameAreaX: 40 //游戏区域x
     property int gameAreaY: 60 //游戏区域y
     property int gameAreaRowSize: 20 //游戏区域行数
     property int gameAreaColSize: 25 //游戏区域列数
     property var gameAreaRect: null //游戏区域矩形
+    property var backgroundBoxArray: null //游戏区域背景方块二维数组
     property var curActiveBoxGroup: null //当前活动的方块组--唯一性，如果同时有多个活动方块自动下落，则背景不能多个同时点亮
 
     Component.onCompleted: {
@@ -35,7 +35,7 @@ Window {
             for (var i in curActiveBoxGroup.boxArray){
                 var row = originRow + curActiveBoxGroup.boxArray[i].row;
                 var col = originCol + curActiveBoxGroup.boxArray[i].col;
-                backgroundArray[row][col].lightOff = false;
+                mainWin.backgroundBoxArray[row][col].lightOff = false;
             }
             curActiveBoxGroup.destroy(); //销毁当前方块组（目前不是动态创建方块组的，后面要动态创建方块组即可）
         }
@@ -53,22 +53,22 @@ Window {
 
             switch (event.key){
             case Qt.Key_Left:
-                curActiveBoxGroup.moveLeft(1, gameAreaRect);
+                curActiveBoxGroup.moveLeft(1);
                 break;
             case Qt.Key_Right:
-                curActiveBoxGroup.moveRight(1, gameAreaRect);
+                curActiveBoxGroup.moveRight(1);
                 break;
             case Qt.Key_Up:
-                curActiveBoxGroup.moveUp(1, gameAreaRect);
+                curActiveBoxGroup.moveUp(1);
                 break;
             case Qt.Key_Down:
-                curActiveBoxGroup.moveDown(1, gameAreaRect);
+                curActiveBoxGroup.moveDown(1);
                 break;
             case Qt.Key_Tab: //快速下移（坠落）
-                curActiveBoxGroup.moveQuickDown(gameAreaRect);
+                curActiveBoxGroup.moveQuickDown();
                 break;
             case Qt.Key_Space: //旋转
-                curActiveBoxGroup.moveRotate(gameAreaRect);
+                curActiveBoxGroup.moveRotate();
                 break;
             default:
                 return;
@@ -86,8 +86,10 @@ Window {
 
     onCurActiveBoxGroupChanged: {
         if (curActiveBoxGroup !== null) {
+            curActiveBoxGroup.gameAreaRect = mainWin.gameAreaRect; //游戏区域矩形
+            curActiveBoxGroup.backgroundBoxArray = mainWin.backgroundBoxArray; //设置游戏区域背景方块二维数组
+
             //设置方块组自动下落
-            curActiveBoxGroup.autoMoveDownTimer.gameRect = gameAreaRect;
             curActiveBoxGroup.autoMoveDownTimer.interval = 500;
             curActiveBoxGroup.autoMoveDownTimer.running = true;
         }
@@ -240,8 +242,8 @@ Window {
             oneboxComponent = Qt.createComponent("OneBox.qml");
         }
 
-        if (mainWin.backgroundArray === null){
-            mainWin.backgroundArray = new Array;
+        if (mainWin.backgroundBoxArray === null){
+            mainWin.backgroundBoxArray = new Array;
         }
 
         for (var i = 0; i < row; i++){
@@ -262,7 +264,7 @@ Window {
                     return false;
                 }
             }
-            mainWin.backgroundArray.push(rowArray);
+            mainWin.backgroundBoxArray.push(rowArray);
         }
         mainWin.gameAreaRect = Qt.rect(gameAreaX, gameAreaY, gameAreaColSize*oneBoxEdge, gameAreaRowSize*oneBoxEdge);
         return true;
