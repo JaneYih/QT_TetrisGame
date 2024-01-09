@@ -18,6 +18,7 @@ Window {
     property int gameAreaRowSize: 20 //游戏区域行数
     property int gameAreaColSize: 10 //游戏区域列数
     property var gameAreaRect: null //游戏区域矩形
+    property int boxMountainTopRowIndex: 0 //当前方块山最顶端的行序号
     property var backgroundBoxArray: null //游戏区域背景方块二维数组
     property var curActiveBoxGroup: null //当前活动的方块组--唯一性，如果同时有多个活动方块自动下落，则背景不能多个同时点亮
     property var nextActiveBoxGroup: null //下一个方块组
@@ -40,12 +41,24 @@ Window {
             //console.log("%1   %2".arg(originRow).arg(originCol));
 
             var bGameOver = false;
-            for (var i in curActiveBoxGroup.boxArray){
+            var curActiveBoxGroupBottomRowIndex = 0;
+            var curActiveBoxGroupTopRowIndex = gameAreaRowSize-1;
+            for (var i in curActiveBoxGroup.boxArray) {
                 var row = originRow + curActiveBoxGroup.boxArray[i].row;
                 var col = originCol + curActiveBoxGroup.boxArray[i].col;
+
                 if (row < gameAreaRowSize && row >= 0
                        && col < gameAreaColSize && col >= 0) {
+
                     mainWin.backgroundBoxArray[row][col].lightOff = false;
+
+                    boxMountainTopRowIndex = Math.min(boxMountainTopRowIndex, row);
+                    curActiveBoxGroupBottomRowIndex = Math.max(curActiveBoxGroupBottomRowIndex, row);
+                    curActiveBoxGroupTopRowIndex = Math.min(curActiveBoxGroupTopRowIndex, row);
+
+                    //console.log("curActiveBoxGroupTopRowIndex:%1".arg(curActiveBoxGroupTopRowIndex));
+                    //console.log("curActiveBoxGroupBottomRowIndex:%1".arg(curActiveBoxGroupBottomRowIndex));
+                    //console.log("boxMountainTopRowIndex:%1".arg(boxMountainTopRowIndex));
                 }
 
                 if (row < 0) {
@@ -61,8 +74,48 @@ Window {
                 gameState = Tetris.GameState.Over; //游戏结束
             }
             else {
-                //......//消除方块山的满行，且山体下落
+                checkAndClearBoxMountainFullRow(boxMountainTopRowIndex, curActiveBoxGroupTopRowIndex, curActiveBoxGroupBottomRowIndex); //消除方块山的满行，且山体下沉
                 nextBoxGroupEnter();
+            }
+        }
+    }
+
+    //检测方块山的满行，且满行消除且山体下落
+    function checkAndClearBoxMountainFullRow(mountainTopRowIndex, activeBoxTopRowIndex, activeBoxBottomRowIndex) {
+        //检测方块山的满行
+        var fullRowIndexArr = new Array; //用于记录满行序号
+        for (var row = activeBoxTopRowIndex; row <= activeBoxBottomRowIndex; row++) {
+            var bAllLightOn = true;
+            for (var col = 0; col < gameAreaColSize; col++) {
+                if (mainWin.backgroundBoxArray[row][col].lightOff) {
+                    bAllLightOn = false;
+                    break;
+                }
+            }
+
+            //记录满行序号
+            if (bAllLightOn) {
+                //console.log("第%1行满行".arg(row));
+                fullRowIndexArr.push(row);
+
+                //满行消除
+                for (var j = 0; j < gameAreaColSize; j++) {
+                    mainWin.backgroundBoxArray[row][j].lightOff = true;
+                }
+            }
+        }
+
+        //山体下落
+        var stepCount = fullRowIndexArr.length;
+        for (var i= activeBoxBottomRowIndex; i>= mountainTopRowIndex; i--) {
+            for (var k = 0; k < gameAreaColSize; k++) {
+                if (!mainWin.backgroundBoxArray[i][k].lightOff) { //将点亮的方块下移（熄灭当前点，点亮新的点）
+                    var newRowIndex = i + stepCount;
+                    if (newRowIndex >= 0 && newRowIndex < gameAreaRowSize) {
+                        mainWin.backgroundBoxArray[i][k].lightOff = true; //熄灭当前点
+                        mainWin.backgroundBoxArray[newRowIndex][k].lightOff = false; //点亮新的点
+                    }
+                }
             }
         }
     }
@@ -174,6 +227,7 @@ Window {
                 mainWin.backgroundBoxArray[i][j].lightOff = true;
             }
         }
+        boxMountainTopRowIndex = gameAreaRowSize-1;
         gameOverText.visible = false;
     }
 
