@@ -52,7 +52,7 @@ Item {
     }
 
     Component.onCompleted: {
-        console.log("创建一个方块组");
+        //console.log("创建一个方块组");
     }
 
     onOneBoxEdgeLengthChanged: {
@@ -280,7 +280,7 @@ Item {
                 boxArray[i] = null;
             }
         }
-        console.log("释放一个方块组");
+        //console.log("释放一个方块组");
     }
 
     //冻结方块组，禁止移动，转移小方块（释放方块组的小方块，将游戏区域的背景方块点亮）

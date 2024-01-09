@@ -9,6 +9,7 @@ Window {
     height: 640
     title: "TetrisGameMain"
     color: "#8aece3"
+    property int gameState: Tetris.GameState.Ready //游戏状态
     property int oneBoxEdge: 20 //小方块边长
     property Component oneboxComponent: null
     property Component boxGroupComponent: null
@@ -38,6 +39,7 @@ Window {
             var originCol = (curActiveBoxGroup.x - gameAreaX) / oneBoxEdge;
             //console.log("%1   %2".arg(originRow).arg(originCol));
 
+            var bGameOver = false;
             for (var i in curActiveBoxGroup.boxArray){
                 var row = originRow + curActiveBoxGroup.boxArray[i].row;
                 var col = originCol + curActiveBoxGroup.boxArray[i].col;
@@ -45,15 +47,29 @@ Window {
                        && col < gameAreaColSize && col >= 0) {
                     mainWin.backgroundBoxArray[row][col].lightOff = false;
                 }
+
+                if (row < 0) {
+                    bGameOver = true;
+                }
             }
 
             //销毁当前方块组
             curActiveBoxGroup.destroy();
             curActiveBoxGroup = null;
 
-            //创建新的方块组
-            createNextBoxGroup();
+            if (bGameOver) {
+                gameState = Tetris.GameState.Over; //游戏结束
+            }
+            else {
+                //......//消除方块山的满行，且山体下落
+                nextBoxGroupEnter();
+            }
         }
+    }
+
+    //下一个方块组下落
+    function nextBoxGroupEnter() {
+        createNextBoxGroup(); //创建新的方块组
     }
 
     // 设置新的方块组、预置下一个方块组
@@ -72,7 +88,7 @@ Window {
         width: gameAreaRect.width
         height: gameAreaRect.height
         focus: true
-        Keys.enabled: true
+        Keys.enabled: gameState === Tetris.GameState.Running
         Keys.onPressed: {
             if (curActiveBoxGroup === null) {
                 return;
@@ -85,16 +101,16 @@ Window {
             case Qt.Key_Right:
                 curActiveBoxGroup.moveRight(1);
                 break;
-            case Qt.Key_Up:
-                curActiveBoxGroup.moveUp(1);
-                break;
+            //case Qt.Key_Up:
+            //    curActiveBoxGroup.moveUp(1);
+            //    break;
             case Qt.Key_Down:
                 curActiveBoxGroup.moveDown(1);
                 break;
-            case Qt.Key_Tab: //快速下移（坠落）
+            case Qt.Key_Space: //快速下移（坠落）
                 curActiveBoxGroup.moveQuickDown();
                 break;
-            case Qt.Key_Space: //旋转
+            case Qt.Key_Up: //旋转
                 curActiveBoxGroup.moveRotate();
                 break;
             default:
@@ -104,22 +120,121 @@ Window {
         }
     }
 
-    Button {
-        id: button
-        x: 434
-        y: 234
-        text: qsTr("开始游戏")
-        onClicked: {
-            createNextBoxGroup();
-            gameAreaArea.forceActiveFocus();
+    Text {
+        id: gameOverText
+        x: gameAreaX + 1 * oneBoxEdge
+        y: gameAreaY + (gameAreaRowSize / 3) * oneBoxEdge
+        z: 5
+        font.family: "Arial"
+        font.pointSize: 20
+        color: "#ff0000"
+        text: qsTr("Game Over!!")
+        visible: false
+    }
+
+    onGameStateChanged: {
+        switch (gameState) {
+        case Tetris.GameState.Ready:
+            resetGame();
+            break;
+        case Tetris.GameState.Start:
+            startGame();
+            break;
+        case Tetris.GameState.Running:
+            continueGame();
+            break;
+        case Tetris.GameState.Pause:
+            pauseGame();
+            break;
+        case Tetris.GameState.Over:
+            gameOver();
+            break;
+        }
+        gameAreaArea.forceActiveFocus();
+    }
+
+    //开始游戏
+    function startGame() {
+        resetGame();
+        //.......//增加游戏难度，可以在这里增加一个函数：设置背景底部随机小box
+        createNextBoxGroup();
+        gameState = Tetris.GameState.Running;
+    }
+
+    //游戏结束
+    function gameOver() {
+        gameOverText.visible = true;
+    }
+
+    //重新开始游戏
+    function resetGame(){
+        //这里是背景的消除，可以做一些动画在这里
+        for (var i = 0; i < gameAreaRowSize; i++) {
+            for (var j = 0; j < gameAreaColSize; j++) {
+                mainWin.backgroundBoxArray[i][j].lightOff = true;
+            }
+        }
+        gameOverText.visible = false;
+    }
+
+    //暂停游戏
+    function pauseGame() {
+        if (curActiveBoxGroup !== null) {
+            curActiveBoxGroup.autoMoveDownTimer.running = false;
+        }
+    }
+
+    //继续游戏
+    function continueGame() {
+        if (curActiveBoxGroup !== null) {
+            curActiveBoxGroup.autoMoveDownTimer.running = true;
         }
     }
 
     Button {
-        id: button1
+        id: btnStartGame
         x: 434
-        y: 300
-        text: qsTr("重置游戏")
+        y: 241
+        text: qsTr("开始")
+        enabled: (gameState === Tetris.GameState.Over
+                  || gameState === Tetris.GameState.Ready)
+        onClicked: {
+            gameState = Tetris.GameState.Start;
+        }
+    }
+
+    Button {
+        id: btnResetGame
+        x: 434
+        y: 188
+        text: qsTr("重新开始")
+        enabled: true
+        onClicked: {
+            gameState = Tetris.GameState.Ready;
+            gameState = Tetris.GameState.Start;
+        }
+    }
+
+    Button {
+        id: btnPauseGame
+        x: 434
+        y: 293
+        text: qsTr("暂停")
+        enabled: gameState === Tetris.GameState.Running
+        onClicked: {
+            gameState = Tetris.GameState.Pause;
+        }
+    }
+
+    Button {
+        id: btnContinueGame
+        x: 434
+        y: 345
+        text: qsTr("继续")
+        enabled: gameState === Tetris.GameState.Pause
+        onClicked: {
+            gameState = Tetris.GameState.Running;
+        }
     }
 
     onCurActiveBoxGroupChanged: {
@@ -128,7 +243,7 @@ Window {
             curActiveBoxGroup.backgroundBoxArray = mainWin.backgroundBoxArray; //设置游戏区域背景方块二维数组
 
             //设置方块组自动下落
-            curActiveBoxGroup.autoMoveDownTimer.interval = 500;
+            curActiveBoxGroup.autoMoveDownTimer.interval = 500;   //可以调节这个时间，以划分游戏难度等级
             curActiveBoxGroup.autoMoveDownTimer.running = true;
         }
     }

@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>OneBox.qml</file>
         <file>BoxGroup.qml</file>
+        <file>Tetris.qml</file>
     </qresource>
 </RCC>
