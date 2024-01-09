@@ -210,7 +210,7 @@ Window {
         text: qsTr("重新开始")
         enabled: true
         onClicked: {
-            gameState = Tetris.GameState.Ready;
+            //gameState = Tetris.GameState.Ready;
             gameState = Tetris.GameState.Start;
         }
     }
