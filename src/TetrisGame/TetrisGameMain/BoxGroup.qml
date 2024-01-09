@@ -167,18 +167,18 @@ Item {
     }
 
     function createBoxGroupShape_J(){
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,1],[1,1],[2,0],[2,1],  [1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[1,0],[1,1],[1,2],  [-1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,0],[2,0],  [1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,0],[0,1],[0,2],[1,2],  [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,  [[0,0],[1,0],[1,1],[1,2],    [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90, [[0,0],[0,1],[1,0],[2,0],    [1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180,[[0,0],[0,1],[0,2],[1,2],    [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270,[[0,1],[1,1],[2,0],[2,1],    [1,0]]);
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
     function createBoxGroupShape_L(){
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,   [[0,0],[1,0],[2,0],[2,1],  [1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90,  [[0,0],[0,1],[0,2],[1,0],  [-1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180, [[0,0],[0,1],[1,1],[2,1],  [1,0]]);
-        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270, [[0,2],[1,0],[1,1],[1,2],  [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_0,  [[0,0],[0,1],[0,2],[1,0],    [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_90, [[0,0],[0,1],[1,1],[2,1],    [1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_180,[[0,2],[1,0],[1,1],[1,2],    [-1,0]]);
+        setShapeDEGPost(BoxGroup.AngleFlag.DEG_270,[[0,0],[1,0],[2,0],[2,1],    [1,0]]);
         createBoxGroupShape(boxGroup.shapePostArray[shapePostIndex], true);
     }
 
@@ -362,6 +362,15 @@ Item {
             }
         }
     }
+
+    //设置随机角度的方块
+    function setRandomShapePost() {
+        var now = new Date();
+        var rand =  Math.random(now.getSeconds()) * 10 + 1; //1~10随机数
+        var postIndex = rand % (BoxGroup.AngleFlag.DEG_270 - 1);
+        shapePostIndex = postIndex + 1;
+    }
+
 
     function isCrashed() {
         if (boxGroup.backgroundBoxArray === null
