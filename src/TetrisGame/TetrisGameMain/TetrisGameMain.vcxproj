@@ -65,7 +65,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
   </PropertyGroup>
   <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <QtDeploy>true</QtDeploy>
+    <QtDeploy>false</QtDeploy>
+    <QtDeployQmlDir>
+    </QtDeployQmlDir>
+    <QtDeployQmlImport>
+    </QtDeployQmlImport>
+    <QtDeployNoQuickImport>
+    </QtDeployNoQuickImport>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
     <ClCompile>
