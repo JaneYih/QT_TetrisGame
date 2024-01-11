@@ -36,8 +36,8 @@ Window {
 
     Row {
         id: gamePage
-        x: 40
-        y: 60
+        x: 20
+        y: 20
         spacing: gamePage.oneBoxEdge * 2
         property int oneBoxEdge: 20 //小方块边长
         property int gameAreaRowSize: 20 //游戏区域行数
