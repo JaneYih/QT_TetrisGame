@@ -110,6 +110,7 @@ Item {
             return false;
         }
 
+        boxGroup.visible = false; //方块形状生成过程中的隐藏方格组
         var rowMax = 0;
         var colMax = 0;
         for (var i in postArray){
@@ -134,12 +135,6 @@ Item {
                 else {
                     boxArray[i] = createOneBox(row, col); //创建小方块
                 }
-
-                /*//小方块超出游戏区域的y,则隐藏小方块
-                if (boxGroup.gameAreaRect !== null
-                        &&  (boxGroup.y + boxArray[i].y) < boxGroup.gameAreaRect.top) {
-                    boxArray[i].visible = false;
-                }*/
             }
         }
 
@@ -147,7 +142,9 @@ Item {
         boxGroup.colCount = colMax+1;
         width = oneBoxEdgeLength * (boxGroup.colCount);
         height = oneBoxEdgeLength * (boxGroup.rowCount);
+
         showBoxsWhenEnterGameArea(); //超出游戏区域的y的小方块的显示处理
+        boxGroup.visible = true; //还原方块组的可见
         return true;
     }
 
