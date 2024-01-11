@@ -34,11 +34,15 @@ Window {
         gamePage.forceActiveFocus();
     }
 
-    Row {
+    Rectangle {
         id: gamePage
         x: 20
         y: 20
-        spacing: gamePage.oneBoxEdge * 2
+        z: 0
+        border.color: "red"
+        //border.color: "transparent"
+        border.width: 1
+        color: "transparent"
         property int oneBoxEdge: 20 //小方块边长
         property int gameAreaRowSize: 20 //游戏区域行数
         property int gameAreaColSize: 10 //游戏区域列数
@@ -146,43 +150,76 @@ Window {
             }
         }
 
-        Item {
-            id: gameMainArea
-            x: 0
-            y: 0
+        Row {
+            id: gamePageRow
+            spacing: gamePage.oneBoxEdge * 2
 
-            Text {
-                id: gameOverText
-                anchors.fill: parent
-                z: 5
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.family: "Arial"
-                font.pointSize: 20
-                color: "#ff0000"
-                text: qsTr("Game Over!!")
-                visible: false
-            }
-        }
-
-        Column {
-            id: gameInfoArea
-            spacing: gamePage.oneBoxEdge * 1
-
-            //下一个方块组预览区域
-            Item {
-                id: previewArea
-
+            onWidthChanged: {
+                gamePage.width = width;
             }
 
-            //分数显示区域
-            Item {
-                id: scoreArea
+            onHeightChanged: {
+                gamePage.height = height;
             }
 
-            //计时器显示区域
             Item {
-                id: timerArea
+                id: gameMainArea
+                x: 0
+                y: 0
+
+                Text {
+                    id: gameOverText
+                    anchors.fill: parent
+                    z: 3
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.family: "Arial"
+                    font.pointSize: 20
+                    color: "#ff0000"
+                    text: qsTr("Game Over!!")
+                    visible: false
+                }
+            }
+
+            Column {
+                id: gameInfoArea
+                spacing: gamePage.oneBoxEdge * 1
+
+                //下一个方块组预览区域
+                Item {
+                    id: previewArea
+                    x: 0
+                    y: 0
+
+                }
+
+                //分数显示区域
+                Rectangle {
+                    id: scoreArea
+                    width: 100
+                    height: 50
+
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: qsTr("分数显示区域")
+                    }
+                }
+
+                //计时器显示区域
+                Rectangle {
+                    id: timerArea
+                    width: 100
+                    height: 50
+
+                    Text {
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: qsTr("计时器显示区域")
+                    }
+                }
             }
         }
     }
@@ -230,6 +267,8 @@ Window {
                 gameState = Tetris.GameState.Running;
             }
         }
+
+
     }
 
     //检测方块山的满行，且满行消除且山体下落
@@ -389,7 +428,7 @@ Window {
     function createBoxBackground(row, col) {
         var TopX = gameMainArea.x;
         var TopY = gameMainArea.y;
-        if (oneboxComponent === null){
+        if (oneboxComponent === null) {
             oneboxComponent = Qt.createComponent("OneBox.qml");
         }
 
@@ -407,7 +446,6 @@ Window {
                     box.edgeLength = gamePage.oneBoxEdge;
                     box.lightOff = true;
                     box.z = 1;
-                    //console.log("box: %1,%2".arg(box.x).arg(box.y));
                     rowArray.push(box);
                 }
                 else {
@@ -417,8 +455,8 @@ Window {
             }
             gamePage.backgroundBoxArray.push(rowArray);
         }
-        gameMainArea.width = gamePage.gameAreaColSize*gamePage.oneBoxEdge;
-        gameMainArea.height = gamePage.gameAreaRowSize*gamePage.oneBoxEdge;
+        gameMainArea.width = gamePage.gameAreaColSize * gamePage.oneBoxEdge;
+        gameMainArea.height = gamePage.gameAreaRowSize * gamePage.oneBoxEdge;
         gamePage.gameAreaRect = Qt.rect(TopX, TopY, gameMainArea.width, gameMainArea.height);
         return true;
     }
