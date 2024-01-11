@@ -17,6 +17,8 @@ Item {
     }
     property int groupType: BoxGroup.BoxShape.None //方块组形状
     property var boxArray: [null, null, null, null]//小方块一维数组
+    property var rowCount: 0 //方块组行数
+    property var colCount: 0 //方块组列数
     property var shapePostArray: [ //[4个方块的行列坐标]、[旋转后原点偏移]
         [[0,0], [0,0], [0,0], [0,0], [0,0]], //0度
         [[0,0], [0,0], [0,0], [0,0], [0,0]], //90度
@@ -35,6 +37,7 @@ Item {
     property alias outlineRect: outlineRect
     property alias autoMoveDownTimer: autoMoveDownTimer //自动下落定时器
     property bool enableMove: true
+    property bool isHideBoxs: false
     signal backgroundBoxsLightUp();
 
     property var gameAreaRect: null //游戏区域矩形
@@ -111,7 +114,7 @@ Item {
         var colMax = 0;
         for (var i in postArray){
             if (i >= 4){
-                if (!bInit){
+                if (!bInit){ //调整旋转后的位置
                     x += oneBoxEdgeLength * postArray[i][0];
                     y += oneBoxEdgeLength * postArray[i][1];
                 }
@@ -121,7 +124,7 @@ Item {
                 rowMax = Math.max(rowMax, row);
                 var col = postArray[i][1];
                 colMax = Math.max(colMax, col);
-                if (boxArray[i] !== null){
+                if (boxArray[i] !== null) { //移动小方块
                     boxArray[i].row = row;
                     boxArray[i].col = col;
                     boxArray[i].x = col * oneBoxEdgeLength;
@@ -129,13 +132,22 @@ Item {
                     boxArray[i].edgeLength = oneBoxEdgeLength;
                 }
                 else {
-                    boxArray[i] = createOneBox(row, col);
+                    boxArray[i] = createOneBox(row, col); //创建小方块
                 }
+
+                /*//小方块超出游戏区域的y,则隐藏小方块
+                if (boxGroup.gameAreaRect !== null
+                        &&  (boxGroup.y + boxArray[i].y) < boxGroup.gameAreaRect.top) {
+                    boxArray[i].visible = false;
+                }*/
             }
         }
 
-        width = oneBoxEdgeLength * (colMax+1);
-        height = oneBoxEdgeLength * (rowMax+1);
+        boxGroup.rowCount = rowMax+1;
+        boxGroup.colCount = colMax+1;
+        width = oneBoxEdgeLength * (boxGroup.colCount);
+        height = oneBoxEdgeLength * (boxGroup.rowCount);
+        showBoxsWhenEnterGameArea(); //超出游戏区域的y的小方块的显示处理
         return true;
     }
 
@@ -309,6 +321,7 @@ Item {
                 y -= stepCount*oneBoxEdgeLength;
                 freezeBoxGroup();
             }
+            showBoxsWhenEnterGameArea();
         }
     }
 
@@ -371,6 +384,31 @@ Item {
         shapePostIndex = postIndex + 1;
     }
 
+    //隐藏小方块
+    function hideBoxs() {
+        for(var i = 0; i < boxArray.length; i++)
+        {
+            boxArray[i].visible = false;
+        }
+        boxGroup.isHideBoxs = true;
+    }
+
+    //显示小方块---超出游戏区域的y的小方块的显示处理
+    function showBoxsWhenEnterGameArea() {
+        if (boxGroup.gameAreaRect !== null) {
+            if(boxGroup.y <= (boxGroup.gameAreaRect.top + boxGroup.outlineRect.height))
+            {
+                for(var i = 0; i < boxArray.length; i++)
+                {
+                    if (boxArray[i] !== null) {
+                        if (!boxArray[i].visible) {
+                            boxArray[i].visible = (boxGroup.y + boxArray[i].y) >= boxGroup.gameAreaRect.y;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     function isCrashed() {
         if (boxGroup.backgroundBoxArray === null

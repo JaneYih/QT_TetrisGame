@@ -196,10 +196,11 @@ Window {
                 //分数显示区域
                 Rectangle {
                     id: scoreArea
-                    width: 100
+                    width: 50
                     height: 50
 
                     Text {
+                        //clip: true
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -372,12 +373,13 @@ Window {
             gamePage.curActiveBoxGroup.destroy(); //释放掉上一个方块组
         }
 
-        var topLeftOfBackground_Row = -2;
-        var topLeftOfBackground_Col = gamePage.gameAreaColSize/2 - 1;
         boxgroup.parent = gameMainArea;
+        boxgroup.hideBoxs(); //隐藏小方块
+        boxgroup.setRandomShapePost();
+        var topLeftOfBackground_Row = -boxgroup.rowCount;
+        var topLeftOfBackground_Col = gamePage.gameAreaColSize/2 - 1;
         boxgroup.x = gameMainArea.x + gamePage.oneBoxEdge * topLeftOfBackground_Col;
         boxgroup.y = gameMainArea.y + gamePage.oneBoxEdge * topLeftOfBackground_Row;
-        boxgroup.setRandomShapePost();
         gamePage.curActiveBoxGroup = boxgroup;  //这里是浅拷贝
     }
 
