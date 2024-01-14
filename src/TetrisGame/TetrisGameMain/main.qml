@@ -78,6 +78,9 @@ Window {
             case Qt.Key_Up: //旋转
                 gamePage.curActiveBoxGroup.moveRotate();
                 break;
+            case Qt.Key_0: //暂停\继续
+                btnPauseGame.onClicked();
+                break;
             default:
                 return;
             }
@@ -95,7 +98,7 @@ Window {
                 gamePage.curActiveBoxGroup.backgroundBoxArray = gamePage.backgroundBoxArray; //设置游戏区域背景方块二维数组
 
                 //设置方块组自动下落
-                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = 500;   //可以调节这个时间，以划分游戏难度等级
+                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = 300;   //可以调节这个时间，以划分游戏难度等级
                 gamePage.curActiveBoxGroup.autoMoveDownTimer.running = true;
             }
         }
@@ -144,7 +147,7 @@ Window {
                     gameState = Tetris.GameState.Over; //游戏结束
                 }
                 else {
-                    checkAndClearBoxMountainFullRow(gamePage.boxMountainTopRowIndex, curActiveBoxGroupTopRowIndex, curActiveBoxGroupBottomRowIndex); //消除方块山的满行，且山体下沉
+                    checkAndClearBoxMountainFullRow(curActiveBoxGroupTopRowIndex, curActiveBoxGroupBottomRowIndex); //消除方块山的满行，且山体下沉
                     nextBoxGroupEnter();
                 }
             }
@@ -162,22 +165,42 @@ Window {
                 gamePage.height = height;
             }
 
-            Item {
-                id: gameMainArea
-                x: 0
-                y: 0
+            Row {
+                spacing: 3
 
-                Text {
-                    id: gameOverText
-                    anchors.fill: parent
-                    z: 3
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.family: "Arial"
-                    font.pointSize: 20
-                    color: "#ff0000"
-                    text: qsTr("Game Over!!")
-                    visible: false
+                Item {
+                    id: gameMainArea
+                    x: 0
+                    y: 0
+
+                    Text {
+                        id: gameOverText
+                        anchors.fill: parent
+                        z: 3
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        font.family: "Arial"
+                        font.pointSize: 20
+                        color: "#ff0000"
+                        text: qsTr("Game Over!!")
+                        visible: false
+                    }
+                }
+
+                Column {
+                    id: rowIndex
+                    spacing: 0
+                    Repeater {
+                        model: gamePage.gameAreaRowSize
+                        Text {
+                            width: gamePage.oneBoxEdge
+                            height: gamePage.oneBoxEdge
+                            text: index
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            visible: true
+                        }
+                    }
                 }
             }
 
@@ -254,26 +277,22 @@ Window {
         Button {
             id: btnPauseGame
             text: qsTr("暂停")
-            enabled: gameState === Tetris.GameState.Running
+            enabled: (gameState === Tetris.GameState.Running || gameState === Tetris.GameState.Pause)
             onClicked: {
-                gameState = Tetris.GameState.Pause;
+                if (gameState === Tetris.GameState.Running) {
+                    gameState = Tetris.GameState.Pause;
+                    btnPauseGame.text = qsTr("继续");
+                }
+                else if (gameState === Tetris.GameState.Pause){
+                    gameState = Tetris.GameState.Running;
+                    btnPauseGame.text = qsTr("暂停");
+                }
             }
         }
-
-        Button {
-            id: btnContinueGame
-            text: qsTr("继续")
-            enabled: gameState === Tetris.GameState.Pause
-            onClicked: {
-                gameState = Tetris.GameState.Running;
-            }
-        }
-
-
     }
 
     //检测方块山的满行，且满行消除且山体下落
-    function checkAndClearBoxMountainFullRow(mountainTopRowIndex, activeBoxTopRowIndex, activeBoxBottomRowIndex) {
+    function checkAndClearBoxMountainFullRow(activeBoxTopRowIndex, activeBoxBottomRowIndex) {
         //检测方块山的满行
         var fullRowIndexArr = new Array; //用于记录满行序号
         for (var row = activeBoxTopRowIndex; row <= activeBoxBottomRowIndex; row++) {
@@ -287,7 +306,7 @@ Window {
 
             //记录满行序号
             if (bAllLightOn) {
-                //console.log("第%1行满行".arg(row));
+                console.log("第%1行满行".arg(row));
                 fullRowIndexArr.push(row);
 
                 //满行消除，计分数
@@ -298,14 +317,47 @@ Window {
         }
 
         //山体下落
-        var stepCount = fullRowIndexArr.length;
-        for (var i= activeBoxBottomRowIndex; i>= mountainTopRowIndex; i--) {
-            for (var k = 0; k < gamePage.gameAreaColSize; k++) {
-                if (!gamePage.backgroundBoxArray[i][k].lightOff) { //将点亮的方块下移（熄灭当前点，点亮新的点）
-                    var newRowIndex = i + stepCount;
-                    if (newRowIndex >= 0 && newRowIndex < gamePage.gameAreaRowSize) {
-                        gamePage.backgroundBoxArray[i][k].lightOff = true; //熄灭当前点
-                        gamePage.backgroundBoxArray[newRowIndex][k].lightOff = false; //点亮新的点
+        var fullRowCount = fullRowIndexArr.length;
+        if (fullRowCount > 0) {
+            console.log("山顶：%1，方块底：%2"
+                        .arg(gamePage.boxMountainTopRowIndex)
+                        .arg(activeBoxBottomRowIndex));
+
+            var peakMoveDownStep = 0; //山顶下落步数
+            for (var f=fullRowCount-1; f>=0; f--) { //遍历满行序号数组
+                if (f === 0) {
+                    mountainRowMoveDown(gamePage.boxMountainTopRowIndex, fullRowIndexArr[0]-1, ++peakMoveDownStep);
+                    gamePage.boxMountainTopRowIndex += peakMoveDownStep; //山顶更新
+                }
+                else {
+                    var diffNum = fullRowIndexArr[f] - fullRowIndexArr[f-1];
+                    if (diffNum > 1) { //不相邻的两个满行
+                        mountainRowMoveDown(fullRowIndexArr[f-1]+1, fullRowIndexArr[f]-1, 1);
+                        //peakMoveDownStep++;
+                    }
+                    //else if (diffNum === 1) { //相邻的两个满行
+                        peakMoveDownStep++;
+                    //}
+                }
+            }
+        }
+    }
+
+    //山块下落
+    //topRowIndex: 待下落山块最高行序号
+    //buttomRowIndex: 待下落山块最低行序号
+    //stepCount：下落格子数
+    function mountainRowMoveDown(topRowIndex, buttomRowIndex, stepCount) {
+        if (stepCount > 0) {
+            console.log("山块行：%1<=x<=%2，下落%3个格子".arg(topRowIndex).arg(buttomRowIndex).arg(stepCount));
+            for (var i= buttomRowIndex; i>= topRowIndex; i--) {
+                for (var k = 0; k < gamePage.gameAreaColSize; k++) {
+                    if (!gamePage.backgroundBoxArray[i][k].lightOff) { //将点亮的方块下移（熄灭当前点，点亮新的点）
+                        var newRowIndex = i + stepCount;
+                        if (newRowIndex >= 0 && newRowIndex < gamePage.gameAreaRowSize) {
+                            gamePage.backgroundBoxArray[i][k].lightOff = true; //熄灭当前点
+                            gamePage.backgroundBoxArray[newRowIndex][k].lightOff = false; //点亮新的点
+                        }
                     }
                 }
             }
