@@ -101,6 +101,7 @@
     <ClCompile Include="main.cpp" />
     <None Include="BoxGroup.qml" />
     <None Include="OneBox.qml" />
+    <None Include="Tetris.qml" />
     <QtRcc Include="qml.qrc" />
     <None Include="main.qml" />
   </ItemGroup>

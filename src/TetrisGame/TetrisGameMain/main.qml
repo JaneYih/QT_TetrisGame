@@ -12,6 +12,10 @@ Window {
     property Component oneboxComponent: null
     property Component boxGroupComponent: null
     property int gameState: Tetris.GameState.Ready //游戏状态
+    property int gameLevel: 800 //方块下落速度(ms)
+    property int gameScore: 0 //当前游戏分数
+    property int gameHighestScoreRecord: 0 //游戏分数历史最高分
+    property int gameElapsedTime: 0 //游戏计时时间
 
     onGameStateChanged: {
         switch (gameState) {
@@ -98,7 +102,7 @@ Window {
                 gamePage.curActiveBoxGroup.backgroundBoxArray = gamePage.backgroundBoxArray; //设置游戏区域背景方块二维数组
 
                 //设置方块组自动下落
-                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = 300;   //可以调节这个时间，以划分游戏难度等级
+                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = mainWin.gameLevel;   //可以调节这个时间，以划分游戏难度等级
                 gamePage.curActiveBoxGroup.autoMoveDownTimer.running = true;
             }
         }
@@ -216,32 +220,121 @@ Window {
 
                 }
 
+                //等级选择
+                ComboBox {
+                    id: gameLevelComboBox
+                    width: gamePage.oneBoxEdge * 4
+                    height: gamePage.oneBoxEdge * 1.6
+                    editable: true
+                    model: ListModel {
+                        id: model
+                        ListElement { text: "400" }
+                        ListElement { text: "600" }
+                        ListElement { text: "800" }
+                        ListElement { text: "1000" }
+                        ListElement { text: "300" }
+                    }
+                    //currentIndex: 0
+                    enabled: (gameState !== Tetris.GameState.Running
+                              && gameState !== Tetris.GameState.Pause)
+
+                    onAccepted: {
+                        if (find(editText) === -1){
+                            model.append({text: editText})
+                        }
+                    }
+
+                    /*onCurrentIndexChanged: {
+                        //console.log("Selected option:", currentText)
+                        mainWin.gameLevel = parseInt(currentText);
+                        console.log(mainWin.gameLevel);
+                    }*/
+
+                    onCurrentTextChanged: {
+                        mainWin.gameLevel = parseInt(currentText);
+                        console.log("下落速度：%1ms".arg(mainWin.gameLevel));
+                    }
+
+                    Component.onCompleted: {
+                        currentIndex = 0;
+                        //mainWin.gameLevel = parseInt(currentText);
+                        //console.log("gameLevelComboBox onCompleted:", currentText);
+                    }
+                }
+
                 //分数显示区域
                 Rectangle {
                     id: scoreArea
-                    width: 50
-                    height: 50
-
-                    Text {
-                        //clip: true
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: qsTr("分数显示区域")
+                    width: gamePage.oneBoxEdge * 4
+                    height: 35
+                    border.color: "#881ad0"
+                    color: "transparent"
+                    
+                    Column {
+                        spacing: 0
+                        Text {
+                            width: scoreArea.width
+                            height: scoreArea.height/2
+                            color: "red"
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+                            text: qsTr("历史最高:%1".arg(mainWin.gameHighestScoreRecord))
+                        }
+                        Text {
+                            width: scoreArea.width
+                            height: scoreArea.height/2
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+                            color: "blue"
+                            text: qsTr("分数:%1".arg(mainWin.gameScore))
+                        }
                     }
                 }
+                
 
                 //计时器显示区域
                 Rectangle {
                     id: timerArea
-                    width: 100
-                    height: 50
+                    width: gamePage.oneBoxEdge * 4
+                    height: 20
+                    color: "transparent"
 
                     Text {
+                        id: timerText
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        text: qsTr("计时器显示区域")
+                        text: qsTr("00:00:00:000")
+                    }
+
+                    Timer{
+                        id: gameTimerItem
+                        interval: 33
+                        repeat: true
+                        triggeredOnStart: true // gameTimerItem.start()、gameTimerItem.stop()
+
+                        onTriggered: {
+                            mainWin.gameElapsedTime += gameTimerItem.interval;
+                            //console.log(mainWin.gameElapsedTime);
+                            var ElapsedTime = new Date(mainWin.gameElapsedTime) ;
+                            timerText.text = toTimeString(ElapsedTime);
+                        }
+
+                        function toTimeString (millisecond) {
+                                var hours = parseInt((millisecond % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                var minutes = parseInt((millisecond % (1000 * 60 * 60)) / (1000 * 60));
+                                var seconds = parseInt((millisecond % (1000 * 60)) / 1000);
+                                var milliseconds = millisecond % 1000;
+
+                                var str = "%1:%2:%3:%4"
+                                        .arg(hours.toString().padStart(2, '0'))
+                                        .arg(minutes.toString().padStart(2, '0'))
+                                        .arg(seconds.toString().padStart(2, '0'))
+                                        .arg(milliseconds.toString().padStart(3, '0'));
+
+                                //console.log(str);
+                                return str;
+                        }
                     }
                 }
             }
@@ -313,6 +406,8 @@ Window {
                 for (var j = 0; j < gamePage.gameAreaColSize; j++) {
                     gamePage.backgroundBoxArray[row][j].lightOff = true;
                 }
+
+                mainWin.gameScore++; //得分
             }
         }
 
@@ -389,10 +484,14 @@ Window {
     //游戏结束
     function gameOver() {
         gameOverText.visible = true;
+        gameHighestScoreRecord = Math.max(gameHighestScoreRecord, mainWin.gameScore);
+        gameTimerItem.stop();
     }
 
     //重新开始游戏
     function resetGame() {
+        gameTimerItem.stop();
+
         //这里是背景的消除，可以做一些动画在这里
         for (var i = 0; i < gamePage.gameAreaRowSize; i++) {
             for (var j = 0; j < gamePage.gameAreaColSize; j++) {
@@ -400,6 +499,8 @@ Window {
             }
         }
         gamePage.boxMountainTopRowIndex = gamePage.gameAreaRowSize-1;
+        mainWin.gameScore = 0;
+        mainWin.gameElapsedTime = 0;
         gameOverText.visible = false;
     }
 
@@ -407,6 +508,7 @@ Window {
     function pauseGame() {
         if (gamePage.curActiveBoxGroup !== null) {
             gamePage.curActiveBoxGroup.autoMoveDownTimer.running = false;
+            gameTimerItem.stop();
         }
     }
 
@@ -414,6 +516,7 @@ Window {
     function continueGame() {
         if (gamePage.curActiveBoxGroup !== null) {
             gamePage.curActiveBoxGroup.autoMoveDownTimer.running = true;
+            gameTimerItem.start();
         }
     }
 
