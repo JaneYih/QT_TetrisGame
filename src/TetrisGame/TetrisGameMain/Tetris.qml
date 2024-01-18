@@ -1,14 +1,8 @@
-import QtQuick 2.3
+import QtQuick 2.9
 
 Item {
     id: tetrisItem
-    enum GameState {
-        Ready = 0,
-        Start,
-        Running,
-        Pause,
-        Over
-    }
+
 }
 
 /*##^##

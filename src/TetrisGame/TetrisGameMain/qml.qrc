@@ -4,5 +4,6 @@
         <file>OneBox.qml</file>
         <file>BoxGroup.qml</file>
         <file>Tetris.qml</file>
+        <file>GameView.qml</file>
     </qresource>
 </RCC>
