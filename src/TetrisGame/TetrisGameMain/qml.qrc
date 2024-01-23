@@ -6,4 +6,7 @@
         <file>Tetris.qml</file>
         <file>GameView.qml</file>
     </qresource>
+    <qresource prefix="/">
+        <file>img/Doraemon.jpg</file>
+    </qresource>
 </RCC>

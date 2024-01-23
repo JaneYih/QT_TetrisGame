@@ -50,11 +50,19 @@ Rectangle {
         gamePage.forceActiveFocus();
     }
 
+    Image {
+        id: backgroundImage
+        anchors.fill: parent
+        z: 0
+        opacity: 1
+        source: "qrc:/img/Doraemon.jpg"
+    }
+
     Rectangle {
         id: gamePage
         x: 0
         y: 0
-        z: 0
+        z: 1
         //border.color: "red"
         border.color: "transparent"
         border.width: 1
@@ -269,7 +277,7 @@ Rectangle {
 
                     onCurrentTextChanged: {
                         gameView.gameLevel = parseInt(currentText);
-                        console.log("下落速度：%1ms".arg(gameView.gameLevel));
+                        //console.log("下落速度：%1ms".arg(gameView.gameLevel));
                     }
 
                     Component.onCompleted: {
