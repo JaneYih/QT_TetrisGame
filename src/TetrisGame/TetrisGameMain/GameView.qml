@@ -9,9 +9,8 @@ Rectangle {
     //border.color: "transparent"
     //border.color: "red"
     //border.width: 1
-
-    width: gamePage.width + gamePage.oneBoxEdge
-    height: gamePage.height
+    //width: gamePage.width + gamePage.oneBoxEdge
+    //height: gamePage.height
 
     enum GameState {
         Ready = 0,
@@ -60,8 +59,8 @@ Rectangle {
 
     Rectangle {
         id: gamePage
-        x: 0
-        y: 0
+        anchors.centerIn: parent
+        //anchors.fill: parent
         z: 1
         //border.color: "red"
         border.color: "transparent"
@@ -643,6 +642,4 @@ Rectangle {
         gamePage.gameAreaRect = Qt.rect(TopX, TopY, gameMainArea.width, gameMainArea.height);
         return true;
     }
-
-
 }

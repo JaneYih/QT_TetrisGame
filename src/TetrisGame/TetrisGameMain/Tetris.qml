@@ -3,6 +3,13 @@ import QtQuick 2.9
 Item {
     id: tetrisItem
 
+    enum PageViewType {
+        LoginView = 0,
+        GameView,
+        ScoreView,
+        SettingView,
+        PageViewCount
+    }
 }
 
 /*##^##

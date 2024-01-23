@@ -5,8 +5,14 @@
         <file>BoxGroup.qml</file>
         <file>Tetris.qml</file>
         <file>GameView.qml</file>
+        <file>LoginView.qml</file>
+        <file>SettingView.qml</file>
+        <file>ScoreView.qml</file>
     </qresource>
     <qresource prefix="/">
         <file>img/Doraemon.jpg</file>
+        <file>img/background.png</file>
+        <file>img/background01.png</file>
+        <file>img/background02.png</file>
     </qresource>
 </RCC>
