@@ -15,23 +15,45 @@ Window {
 
     Component.onCompleted: {
         initViewObjectArray();
-        switchView(Tetris.PageViewType.HomeView);
+        backHomePage();
+    }
+
+    ImageButton {
+        id: btnBackHome
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        imageSource: "qrc:/img/HomeIcon.png"
+        mouseArea.onClicked: {
+            backHomePage();
+        }
+    }
+
+   ImageButton {
+        id: btnPageDown
+        visible: curViewIndex < Tetris.PageViewType.PageViewCount-1
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        imageSource: "qrc:/img/PageDownIcon.png"
+        mouseArea.onClicked: {
+            pageDown();
+        }
+    }
+
+    ImageButton {
+        id: btnPageUp
+        visible: curViewIndex > 0
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        imageSource: "qrc:/img/PageUpIcon.png"
+        mouseArea.onClicked: {
+            pageUp();
+        }
     }
 
     StackView {
         id: stackView
+        z: 0
         anchors.fill: parent
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                var newIndex = curViewIndex + 1;
-                if (newIndex >= Tetris.PageViewType.PageViewCount) {
-                    newIndex = 0;
-                }
-                switchView(newIndex);
-            }
-        }
     }
 
     Component {
@@ -56,6 +78,26 @@ Window {
         id: settingViewComponent
         SettingView {
         }
+    }
+
+    function backHomePage() {
+        switchView(Tetris.PageViewType.HomeView);
+    }
+
+    function pageUp() {
+        var newIndex = curViewIndex - 1;
+        if (newIndex < 0) {
+            return;
+        }
+        switchView(newIndex);
+    }
+
+    function pageDown() {
+        var newIndex = curViewIndex + 1;
+        if (newIndex >= Tetris.PageViewType.PageViewCount) {
+            return;
+        }
+        switchView(newIndex);
     }
 
     function switchView(viewType) {

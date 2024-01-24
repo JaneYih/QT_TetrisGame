@@ -8,11 +8,15 @@
         <file>SettingView.qml</file>
         <file>ScoreView.qml</file>
         <file>HomeView.qml</file>
+        <file>ImageButton.qml</file>
     </qresource>
     <qresource prefix="/">
         <file>img/Doraemon.jpg</file>
         <file>img/background.png</file>
         <file>img/background01.png</file>
         <file>img/background02.png</file>
+        <file>img/HomeIcon.png</file>
+        <file>img/PageUpIcon.png</file>
+        <file>img/PageDownIcon.png</file>
     </qresource>
 </RCC>

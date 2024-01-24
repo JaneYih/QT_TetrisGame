@@ -17,7 +17,7 @@ Rectangle {
 
     Text {
         id: text
-        anchors.fill: parent
+        anchors.centerIn: parent
         text: qsTr("score View")
         color: "red"
     }
