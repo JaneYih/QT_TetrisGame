@@ -11,10 +11,11 @@ Window {
     property var viewObjectArray: null
     property var curViewObject: null
     property var curViewIndex: 0
+    property var nextViewIndex: 0
 
     Component.onCompleted: {
-        initViewArray();
-        switchView(Tetris.PageViewType.LoginView);
+        initViewObjectArray();
+        switchView(Tetris.PageViewType.HomeView);
     }
 
     StackView {
@@ -34,8 +35,8 @@ Window {
     }
 
     Component {
-        id: loginViewComponent
-        LoginView {
+        id: homeViewComponent
+        HomeView {
         }
     }
 
@@ -58,21 +59,38 @@ Window {
     }
 
     function switchView(viewType) {
-        if (curViewObject !== null) {
-            //curViewObject.visible = false;
+        if ((viewType === curViewIndex && curViewObject !== null)
+            || viewType >= viewObjectArray.length) {
+            return;
         }
 
-        curViewObject = viewObjectArray[viewType];
-        curViewIndex = viewType;
-        //curViewObject.visible = true;
+        var nextViewObject = viewObjectArray[viewType];
+        if (nextViewObject === null) {
+            return;
+        }
 
-        stackView.clear();
-        stackView.push(curViewObject);
+        //滑动页面跳转
+        nextViewIndex = viewType;
+        var nextItem = stackView.find(function (item, index) {
+                                        return item === viewObjectArray[nextViewIndex];
+                                        //return index === nextViewIndex;
+                                      });
+        if (nextItem !== null) {
+             stackView.pop(nextItem, StackView.PopTransition);
+        }
+        else {
+            for (var i = stackView.depth; i <= viewType; i++) {
+                stackView.push(viewObjectArray[i], StackView.PushTransition);
+            }
+        }
+
+        curViewObject = nextViewObject;
+        curViewIndex = viewType;
     }
 
-    function initViewArray() {
+    function initViewObjectArray() {
         viewObjectArray = new Array(Tetris.PageViewType.PageViewCount);
-        viewObjectArray[Tetris.PageViewType.LoginView] = createViewObject(Tetris.PageViewType.LoginView);
+        viewObjectArray[Tetris.PageViewType.HomeView] = createViewObject(Tetris.PageViewType.HomeView);
         viewObjectArray[Tetris.PageViewType.GameView] = createViewObject(Tetris.PageViewType.GameView);
         viewObjectArray[Tetris.PageViewType.ScoreView] = createViewObject(Tetris.PageViewType.ScoreView);
         viewObjectArray[Tetris.PageViewType.SettingView] = createViewObject(Tetris.PageViewType.SettingView);
@@ -81,8 +99,8 @@ Window {
     function createViewObject(viewType) {
         var curComponent = null;
         switch (viewType) {
-        case Tetris.PageViewType.LoginView:
-            curComponent = loginViewComponent;
+        case Tetris.PageViewType.HomeView:
+            curComponent = homeViewComponent;
             break;
         case Tetris.PageViewType.GameView:
             curComponent = gameViewComponent;

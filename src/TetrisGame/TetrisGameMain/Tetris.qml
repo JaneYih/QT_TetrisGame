@@ -4,7 +4,7 @@ Item {
     id: tetrisItem
 
     enum PageViewType {
-        LoginView = 0,
+        HomeView = 0,
         GameView,
         ScoreView,
         SettingView,

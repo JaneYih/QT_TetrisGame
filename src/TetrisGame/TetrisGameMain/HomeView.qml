@@ -1,7 +1,7 @@
 import QtQuick 2.9
 
 Rectangle {
-    id: loginView
+    id: homeView
     color: "transparent"
     //border.color: "transparent"
     //border.color: "red"
