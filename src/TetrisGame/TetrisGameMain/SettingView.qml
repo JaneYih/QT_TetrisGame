@@ -6,6 +6,7 @@ Rectangle {
     //border.color: "transparent"
     //border.color: "red"
     //border.width: 1
+    signal skipPage(var viewType);
 
     Image {
         id: backgroundImage

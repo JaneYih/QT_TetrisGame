@@ -8,11 +8,15 @@ Item {
     width: 45
     property alias imageSource: imageItem.source
     property alias mouseArea: mouseArea
+    property var idleStateOpacity: 0.5
+
+    onIdleStateOpacityChanged: {
+        imageButton.opacity = idleStateOpacity;
+    }
 
     Image {
         id: imageItem
         anchors.fill: parent
-
         MouseArea {
             id: mouseArea
             anchors.fill: parent
@@ -21,7 +25,7 @@ Item {
                 imageButton.opacity = 1;
             }
             onExited: {
-                imageButton.opacity = 0.5;
+                imageButton.opacity = idleStateOpacity;
             }
         }
     }

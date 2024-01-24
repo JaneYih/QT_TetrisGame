@@ -20,6 +20,7 @@ Window {
 
     ImageButton {
         id: btnBackHome
+        visible: curViewIndex !== Tetris.PageViewType.HomeView
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         imageSource: "qrc:/img/HomeIcon.png"
@@ -30,7 +31,8 @@ Window {
 
    ImageButton {
         id: btnPageDown
-        visible: curViewIndex < Tetris.PageViewType.PageViewCount-1
+        //visible: curViewIndex < Tetris.PageViewType.PageViewCount-1
+        visible: false
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         imageSource: "qrc:/img/PageDownIcon.png"
@@ -41,7 +43,8 @@ Window {
 
     ImageButton {
         id: btnPageUp
-        visible: curViewIndex > 0
+        //visible: curViewIndex > 0
+        visible: false
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         imageSource: "qrc:/img/PageUpIcon.png"
@@ -57,26 +60,51 @@ Window {
     }
 
     Component {
+        id: connectionsComponent
+        Connections {
+            onSkipPage: {
+              switchView(viewType);
+            }
+        }
+    }
+
+    Component {
         id: homeViewComponent
         HomeView {
+            id: homeView
+            Component.onCompleted: {
+                connectionsComponent.createObject(mainWin, {target: homeView});
+            }
         }
     }
 
     Component {
         id: gameViewComponent
         GameView {
+            id: gameView
+            Component.onCompleted: {
+                connectionsComponent.createObject(mainWin, {target: gameView});
+            }
         }
     }
 
     Component {
         id: scoreViewComponent
         ScoreView {
+            id: scoreView
+            Component.onCompleted: {
+                connectionsComponent.createObject(mainWin, {target: scoreView});
+            }
         }
     }
 
     Component {
         id: settingViewComponent
         SettingView {
+            id: settingView
+            Component.onCompleted: {
+                connectionsComponent.createObject(mainWin, {target: settingView});
+            }
         }
     }
 
@@ -156,6 +184,10 @@ Window {
         default:
             return null;
         }
-        return curComponent.createObject(mainWin, {visible: false});
+        var obj = curComponent.createObject(mainWin, {visible: false});
+        /*if (obj !== null) {
+            connectionsComponent.createObject(mainWin, {target: obj});
+        }*/
+        return obj;
     }
 }

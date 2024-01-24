@@ -1,5 +1,4 @@
 import QtQuick 2.9
-import QtQuick.Window 2.2
 import QtQuick.Controls 2.13
 
 Rectangle {
@@ -27,6 +26,7 @@ Rectangle {
     property int gameScore: 0 //当前游戏分数
     property int gameHighestScoreRecord: 0 //游戏分数历史最高分
     property int gameElapsedTime: 0 //游戏计时时间
+    signal skipPage(var viewType);
 
     onGameStateChanged: {
         switch (gameState) {
@@ -402,6 +402,15 @@ Rectangle {
                                 gameState = GameView.GameState.Running;
                                 btnPauseGame.text = qsTr("暂停");
                             }
+                        }
+                    }
+
+                    Button {
+                        id: btnSkipScorePage
+                        text: qsTr("历史分数")
+                        enabled: true
+                        onClicked: {
+                            gameView.skipPage(Tetris.PageViewType.ScoreView);
                         }
                     }
                 }
