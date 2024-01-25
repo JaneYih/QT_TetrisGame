@@ -41,6 +41,7 @@ Rectangle {
     Column {
         id: btnList
         anchors.centerIn: parent
+        spacing: 40
 
         Loader {
             id: gameViewBtnLoader

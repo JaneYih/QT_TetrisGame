@@ -21,6 +21,8 @@ Rectangle {
 
     property Component oneboxComponent: null
     property Component boxGroupComponent: null
+    property alias oneBoxEdge: gamePage.oneBoxEdge
+    property alias gameAreaRowSize: gamePage.gameAreaRowSize
     property int gameState: GameView.GameState.Ready //游戏状态
     property int gameLevel: 800 //方块下落速度(ms)
     property int gameScore: 0 //当前游戏分数
@@ -72,6 +74,7 @@ Rectangle {
         property var gameAreaRect: null //游戏区域矩形
         property int boxMountainTopRowIndex: 0 //当前方块山最顶端的行序号
         property var backgroundBoxArray: null //游戏区域背景方块二维数组
+        property var previewBoxArray: null //预览区域背景方块二维数组
         property var curActiveBoxGroup: null //当前活动的方块组--唯一性，如果同时有多个活动方块自动下落，则背景不能多个同时点亮
         property var nextActiveBoxGroup: null //下一个方块组
 
@@ -111,6 +114,20 @@ Rectangle {
         }
 
         Component.onCompleted: {
+            initBoxsBackgroud();
+        }
+
+        onOneBoxEdgeChanged: {
+            initBoxsBackgroud();
+            if (gamePage.nextActiveBoxGroup !== null) {
+                gamePage.nextActiveBoxGroup.oneBoxEdgeLength = gamePage.oneBoxEdge;
+            }
+            if (gamePage.curActiveBoxGroup !== null) {
+                gamePage.curActiveBoxGroup.oneBoxEdgeLength = gamePage.oneBoxEdge;
+            }
+        }
+
+        function initBoxsBackgroud() {
             createBoxBackground(gamePage.gameAreaRowSize, gamePage.gameAreaColSize);
             createPreviewBackground(2, 4);
         }
@@ -596,22 +613,38 @@ Rectangle {
             oneboxComponent = Qt.createComponent("OneBox.qml");
         }
 
-        for (var i = 0; i < row; i++){
-            for (var j = 0; j < col; j++) {
-                if (oneboxComponent.status === Component.Ready){
-                    var box = oneboxComponent.createObject(previewArea, {x: 0,y: 0});
-                    box.x = 0 + j*gamePage.oneBoxEdge;
-                    box.y = 0 + i*gamePage.oneBoxEdge;
-                    box.edgeLength = gamePage.oneBoxEdge;
-                    box.lightOff = true;
-                    box.z = 1;
+        if (gamePage.previewBoxArray === null) {
+            gamePage.previewBoxArray = new Array;
+            for (var i = 0; i < row; i++){
+                var rowArray = new Array;
+                for (var j = 0; j < col; j++) {
+                    if (oneboxComponent.status === Component.Ready){
+                        var box = oneboxComponent.createObject(previewArea, {x: 0,y: 0});
+                        box.x = 0 + j*gamePage.oneBoxEdge;
+                        box.y = 0 + i*gamePage.oneBoxEdge;
+                        box.edgeLength = gamePage.oneBoxEdge;
+                        box.lightOff = true;
+                        box.z = 1;
+                        rowArray.push(box);
+                    }
+                    else {
+                        console.log("createPreviewBackground ERROR");
+                        return false;
+                    }
                 }
-                else {
-                    console.log("createPreviewBackground ERROR");
-                    return false;
+                gamePage.previewBoxArray.push(rowArray);
+            }
+        }
+        else {
+            for (var a = 0; a < row; a++){
+                for (var b = 0; b < col; b++){
+                    gamePage.previewBoxArray[a][b].x = 0 + b*gamePage.oneBoxEdge;
+                    gamePage.previewBoxArray[a][b].y = 0 + a*gamePage.oneBoxEdge;
+                    gamePage.previewBoxArray[a][b].edgeLength = gamePage.oneBoxEdge;
                 }
             }
         }
+
         previewArea.width = col * gamePage.oneBoxEdge;
         previewArea.height = row * gamePage.oneBoxEdge;
     }
@@ -625,27 +658,36 @@ Rectangle {
 
         if (gamePage.backgroundBoxArray === null){
             gamePage.backgroundBoxArray = new Array;
-        }
-
-        for (var i = 0; i < row; i++){
-            var rowArray = new Array;
-            for (var j = 0; j < col; j++){
-                if (oneboxComponent.status === Component.Ready){
-                    var box = oneboxComponent.createObject(gameMainArea, {x: 0,y: 0});
-                    box.x = TopX + j*gamePage.oneBoxEdge;
-                    box.y = TopY + i*gamePage.oneBoxEdge;
-                    box.edgeLength = gamePage.oneBoxEdge;
-                    box.lightOff = true;
-                    box.z = 1;
-                    rowArray.push(box);
+            for (var i = 0; i < row; i++){
+                var rowArray = new Array;
+                for (var j = 0; j < col; j++){
+                    if (oneboxComponent.status === Component.Ready){
+                        var box = oneboxComponent.createObject(gameMainArea, {x: 0,y: 0});
+                        box.x = TopX + j*gamePage.oneBoxEdge;
+                        box.y = TopY + i*gamePage.oneBoxEdge;
+                        box.edgeLength = gamePage.oneBoxEdge;
+                        box.lightOff = true;
+                        box.z = 1;
+                        rowArray.push(box);
+                    }
+                    else {
+                        console.log("oneboxComponent ERROR");
+                        return false;
+                    }
                 }
-                else {
-                    console.log("oneboxComponent ERROR");
-                    return false;
+                gamePage.backgroundBoxArray.push(rowArray);
+            }
+        }
+        else {
+            for (var a = 0; a < row; a++){
+                for (var b = 0; b < col; b++){
+                    gamePage.backgroundBoxArray[a][b].x = TopX + b*gamePage.oneBoxEdge;
+                    gamePage.backgroundBoxArray[a][b].y = TopY + a*gamePage.oneBoxEdge;
+                    gamePage.backgroundBoxArray[a][b].edgeLength = gamePage.oneBoxEdge;
                 }
             }
-            gamePage.backgroundBoxArray.push(rowArray);
         }
+
         gameMainArea.width = gamePage.gameAreaColSize * gamePage.oneBoxEdge;
         gameMainArea.height = gamePage.gameAreaRowSize * gamePage.oneBoxEdge;
         gamePage.gameAreaRect = Qt.rect(TopX, TopY, gameMainArea.width, gameMainArea.height);
