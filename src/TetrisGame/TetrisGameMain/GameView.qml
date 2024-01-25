@@ -537,6 +537,7 @@ Rectangle {
         gameOverText.visible = true;
         gameHighestScoreRecord = Math.max(gameHighestScoreRecord, gameView.gameScore);
         gameTimerItem.stop();
+        gameView.skipPage(Tetris.PageViewType.ScoreView);//跳转到分数页面
     }
 
     //重新开始游戏
