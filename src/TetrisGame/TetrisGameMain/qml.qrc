@@ -18,5 +18,7 @@
         <file>img/HomeIcon.png</file>
         <file>img/PageUpIcon.png</file>
         <file>img/PageDownIcon.png</file>
+        <file>img/BtnBk.png</file>
+        <file>img/StartGameBtn.png</file>
     </qresource>
 </RCC>

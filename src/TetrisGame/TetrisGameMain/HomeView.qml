@@ -20,14 +20,15 @@ Rectangle {
             id: btn
             width: 200
             height: 50
-            idleStateOpacity: 0.7
+            idleStateOpacity: 0.9
+            imageSource: "qrc:/img/BtnBk.png"
             property alias btnText: btnText
             property var skipTargePage: Tetris.PageViewType.HomeView
             Text {
                 id: btnText
                 anchors.centerIn: parent
                 font.family: "Arial"
-                font.pointSize: 30
+                font.pointSize: 21
                 font.weight: Font.Bold
                 color: "red"
             }
@@ -41,15 +42,16 @@ Rectangle {
     Column {
         id: btnList
         anchors.centerIn: parent
-        spacing: 40
+        spacing: 30
 
         Loader {
             id: gameViewBtnLoader
             sourceComponent: btnComponent
             onLoaded: {
-                item.btnText.text = qsTr("开始游戏");
-                item.btnText.color = "red"
+                //item.btnText.text = qsTr("开始游戏");
+                //item.btnText.color = "red"
                 item.skipTargePage = Tetris.PageViewType.GameView;
+                item.imageSource = "qrc:/img/StartGameBtn.png";
             }
         }
 
@@ -58,7 +60,7 @@ Rectangle {
             sourceComponent: btnComponent
             onLoaded: {
                 item.btnText.text = qsTr("历史分数");
-                item.btnText.color = "blueviolet"
+                item.btnText.color = "mediumblue"
                 item.skipTargePage = Tetris.PageViewType.ScoreView;
             }
         }
@@ -68,7 +70,7 @@ Rectangle {
             sourceComponent: btnComponent
             onLoaded: {
                 item.btnText.text = qsTr("设置");
-                item.btnText.color = "blue"
+                item.btnText.color = "mediumblue"
                 item.skipTargePage = Tetris.PageViewType.SettingView;
             }
         }
