@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-SOURCES += $$PWD/main.cpp
+SOURCES += $$PWD/main.cpp \
+    $$PWD/TetrisBusiness.cpp
 RESOURCES += $$PWD/qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -15,3 +16,6 @@ QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
+
+HEADERS += \
+    $$PWD/TetrisBusiness.h
