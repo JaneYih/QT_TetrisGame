@@ -1,6 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.13
+import Yih.Tetris.Business 1.0
 
 Window {
     id: mainWin
@@ -23,6 +24,9 @@ Window {
     Component.onCompleted: {
         initViewObjectArray();
         backHomePage();
+
+        TetrisBusiness.HelloWorld();
+        //businessInstance.HelloWorld();
     }
 
     ImageButton {

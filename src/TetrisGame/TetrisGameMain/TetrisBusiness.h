@@ -11,6 +11,7 @@ public:
     TetrisBusiness(QObject* parent = nullptr);
     ~TetrisBusiness();
 
+    Q_INVOKABLE void HelloWorld();
 };
 
 #endif // TETRISBUSINESS_H
