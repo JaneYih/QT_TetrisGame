@@ -38,12 +38,12 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="QtSettings">
     <QtInstall>msvc2017</QtInstall>
-    <QtModules>quick</QtModules>
+    <QtModules>core;gui;qml;quick</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="QtSettings">
     <QtInstall>msvc2017</QtInstall>
-    <QtModules>quick</QtModules>
+    <QtModules>core;gui;qml;quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -98,12 +98,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <None Include="BoxGroup.qml" />
-    <None Include="OneBox.qml" />
-    <None Include="Tetris.qml" />
     <QtRcc Include="qml.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TetrisBusiness.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="TetrisBusiness.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BoxGroup.qml" />
+    <None Include="GameView.qml" />
+    <None Include="HomeView.qml" />
+    <None Include="ImageButton.qml" />
     <None Include="main.qml" />
+    <None Include="OneBox.qml" />
+    <None Include="ScoreView.qml" />
+    <None Include="SettingView.qml" />
+    <None Include="Tetris.qml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -13,10 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
     <Filter Include="Translation Files">
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
@@ -26,25 +22,50 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <QtRcc Include="qml.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TetrisBusiness.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BoxGroup.qml">
+      <Filter>qml</Filter>
+    </None>
+    <None Include="GameView.qml">
+      <Filter>qml</Filter>
+    </None>
+    <None Include="HomeView.qml">
+      <Filter>qml</Filter>
+    </None>
+    <None Include="ImageButton.qml">
+      <Filter>qml</Filter>
+    </None>
     <None Include="main.qml">
       <Filter>qml</Filter>
     </None>
     <None Include="OneBox.qml">
       <Filter>qml</Filter>
     </None>
-    <None Include="BoxGroup.qml">
+    <None Include="ScoreView.qml">
+      <Filter>qml</Filter>
+    </None>
+    <None Include="SettingView.qml">
       <Filter>qml</Filter>
     </None>
     <None Include="Tetris.qml">
       <Filter>qml</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="TetrisBusiness.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
