@@ -3,10 +3,13 @@
 
 #include <QObject>
 
-class TetrisBusiness
+class TetrisBusiness: public QObject
 {
+    Q_OBJECT
+
 public:
-    TetrisBusiness();
+    TetrisBusiness(QObject* parent = nullptr);
+    ~TetrisBusiness();
 
 };
 

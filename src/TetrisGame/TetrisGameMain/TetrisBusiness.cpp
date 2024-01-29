@@ -1,6 +1,12 @@
 #include "TetrisBusiness.h"
 
-TetrisBusiness::TetrisBusiness()
+TetrisBusiness::TetrisBusiness(QObject* parent)
+	: QObject(parent)
+{
+
+}
+
+TetrisBusiness::~TetrisBusiness()
 {
 
 }
