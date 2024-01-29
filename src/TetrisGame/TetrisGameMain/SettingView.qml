@@ -1,4 +1,5 @@
 import QtQuick 2.9
+import Yih.Tetris.Business 1.0
 
 Rectangle {
     id: settingView

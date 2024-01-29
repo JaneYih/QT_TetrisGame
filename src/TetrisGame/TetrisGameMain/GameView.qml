@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.13
+import Yih.Tetris.Business 1.0
 
 Rectangle {
     id: gameView
@@ -427,7 +428,7 @@ Rectangle {
                         text: qsTr("历史分数")
                         enabled: true
                         onClicked: {
-                            gameView.skipPage(Tetris.PageViewType.ScoreView);
+                            gameView.skipPage(TetrisBusiness.ScoreView);
                         }
                     }
                 }
@@ -537,7 +538,7 @@ Rectangle {
         gameOverText.visible = true;
         gameHighestScoreRecord = Math.max(gameHighestScoreRecord, gameView.gameScore);
         gameTimerItem.stop();
-        gameView.skipPage(Tetris.PageViewType.ScoreView);//跳转到分数页面
+        gameView.skipPage(TetrisBusiness.ScoreView);//跳转到分数页面
     }
 
     //重新开始游戏

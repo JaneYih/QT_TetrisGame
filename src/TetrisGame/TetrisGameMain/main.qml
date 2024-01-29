@@ -31,7 +31,7 @@ Window {
 
     ImageButton {
         id: btnBackHome
-        visible: curViewIndex !== Tetris.PageViewType.HomeView
+        visible: curViewIndex !== TetrisBusiness.HomeView
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         imageSource: "qrc:/img/HomeIcon.png"
@@ -42,7 +42,7 @@ Window {
 
    ImageButton {
         id: btnPageDown
-        //visible: curViewIndex < Tetris.PageViewType.PageViewCount-1
+        //visible: curViewIndex < TetrisBusiness.PageViewCount-1
         visible: false
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
@@ -121,7 +121,7 @@ Window {
     }
 
     function backHomePage() {
-        switchView(Tetris.PageViewType.HomeView);
+        switchView(TetrisBusiness.HomeView);
     }
 
     function pageUp() {
@@ -134,7 +134,7 @@ Window {
 
     function pageDown() {
         var newIndex = curViewIndex + 1;
-        if (newIndex >= Tetris.PageViewType.PageViewCount) {
+        if (newIndex >= TetrisBusiness.PageViewCount) {
             return;
         }
         switchView(newIndex);
@@ -171,26 +171,26 @@ Window {
     }
 
     function initViewObjectArray() {
-        viewObjectArray = new Array(Tetris.PageViewType.PageViewCount);
-        viewObjectArray[Tetris.PageViewType.HomeView] = createViewObject(Tetris.PageViewType.HomeView);
-        viewObjectArray[Tetris.PageViewType.GameView] = createViewObject(Tetris.PageViewType.GameView);
-        viewObjectArray[Tetris.PageViewType.ScoreView] = createViewObject(Tetris.PageViewType.ScoreView);
-        viewObjectArray[Tetris.PageViewType.SettingView] = createViewObject(Tetris.PageViewType.SettingView);
+        viewObjectArray = new Array(TetrisBusiness.PageViewCount);
+        viewObjectArray[TetrisBusiness.HomeView] = createViewObject(TetrisBusiness.HomeView);
+        viewObjectArray[TetrisBusiness.GameView] = createViewObject(TetrisBusiness.GameView);
+        viewObjectArray[TetrisBusiness.ScoreView] = createViewObject(TetrisBusiness.ScoreView);
+        viewObjectArray[TetrisBusiness.SettingView] = createViewObject(TetrisBusiness.SettingView);
     }
 
     function createViewObject(viewType) {
         var curComponent = null;
         switch (viewType) {
-        case Tetris.PageViewType.HomeView:
+        case TetrisBusiness.HomeView:
             curComponent = homeViewComponent;
             break;
-        case Tetris.PageViewType.GameView:
+        case TetrisBusiness.GameView:
             curComponent = gameViewComponent;
             break;
-        case Tetris.PageViewType.ScoreView:
+        case TetrisBusiness.ScoreView:
             curComponent = scoreViewComponent;
             break;
-        case Tetris.PageViewType.SettingView:
+        case TetrisBusiness.SettingView:
             curComponent = settingViewComponent;
             break;
         default:

@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.13
+import Yih.Tetris.Business 1.0
 
 Rectangle {
     id: homeView
@@ -23,7 +24,7 @@ Rectangle {
             idleStateOpacity: 0.9
             imageSource: "qrc:/img/BtnBk.png"
             property alias btnText: btnText
-            property var skipTargePage: Tetris.PageViewType.HomeView
+            property var skipTargePage: TetrisBusiness.HomeView
             Text {
                 id: btnText
                 anchors.centerIn: parent
@@ -50,7 +51,7 @@ Rectangle {
             onLoaded: {
                 //item.btnText.text = qsTr("开始游戏");
                 //item.btnText.color = "red"
-                item.skipTargePage = Tetris.PageViewType.GameView;
+                item.skipTargePage = TetrisBusiness.GameView;
                 item.imageSource = "qrc:/img/StartGameBtn.png";
             }
         }
@@ -61,7 +62,7 @@ Rectangle {
             onLoaded: {
                 item.btnText.text = qsTr("历史分数");
                 item.btnText.color = "mediumblue"
-                item.skipTargePage = Tetris.PageViewType.ScoreView;
+                item.skipTargePage = TetrisBusiness.ScoreView;
             }
         }
 
@@ -71,7 +72,7 @@ Rectangle {
             onLoaded: {
                 item.btnText.text = qsTr("设置");
                 item.btnText.color = "mediumblue"
-                item.skipTargePage = Tetris.PageViewType.SettingView;
+                item.skipTargePage = TetrisBusiness.SettingView;
             }
         }
     }

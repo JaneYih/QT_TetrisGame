@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.13
+import Yih.Tetris.Business 1.0
 
 Rectangle {
     id: scoreView
@@ -31,7 +32,7 @@ Rectangle {
             text: qsTr("游戏页面")
             enabled: true
             onClicked: {
-                skipPage(Tetris.PageViewType.GameView);
+                skipPage(TetrisBusiness.GameView);
             }
         }
     }
