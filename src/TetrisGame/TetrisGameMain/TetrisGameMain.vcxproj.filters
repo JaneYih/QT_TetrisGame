@@ -33,6 +33,9 @@
     <ClCompile Include="TetrisBusiness.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreHistoryModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BoxGroup.qml">
@@ -65,6 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="TetrisBusiness.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ScoreHistoryModel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

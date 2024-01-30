@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include <QtQml>
 #include "TetrisBusiness.h"
+#include "ScoreHistoryModel.h"
 
 QObject* qobject_singletonBusiness_provider(QQmlEngine* engine, QJSEngine* scriptEngine);
 
@@ -15,6 +16,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     //注册单例类型-业务逻辑类
     qmlRegisterSingletonType<TetrisBusiness>("Yih.Tetris.Business", 1, 0, "TetrisBusiness", qobject_singletonBusiness_provider);
+    qmlRegisterType<ScoreHistoryModel>("Yih.Tetris.ScoreHistoryModel", 1, 0, "ScoreHistoryModel");
 
     QQmlApplicationEngine engine;
 
