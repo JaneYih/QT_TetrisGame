@@ -20,5 +20,6 @@
         <file>img/PageDownIcon.png</file>
         <file>img/BtnBk.png</file>
         <file>img/StartGameBtn.png</file>
+        <file>img/return.png</file>
     </qresource>
 </RCC>

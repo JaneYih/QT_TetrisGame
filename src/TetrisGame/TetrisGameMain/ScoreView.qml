@@ -1,13 +1,10 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.13
+import QtQuick 2.13
+import QtQuick.Controls 2.9
 import Yih.Tetris.Business 1.0
 
 Rectangle {
     id: scoreView
     color: "transparent"
-    //border.color: "transparent"
-    //border.color: "red"
-    //border.width: 1
     signal skipPage(var viewType);
 
     Image {
@@ -18,22 +15,43 @@ Rectangle {
         source: "qrc:/img/background02.png"
     }
 
+    ImageButton {
+        id: btnSkipGamePage
+        z: 2
+        width: 30
+        height: 30
+        visible: true
+        anchors.top: parent.top
+        anchors.left: parent.left
+        imageSource: "qrc:/img/return.png"
+        mouseArea.onClicked: {
+            skipPage(TetrisBusiness.GameView);
+        }
+    }
+
     Column {
+        z: 1
         anchors.centerIn: parent
+        //spacing: 10
 
         Text {
-            id: text
-            text: qsTr("score View")
+            id: scoreText
+            width: scoreView.width * 0.9
+            height: scoreView.height * 0.3
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: qsTr("----")
             color: "red"
+            font.weight: Font.Black
+            font.pointSize: 50
         }
 
-        Button {
-            id: btnSkipGamePage
-            text: qsTr("游戏页面")
-            enabled: true
-            onClicked: {
-                skipPage(TetrisBusiness.GameView);
-            }
+        TableView {
+            id: scoreTableView
+            width: scoreView.width * 0.9
+            height: scoreView.height * 0.65
+            clip: true
+
         }
     }
 }
