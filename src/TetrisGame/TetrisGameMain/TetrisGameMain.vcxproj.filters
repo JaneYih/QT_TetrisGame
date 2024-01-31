@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -20,6 +12,17 @@
     <Filter Include="qml">
       <UniqueIdentifier>{4c3e399a-17e5-4c93-8235-206300c331e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Common\DataBase">
+      <UniqueIdentifier>{4e8ca67d-5bd1-4a29-a296-cd764343fafa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Business">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="qml.qrc">
@@ -28,13 +31,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Business</Filter>
     </ClCompile>
     <ClCompile Include="TetrisBusiness.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Business</Filter>
     </ClCompile>
     <ClCompile Include="ScoreHistoryModel.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Business</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DataBase\DataTableTest.cpp">
+      <Filter>Common\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DataBase\ITableManage.cpp">
+      <Filter>Common\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DataBase\SQLiteDatabase.cpp">
+      <Filter>Common\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DataBase\usersDataTable.cpp">
+      <Filter>Common\DataBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,11 +82,34 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="TetrisBusiness.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="ScoreHistoryModel.h">
-      <Filter>Header Files</Filter>
+      <Filter>Business</Filter>
     </QtMoc>
+    <QtMoc Include="TetrisBusiness.h">
+      <Filter>Business</Filter>
+    </QtMoc>
+    <QtMoc Include="Common\DataBase\SQLiteDatabase.h">
+      <Filter>Common\DataBase</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\DataBase\Database_def.h">
+      <Filter>Common\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DataBase\DatabaseBaseClass.h">
+      <Filter>Common\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DataBase\DatabaseFactory.h">
+      <Filter>Common\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DataBase\DataTableTest.h">
+      <Filter>Common\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DataBase\ITableManage.h">
+      <Filter>Common\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DataBase\usersDataTable.h">
+      <Filter>Common\DataBase</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

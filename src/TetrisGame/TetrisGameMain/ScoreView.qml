@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.9
 import Yih.Tetris.Business 1.0
-import Yih.Tetris.ScoreHistoryModel 1.0
+//import Yih.Tetris.ScoreHistoryModel 1.0
 
 Rectangle {
     id: scoreView
@@ -54,7 +54,7 @@ Rectangle {
             //contentWidth: scoreView.width * 0.9
             //contentHeight: scoreView.height * 0.65
             clip: true
-            model: ScoreHistoryModel{}
+            model: TetrisBusiness.scoreHistoryModel
             //delegate:
         }
     }

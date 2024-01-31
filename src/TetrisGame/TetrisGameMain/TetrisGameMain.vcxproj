@@ -38,12 +38,12 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="QtSettings">
     <QtInstall>msvc2017</QtInstall>
-    <QtModules>core;gui;qml;quick</QtModules>
+    <QtModules>core;sql;gui;widgets;qml;quick</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="QtSettings">
     <QtInstall>msvc2017</QtInstall>
-    <QtModules>core;gui;qml;quick</QtModules>
+    <QtModules>core;sql;gui;widgets;qml;quick</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -61,8 +61,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <IncludePath>.\Common\DataBase;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <IncludePath>.\Common\DataBase;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <QtDeploy>false</QtDeploy>
@@ -101,6 +103,10 @@
     <QtRcc Include="qml.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Common\DataBase\DataTableTest.cpp" />
+    <ClCompile Include="Common\DataBase\ITableManage.cpp" />
+    <ClCompile Include="Common\DataBase\SQLiteDatabase.cpp" />
+    <ClCompile Include="Common\DataBase\usersDataTable.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ScoreHistoryModel.cpp" />
     <ClCompile Include="TetrisBusiness.cpp" />
@@ -121,6 +127,15 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScoreHistoryModel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\DataBase\DatabaseBaseClass.h" />
+    <ClInclude Include="Common\DataBase\DatabaseFactory.h" />
+    <ClInclude Include="Common\DataBase\Database_def.h" />
+    <ClInclude Include="Common\DataBase\DataTableTest.h" />
+    <ClInclude Include="Common\DataBase\ITableManage.h" />
+    <ClInclude Include="Common\DataBase\usersDataTable.h" />
+    <QtMoc Include="Common\DataBase\SQLiteDatabase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

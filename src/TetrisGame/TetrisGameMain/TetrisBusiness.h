@@ -3,10 +3,13 @@
 
 #include <QObject>
 
+class ScoreHistoryModel;
 class TetrisBusiness: public QObject
 {
-    Q_OBJECT
-	
+	Q_OBJECT
+	Q_ENUMS(PageViewType)
+	Q_PROPERTY(ScoreHistoryModel* scoreHistoryModel READ getScoreHistoryModel NOTIFY scoreHistoryModelChanged)
+
 public:
     TetrisBusiness(QObject* parent = nullptr);
     ~TetrisBusiness();
@@ -18,9 +21,16 @@ public:
 		SettingView,
 		PageViewCount
 	};
-	Q_ENUMS(PageViewType)
 
-    Q_INVOKABLE void HelloWorld();
+	Q_INVOKABLE void HelloWorld();
+
+	ScoreHistoryModel* getScoreHistoryModel() const;
+
+signals:
+	void scoreHistoryModelChanged();
+
+private:
+	ScoreHistoryModel* m_hScoreHistoryModel;
 };
 
 #endif // TETRISBUSINESS_H
