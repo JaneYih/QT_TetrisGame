@@ -8,10 +8,9 @@ class TetrisBusiness: public QObject
 {
 	Q_OBJECT
 	Q_ENUMS(PageViewType)
-	Q_PROPERTY(ScoreHistoryModel* scoreHistoryModel READ getScoreHistoryModel NOTIFY scoreHistoryModelChanged)
 
 public:
-    TetrisBusiness(QObject* parent = nullptr);
+    explicit TetrisBusiness(QObject* parent = nullptr);
     ~TetrisBusiness();
 
 	enum PageViewType {
@@ -23,11 +22,10 @@ public:
 	};
 
 	Q_INVOKABLE void HelloWorld();
-
 	ScoreHistoryModel* getScoreHistoryModel() const;
 
 signals:
-	void scoreHistoryModelChanged();
+	
 
 private:
 	ScoreHistoryModel* m_hScoreHistoryModel;

@@ -1,7 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.9
 import Yih.Tetris.Business 1.0
-//import Yih.Tetris.ScoreHistoryModel 1.0
 
 Rectangle {
     id: scoreView
@@ -47,15 +46,50 @@ Rectangle {
             font.pointSize: 50
         }
 
-        TableView {
-            id: scoreTableView
+        Rectangle {
+            id: tableViewArea
             width: scoreView.width * 0.9
             height: scoreView.height * 0.65
-            //contentWidth: scoreView.width * 0.9
-            //contentHeight: scoreView.height * 0.65
-            clip: true
-            model: TetrisBusiness.scoreHistoryModel
-            //delegate:
+            color: "transparent"
+            border.color: "white"
+            border.width: 1
+
+            TableView {
+                id: scoreTableView
+                anchors.fill: parent
+                rowSpacing: 3
+                columnSpacing: 3
+                clip: true
+                model: scoreHistoryModelInstance
+                delegate: scoreTableCellDelegate
+
+                Component.onCompleted: {
+                    //打印表格标题
+                    console.log(scoreHistoryModelInstance.GetHorizontalHeaderName(0));
+                    console.log(scoreHistoryModelInstance.GetHorizontalHeaderName(1));
+                    console.log(scoreHistoryModelInstance.GetHorizontalHeaderName(2));
+                }
+            }
+            Component {
+                id: scoreTableCellDelegate
+                Rectangle {
+                    implicitWidth: 230
+                    implicitHeight: 60
+                    color: "transparent"
+                    border.color: "white"
+                    border.width: 1
+                    Text {
+                        id: text
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: scoreHistory
+                        color: "white"
+                        font.weight: Font.Bold
+                        font.pointSize: 20
+                    }
+                }
+            }
         }
     }
 }

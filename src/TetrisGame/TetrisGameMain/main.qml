@@ -24,9 +24,7 @@ Window {
     Component.onCompleted: {
         initViewObjectArray();
         backHomePage();
-
-        TetrisBusiness.HelloWorld();
-        //businessInstance.HelloWorld();
+        businessInstance.HelloWorld();
     }
 
     ImageButton {

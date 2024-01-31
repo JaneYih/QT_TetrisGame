@@ -56,7 +56,13 @@ typedef struct _DbDataCell_
 private:
 	DbDataCellOperate eOperate;
 	QString strValue;
+
 public:
+	_DbDataCell_(const QString& value) {
+		init();
+		strValue = value;
+	}
+
 	_DbDataCell_(){
 		init();
 	}

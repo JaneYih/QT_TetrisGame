@@ -3,9 +3,14 @@
 #include <QQmlContext>
 #include <QtQml>
 #include "TetrisBusiness.h"
-//#include "ScoreHistoryModel.h"
+#include "ScoreHistoryModel.h"
 
-QObject* qobject_singletonBusiness_provider(QQmlEngine* engine, QJSEngine* scriptEngine);
+QObject* qobject_singletonBusiness_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
+{
+	Q_UNUSED(engine);
+	Q_UNUSED(scriptEngine);
+	return new TetrisBusiness();
+}
 
 int main(int argc, char *argv[])
 {
@@ -14,15 +19,14 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
+
     //注册单例类型-业务逻辑类
-    qmlRegisterSingletonType<TetrisBusiness>("Yih.Tetris.Business", 1, 0, "TetrisBusiness", qobject_singletonBusiness_provider);
-    //qmlRegisterType<ScoreHistoryModel>("Yih.Tetris.ScoreHistoryModel", 1, 0, "ScoreHistoryModel");
+    qmlRegisterSingletonType<TetrisBusiness>("Yih.Tetris.Business", 1, 0, "TetrisBusiness", qobject_singletonBusiness_provider); 
 
-    QQmlApplicationEngine engine;
-
-    //为本上下文添加属性: "businessInstance" 并赋值为：TetrisBusiness busApp
-    //TetrisBusiness busApp;
-    //engine.rootContext()->setContextProperty("businessInstance", &busApp);
+	QQmlApplicationEngine engine;
+    TetrisBusiness business(engine.rootContext());
+    engine.rootContext()->setContextProperty("scoreHistoryModelInstance", business.getScoreHistoryModel());
+    engine.rootContext()->setContextProperty("businessInstance", &business);
 
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/tetrisgamemain/main.qml")));
     if (engine.rootObjects().isEmpty())
@@ -31,9 +35,3 @@ int main(int argc, char *argv[])
     return app.exec();
 }
 
-QObject* qobject_singletonBusiness_provider(QQmlEngine* engine, QJSEngine* scriptEngine)
-{
-	Q_UNUSED(engine);
-	Q_UNUSED(scriptEngine);
-	return new TetrisBusiness();
-}
