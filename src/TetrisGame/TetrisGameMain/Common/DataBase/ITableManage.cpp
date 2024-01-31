@@ -9,17 +9,21 @@ bool ITableManage::IsExistTable(const char* TableName)
 	return false;
 }
 
-bool ITableManage::AnalysisPara(list<string> para, const int paraNum, string Sqlpara[])
+bool ITableManage::AnalysisPara(const list<string>& para, const int paraNum, string Sqlpara[])
 {
 	if (para.size() != paraNum) 
 	{
 		return false;
 	}
 
-	list<string>::iterator iter = para.begin();
-	for (int index = 0; index < paraNum; index++)
+	int index = 0;
+	for each (auto var in para)
 	{
-		Sqlpara[index] = *(iter++);
+		if (index >= paraNum)
+		{
+			break;
+		}
+		Sqlpara[index++] = var;
 	}
 
 	return true;
@@ -59,22 +63,22 @@ bool ITableManage::CreateTable()
 	return false;
 }
 
-bool ITableManage::InsertData(vector<string> para)
+bool ITableManage::InsertData(const vector<string>& para)
 {
 	return false;
 }
 
-bool ITableManage::DeleteData(vector<string> para)
+bool ITableManage::DeleteData(const vector<string>& para)
 {
 	return false;
 }
 
-bool ITableManage::UpdateData(vector<string> para)
+bool ITableManage::UpdateData(const vector<string>& para)
 {
 	return false;
 }
 
-bool ITableManage::SelectData(vector<string> para, DataTable& outputData)
+bool ITableManage::SelectData(const vector<string>& para, DataTable& outputData)
 {
 	return false;
 }

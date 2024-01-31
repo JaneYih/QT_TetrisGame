@@ -23,12 +23,12 @@ public:
 	virtual bool IsExistTable(const char* TableName);
 	virtual bool GetTableFullFields(const char* TableName, FieldList& Fields);
 	virtual bool CreateTable();
-	virtual bool InsertData(vector<string> para);
-	virtual bool DeleteData(vector<string> para);
-	virtual bool UpdateData(vector<string> para);
-	virtual bool SelectData(vector<string> para, DataTable& outputData);
+	virtual bool InsertData(const vector<string>& para);
+	virtual bool DeleteData(const vector<string>& para);
+	virtual bool UpdateData(const vector<string>& para);
+	virtual bool SelectData(const vector<string>& para, DataTable& outputData);
 
 protected:
 	IDatabase* DatabaseInstence;
-	bool AnalysisPara(list<string> para, const int paraNum, string Sqlpara[]);
+	bool AnalysisPara(const list<string>& para, const int paraNum, string Sqlpara[]);
 };

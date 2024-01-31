@@ -39,9 +39,6 @@
     <ClCompile Include="ScoreHistoryModel.cpp">
       <Filter>Business</Filter>
     </ClCompile>
-    <ClCompile Include="Common\DataBase\DataTableTest.cpp">
-      <Filter>Common\DataBase</Filter>
-    </ClCompile>
     <ClCompile Include="Common\DataBase\ITableManage.cpp">
       <Filter>Common\DataBase</Filter>
     </ClCompile>
@@ -50,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="Common\DataBase\usersDataTable.cpp">
       <Filter>Common\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreHistoryTable.cpp">
+      <Filter>Business</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,14 +102,14 @@
     <ClInclude Include="Common\DataBase\DatabaseFactory.h">
       <Filter>Common\DataBase</Filter>
     </ClInclude>
-    <ClInclude Include="Common\DataBase\DataTableTest.h">
-      <Filter>Common\DataBase</Filter>
-    </ClInclude>
     <ClInclude Include="Common\DataBase\ITableManage.h">
       <Filter>Common\DataBase</Filter>
     </ClInclude>
     <ClInclude Include="Common\DataBase\usersDataTable.h">
       <Filter>Common\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreHistoryTable.h">
+      <Filter>Business</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

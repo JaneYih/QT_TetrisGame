@@ -103,12 +103,12 @@
     <QtRcc Include="qml.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Common\DataBase\DataTableTest.cpp" />
     <ClCompile Include="Common\DataBase\ITableManage.cpp" />
     <ClCompile Include="Common\DataBase\SQLiteDatabase.cpp" />
     <ClCompile Include="Common\DataBase\usersDataTable.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ScoreHistoryModel.cpp" />
+    <ClCompile Include="ScoreHistoryTable.cpp" />
     <ClCompile Include="TetrisBusiness.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -132,9 +132,9 @@
     <ClInclude Include="Common\DataBase\DatabaseBaseClass.h" />
     <ClInclude Include="Common\DataBase\DatabaseFactory.h" />
     <ClInclude Include="Common\DataBase\Database_def.h" />
-    <ClInclude Include="Common\DataBase\DataTableTest.h" />
     <ClInclude Include="Common\DataBase\ITableManage.h" />
     <ClInclude Include="Common\DataBase\usersDataTable.h" />
+    <ClInclude Include="ScoreHistoryTable.h" />
     <QtMoc Include="Common\DataBase\SQLiteDatabase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

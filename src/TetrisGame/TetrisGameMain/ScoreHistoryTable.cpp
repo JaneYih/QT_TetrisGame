@@ -1,4 +1,4 @@
-#include "usersDataTable.h"
+#include "ScoreHistoryTable.h"
 
 static const char TableName[] = "usersData";
 
@@ -31,7 +31,7 @@ static const char _deleteSql[] = "DELETE FROM usersData \
 
 
 
-bool CUsersDataTable::CreateTable()  //建表
+bool ScoreHistoryTable::CreateTable()  //建表
 {
 	if (!DatabaseInstence->IsInit())
 	{
@@ -62,7 +62,8 @@ bool CUsersDataTable::CreateTable()  //建表
 
 	return !res;
 }
-bool CUsersDataTable::InsertData(const vector<string>& para) //增
+
+bool ScoreHistoryTable::InsertData(const vector<string>& para) //增
 {
 	if (!DatabaseInstence->IsInit())
 	{
@@ -86,7 +87,8 @@ bool CUsersDataTable::InsertData(const vector<string>& para) //增
 
 	return !res;
 }
-bool CUsersDataTable::SelectData(const vector<string>& para, DataTable& outputData) //查
+
+bool ScoreHistoryTable::SelectData(const vector<string>& para, DataTable& outputData) //查
 {
 	if (!DatabaseInstence->IsInit())
 	{
@@ -119,7 +121,8 @@ bool CUsersDataTable::SelectData(const vector<string>& para, DataTable& outputDa
 
 	return !res;
 }
-bool CUsersDataTable::DeleteData(const vector<string>& para) //删
+
+bool ScoreHistoryTable::DeleteData(const vector<string>& para) //删
 {
 	if (!DatabaseInstence->IsInit())
 	{
@@ -131,30 +134,6 @@ bool CUsersDataTable::DeleteData(const vector<string>& para) //删
 	if (para.size() >= 1)
 	{
 		sprintf_s(command, _deleteSql, para[0].c_str());
-	}
-	else
-	{
-		return false;
-	}
-
-	res |= DatabaseInstence->BeginTransaction();
-	res |= DatabaseInstence->ExcuteCommand(command);
-	res |= DatabaseInstence->CommitTransaction();
-
-	return !res;
-}
-bool CUsersDataTable::UpdateData(const vector<string>& para) //改
-{
-	if (!DatabaseInstence->IsInit())
-	{
-		return false;
-	}
-
-	int res = 0;
-	char command[5120] = { 0 };
-	if (para.size() >= 2)
-	{
-		sprintf_s(command, _updataSql, para[1].c_str(), para[0].c_str());
 	}
 	else
 	{
