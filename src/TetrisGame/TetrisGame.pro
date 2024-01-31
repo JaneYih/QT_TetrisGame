@@ -1,4 +1,4 @@
-QT += qml quick core gui 
+QT += qml quick core gui sql widgets
 
 CONFIG += c++11
 

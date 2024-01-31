@@ -8,12 +8,12 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 SOURCES += $$PWD/main.cpp \
-	$$PWD/TetrisBusiness.cpp \
-	$$PWD/ScoreHistoryModel.cpp \
-    $$PWD/Common/DataBase/DataTableTest.cpp \
-    $$PWD/Common/DataBase/ITableManage.cpp \
-    $$PWD/Common/DataBase/SQLiteDatabase.cpp \
-    $$PWD/Common/DataBase/usersDataTable.cpp
+$$PWD/TetrisBusiness.cpp \
+$$PWD/ScoreHistoryModel.cpp \
+$$PWD/ScoreHistoryTable.cpp \
+$$PWD/Common/DataBase/ITableManage.cpp \
+$$PWD/Common/DataBase/SQLiteDatabase.cpp \
+$$PWD/Common/DataBase/usersDataTable.cpp
 	
 RESOURCES += $$PWD/qml.qrc
 
@@ -24,12 +24,17 @@ QML_IMPORT_PATH =
 QML_DESIGNER_IMPORT_PATH =
 
 HEADERS += \
-    $$PWD/TetrisBusiness.h \
-	$$PWD/ScoreHistoryModel.h \
-    $$PWD/Common/DataBase/Database_def.h \
-    $$PWD/Common/DataBase/DatabaseBaseClass.h \
-    $$PWD/Common/DataBase/DatabaseFactory.h \
-    $$PWD/Common/DataBase/DataTableTest.h \
-    $$PWD/Common/DataBase/ITableManage.h \
-    $$PWD/Common/DataBase/SQLiteDatabase.h \
-    $$PWD/Common/DataBase/usersDataTable.h
+$$PWD/TetrisBusiness.h \
+$$PWD/ScoreHistoryModel.h \
+$$PWD/ScoreHistoryTable.h \
+$$PWD/Common/DataBase/Database_def.h \
+$$PWD/Common/DataBase/DatabaseBaseClass.h \
+$$PWD/Common/DataBase/DatabaseFactory.h \
+$$PWD/Common/DataBase/ITableManage.h \
+$$PWD/Common/DataBase/SQLiteDatabase.h \
+$$PWD/Common/DataBase/usersDataTable.h
+
+
+INCLUDEPATH += \
+    $$PWD \
+    $$PWD/Common/DataBase
