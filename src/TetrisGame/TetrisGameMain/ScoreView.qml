@@ -56,33 +56,38 @@ Rectangle {
             border.color: "white"
             border.width: 1
             clip: true
-            property var rowHeaderHeight: 50 //行表头高度
-            property var columnHeaderWidth: 50 //列表头宽度
+            property var rowHeaderHeight: 50 //行-表头高度
+            property var rowHeaderWidth: 50 //行-表头宽度
+            property var columnHeaderWidth: 230 //列-表头宽度
             property var rowColumnSpacing: 3 //行列间隙
-            property var movementStartedContentX: 0
-            property var movementStartedContentY: 0
 
             //表格内容
             TableView {
                 id: scoreTableView
+                z: 3
                 anchors.fill: parent
                 anchors.topMargin: tableViewArea.rowHeaderHeight
-                anchors.leftMargin: tableViewArea.columnHeaderWidth
+                anchors.leftMargin: tableViewArea.rowHeaderWidth
                 rowSpacing: tableViewArea.rowColumnSpacing
                 columnSpacing: tableViewArea.rowColumnSpacing
                 clip: true
                 model: scoreHistoryModelInstance
                 delegate: scoreTableCellDelegate
 
-                onMovementStarted: {
-                    tableViewArea.movementStartedContentX = contentX;
-                    tableViewArea.movementStartedContentY = contentY;
+                onFlickEnded: {
+                    forcedUpdateHeaderPosition();
                 }
 
                 onMovementEnded: {
-                    var xVelocity = tableViewArea.movementStartedContentX - contentX;
-                    var yVelocity = tableViewArea.movementStartedContentY - contentY;
-                    columnHeaderItem.x += xVelocity;
+                    forcedUpdateHeaderPosition();
+                }
+
+                function forcedUpdateHeaderPosition() {
+                    columnHeaderItem.x = columnHeaderItem.originX - (scoreTableView.contentX - scoreTableView.originX);
+                    rowHeaderItem.y = rowHeaderItem.originY - (scoreTableView.contentY - scoreTableView.originY);
+                 }
+
+                Component.onCompleted: {
                 }
             }
 
@@ -90,14 +95,14 @@ Rectangle {
             Component {
                 id: scoreTableCellDelegate
                 Rectangle {
-                    implicitWidth: 230
-                    implicitHeight: 60
+                    implicitWidth: tableViewArea.columnHeaderWidth
+                    implicitHeight: tableViewArea.rowHeaderHeight
                     color: "transparent"
                     border.color: "white"
                     border.width: 1
                     clip: true
                     Text {
-                        id: text
+                        id: scoreTableCellText
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -113,9 +118,10 @@ Rectangle {
             Rectangle {
                 id: columnHeaderArea
                 x: scoreTableView.x
-
-                implicitWidth: tableViewArea.width
-                implicitHeight: 50
+                y: 0
+                z: 4
+                implicitWidth: tableViewArea.width - scoreTableView.x
+                implicitHeight: columnHeaderItem.height
                 color: "transparent"
                 border.color: "red"
                 border.width: 1
@@ -123,21 +129,21 @@ Rectangle {
 
                 Rectangle {
                     id: columnHeaderItem
+                    property int originX: 0
+                    x: originX
+                    y: 0
                     width: columnHeaderRow.width;
                     height: columnHeaderRow.height
-                    x: 0
-                    y: 0
                     color: "transparent"
                     clip: true
-                    z: 5
                     Row {
                         id: columnHeaderRow
-                        spacing: 1
+                        spacing: tableViewArea.rowColumnSpacing
                         Repeater {
                             model: scoreTableView.columns > 0 ? scoreTableView.columns : 0
                             Rectangle {
-                                implicitWidth: 230
-                                implicitHeight: 50
+                                implicitWidth: tableViewArea.columnHeaderWidth
+                                implicitHeight: tableViewArea.rowHeaderHeight
                                 color: "transparent"
                                 border.color: "red"
                                 border.width: 1
@@ -157,7 +163,53 @@ Rectangle {
             }
 
             //行表头
-            //...
+            Rectangle {
+                id: rowHeaderArea
+                x: 0
+                y: scoreTableView.y
+                z: 4
+                implicitWidth: tableViewArea.rowHeaderWidth
+                implicitHeight: tableViewArea.height - scoreTableView.y
+                color: "transparent"
+                border.color: "green"
+                border.width: 1
+                clip: true
+
+                Rectangle {
+                    id: rowHeaderItem
+                    property int originY: 0
+                    x: 0
+                    y: originY
+                    width: rowHeaderRow.width;
+                    height: rowHeaderRow.height
+                    color: "transparent"
+                    clip: true
+                    Column {
+                        id: rowHeaderRow
+                        spacing: tableViewArea.rowColumnSpacing
+                        Repeater {
+                            model: scoreTableView.rows > 0 ? scoreTableView.rows : 0
+                            Rectangle {
+                                implicitWidth: tableViewArea.rowHeaderWidth
+                                implicitHeight: tableViewArea.rowHeaderHeight
+                                color: "transparent"
+                                border.color: "green"
+                                border.width: 1
+                                Text {
+                                    anchors.fill: parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    text: index
+                                    color: "white"
+                                    font.weight: Font.Bold
+                                    font.pointSize: 20
+                                }
+                            }
+                        }
+                    }
+               }
+            }
         }
     }
 }
+
