@@ -74,18 +74,13 @@ Rectangle {
                 model: scoreHistoryModelInstance
                 delegate: scoreTableCellDelegate
 
-                onFlickEnded: {
-                    forcedUpdateHeaderPosition();
-                }
-
-                onMovementEnded: {
-                    forcedUpdateHeaderPosition();
-                }
-
-                function forcedUpdateHeaderPosition() {
+                onContentXChanged: {
                     columnHeaderItem.x = columnHeaderItem.originX - (scoreTableView.contentX - scoreTableView.originX);
+                }
+
+                onContentYChanged: {
                     rowHeaderItem.y = rowHeaderItem.originY - (scoreTableView.contentY - scoreTableView.originY);
-                 }
+                }
 
                 Component.onCompleted: {
                 }
