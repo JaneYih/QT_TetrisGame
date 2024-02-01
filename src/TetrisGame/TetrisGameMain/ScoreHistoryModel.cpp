@@ -1,14 +1,14 @@
 #include "ScoreHistoryModel.h"
 
 
-const QByteArray s_roleName_scoreHistory("scoreHistory"); //历史分数数据
-const int s_roleIndex_scoreHistory = Qt::UserRole + 1;
+const QByteArray s_roleName_display("role_display");
+const int s_roleIndex_scoreHistory = Qt::DisplayRole;
 
 ScoreHistoryModel::ScoreHistoryModel(QObject *parent)
 	: QAbstractTableModel(parent)
 {
 	m_roleNames.clear();
-	m_roleNames.insert(s_roleIndex_scoreHistory, s_roleName_scoreHistory);
+	m_roleNames.insert(s_roleIndex_scoreHistory, s_roleName_display);
 }
 
 ScoreHistoryModel::~ScoreHistoryModel()
