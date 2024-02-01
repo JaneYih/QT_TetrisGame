@@ -101,7 +101,7 @@ Rectangle {
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        text: role_display
+                        text: role_display //"%1".arg(model.row)
                         color: "white"
                         font.weight: Font.Bold
                         font.pointSize: 20
