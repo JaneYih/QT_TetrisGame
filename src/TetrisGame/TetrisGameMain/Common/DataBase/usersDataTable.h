@@ -5,7 +5,8 @@
 class CUsersDataTable :public ITableManage
 {
 public:
-	CUsersDataTable(const QString& db) :ITableManage(SqlBaseInfo({ SqlTypes::eSQLITE, "localhost", "root", "root", db, "3306" }))
+    CUsersDataTable(const QString& db)
+        :ITableManage(SqlBaseInfo(SqlTypes::eSQLITE, "localhost", "root", "root", db, "3306"))
 	{
 		CreateTable();
 	}

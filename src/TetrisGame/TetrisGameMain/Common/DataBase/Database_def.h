@@ -24,6 +24,22 @@ typedef struct _SqlBaseInfo_
 	QString dbName;
 	QString port;
 
+    _SqlBaseInfo_(SqlTypes _type,
+                  const QString& _host,
+                  const QString& _user,
+                  const QString& _passwd,
+                  const QString& _dbName,
+                  const QString& _port)
+        : type(_type)
+        , host(_host)
+        , user(_user)
+        , passwd(_passwd)
+        , dbName(_dbName)
+        , port(_port)
+    {
+
+    }
+
 	QString toString()
 	{
 		return QString::fromStdWString(L"IP地址:%1;端口:%2;用户名:%3;数据库名:%4;")

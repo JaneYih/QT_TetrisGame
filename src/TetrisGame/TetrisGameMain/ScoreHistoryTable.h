@@ -5,7 +5,8 @@
 class ScoreHistoryTable :public ITableManage
 {
 public:
-	ScoreHistoryTable(const QString& db) :ITableManage(SqlBaseInfo({ SqlTypes::eSQLITE, "localhost", "root", "root", db, "3306" }))
+    ScoreHistoryTable(const QString& db)
+        :ITableManage(SqlBaseInfo(SqlTypes::eSQLITE, "localhost", "root", "root", db, "3306"))
 	{
 		CreateTable();
 	}
