@@ -22,6 +22,7 @@ public:
 	};
 
 	Q_INVOKABLE void HelloWorld();
+	Q_INVOKABLE void changeScoreHistoryData();
 	ScoreHistoryModel* getScoreHistoryModel() const;
 
 signals:

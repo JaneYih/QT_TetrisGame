@@ -31,6 +31,7 @@ void ScoreHistoryModel::setScoreHistoryData(const DbData& data)
 		m_scoreHistoryData = data;
 		endInsertColumns();
 		endInsertRows();
+		emit dataUpdated();
 	}
 }
 

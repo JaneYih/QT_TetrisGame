@@ -21,5 +21,6 @@
         <file>img/BtnBk.png</file>
         <file>img/StartGameBtn.png</file>
         <file>img/return.png</file>
+        <file>img/refresh.png</file>
     </qresource>
 </RCC>

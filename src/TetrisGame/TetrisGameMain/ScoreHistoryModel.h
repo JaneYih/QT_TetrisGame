@@ -26,6 +26,9 @@ protected:
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
 	virtual QHash<int, QByteArray> roleNames() const;
 
+signals:
+	void dataUpdated(); //数据更新信号，用于qml表格内容布局刷新
+
 private:
 	void ClearScoreHistoryData();
 
