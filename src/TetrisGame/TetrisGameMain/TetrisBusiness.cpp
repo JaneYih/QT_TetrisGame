@@ -39,13 +39,13 @@ void TetrisBusiness::HelloWorld()
 void TetrisBusiness::changeScoreHistoryData()
 {
 	DbData* data = new DbData;
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用QQQ户")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用\r\nQQ\r\nQ户")));
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时WWW间")));
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分EEE数")));
 	pDbFieldGroup a = new DbFieldGroup;
 	a->fields.push_back(DbDataCell("abcdefg"));
 	a->fields.push_back(DbDataCell(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
-	a->fields.push_back(DbDataCell("66666"));
+	a->fields.push_back(DbDataCell("66\r\n66\r\n6"));
 	data->rows.push_back(a);
 	data->rows.push_back(a);
 	data->rows.push_back(a);

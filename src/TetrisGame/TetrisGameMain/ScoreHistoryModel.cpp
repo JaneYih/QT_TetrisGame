@@ -82,6 +82,11 @@ QString ScoreHistoryModel::GetHorizontalHeaderName(int section) const
 	return headerData(section, Qt::Horizontal, s_roleIndex_scoreHistory).toString();
 }
 
+QString ScoreHistoryModel::GetVerticalHeaderName(int section) const
+{
+	return headerData(section, Qt::Vertical, s_roleIndex_scoreHistory).toString();
+}
+
 QVariant ScoreHistoryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if (s_roleIndex_scoreHistory == role)

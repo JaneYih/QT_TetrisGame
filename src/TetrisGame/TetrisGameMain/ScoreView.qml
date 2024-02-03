@@ -56,6 +56,12 @@ Rectangle {
                 scoreHistoryTable.refresh();
                 businessInstance.changeScoreHistoryData();
             }
+            columnHeaderNameFunc: function (index) {
+                return scoreHistoryTable.model.GetHorizontalHeaderName(index);
+            }
+            rowHeaderNameFunc: function (index) {
+                return scoreHistoryTable.model.GetVerticalHeaderName(index);
+            }
         }
     }
 }

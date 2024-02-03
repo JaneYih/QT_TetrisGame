@@ -16,6 +16,7 @@ public:
 	DbData getScoreHistoryData() const;
 	void setScoreHistoryData(const DbData& data);
 	Q_INVOKABLE QString GetHorizontalHeaderName(int section) const;
+	Q_INVOKABLE QString GetVerticalHeaderName(int section) const;
 
 protected:
 	virtual QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
