@@ -9,6 +9,7 @@
         <file>ScoreView.qml</file>
         <file>HomeView.qml</file>
         <file>ImageButton.qml</file>
+        <file>MyTableView.qml</file>
     </qresource>
     <qresource prefix="/">
         <file>img/Doraemon.jpg</file>

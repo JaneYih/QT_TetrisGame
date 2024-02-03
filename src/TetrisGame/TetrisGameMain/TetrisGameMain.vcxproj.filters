@@ -80,6 +80,9 @@
     <None Include="Tetris.qml">
       <Filter>qml</Filter>
     </None>
+    <None Include="MyTableView.qml">
+      <Filter>qml</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScoreHistoryModel.h">

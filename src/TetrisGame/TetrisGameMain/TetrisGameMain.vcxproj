@@ -120,6 +120,7 @@
     <None Include="HomeView.qml" />
     <None Include="ImageButton.qml" />
     <None Include="main.qml" />
+    <None Include="MyTableView.qml" />
     <None Include="OneBox.qml" />
     <None Include="ScoreView.qml" />
     <None Include="SettingView.qml" />
