@@ -317,32 +317,31 @@ Rectangle {
                 setColumnWidthByTextWidth();
             }
 
-            //单元格高度随内容调整(取最大)
+            //单元格高度随内容调整(由小变大)，不能有大变小，不然手动拖拽拉大后，又会自动变回文本高度
             function setRowHeightByTextHeight() {
                 var index = model.row;
                 if (index < 0) {
                     return;
                 }
-                if (tableCellText.contentHeight > tableView.rowHeights[index]) {
-                    setRowHeight(index, tableCellText.contentHeight);
+                var curHeight = tableCellText.contentHeight;
+                if (curHeight > root.rowHeaderCellHeightMin
+                        && curHeight > tableView.rowHeights[index]) {
+                    setRowHeight(index, curHeight);
                 }
             }
 
-            //单元格宽度随内容调整(取最大)
+            //单元格宽度随内容调整(由小变大)，不能有大变小，不然手动拖拽拉大后，又会自动变回文本宽度
             function setColumnWidthByTextWidth() {
                 var index = model.column;
                 if (index < 0) {
                     return;
                 }
-                if (tableCellText.contentWidth > tableView.columnWidths[index]) {
-                    setColumnWidth(index, tableCellText.contentWidth);
-                    //为了避免警告：forceLayout(): Cannot do an immediate re-layout during an ongoing layout!
-                    //将forceLayout放在定时器中调用
-                    //tableView.forceLayout();
-
-                    //利用右侧空白部分扩宽各行的宽度
+                var curWidth = tableCellText.contentWidth;
+                if (curWidth > root.columnHeaderCellWidthMin
+                        && curWidth > tableView.columnWidths[index]) {
+                    setColumnWidth(index, curWidth);
                     if (tableView.columnWidths.length-1 === index) {
-                        stretchTableWidth();
+                        stretchTableWidth(); //利用右侧空白部分扩宽各行的宽度
                     }
                 }
             }
@@ -374,9 +373,6 @@ Rectangle {
         onContentYChanged: {
             rowHeaderItem.y = rowHeaderItem.originY - (tableView.contentY - tableView.originY);
         }
-
-        Component.onCompleted: {
-        }
     }
 
     Connections {
@@ -396,6 +392,7 @@ Rectangle {
 
         onAllDataUpdated: {
             console.log("onAllDataUpdated");
+            root.updateColumnHeaderText();
             root.refresh();
         }
     }
@@ -486,13 +483,15 @@ Rectangle {
         }
     }
 
-    //刷新
-    function refresh() {
+    function updateColumnHeaderText() {
         //仅更新列表头内容，表头布局会随内容变化而更新
         for (var i=0; i<columnHeaderRepeater.count; i++) {
             columnHeaderRepeater.itemAt(i).text = root.columnHeaderNameFunc(i);
         }
+    }
 
+    //刷新
+    function refresh() {
         //刷新表格布局
         tableView.contentX = 0;
         tableView.contentY = 0;
@@ -506,6 +505,8 @@ Rectangle {
         repeat: true
         onTriggered: {
             if (tableView !== null) {
+                //为了避免警告：forceLayout(): Cannot do an immediate re-layout during an ongoing layout!
+                //将forceLayout放在定时器中调用
                 tableView.forceLayout();
             }
         }
