@@ -31,7 +31,7 @@ void ScoreHistoryModel::setScoreHistoryData(const DbData& data)
 		m_scoreHistoryData = data;
 		endInsertColumns();
 		endInsertRows();
-		emit dataUpdated();
+		emit allDataUpdated();
 	}
 }
 
@@ -100,7 +100,8 @@ QVariant ScoreHistoryModel::headerData(int section, Qt::Orientation orientation,
 		}
 		else
 		{
-			return QVariant(QString("%1").arg(section + 1));
+			//return QVariant(QString("%1-----------------------------------------\r\n").arg(section + 1));
+			return QVariant(QString("%1\r\n%1\r\n%1\r\n%1\r\n%1\r\n---------------").arg(section + 1));
 		}
 	}	
 	return QVariant();

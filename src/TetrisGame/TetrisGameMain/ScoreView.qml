@@ -57,10 +57,10 @@ Rectangle {
                 businessInstance.changeScoreHistoryData();
             }
             columnHeaderNameFunc: function (index) {
-                return scoreHistoryTable.model.GetHorizontalHeaderName(index);
+                return scoreHistoryTable.model.headerData(index, Qt.Horizontal, Qt.DisplayRole);
             }
             rowHeaderNameFunc: function (index) {
-                return scoreHistoryTable.model.GetVerticalHeaderName(index);
+                return scoreHistoryTable.model.headerData(index, Qt.Vertical, Qt.DisplayRole);
             }
         }
     }

@@ -21,8 +21,8 @@ void TetrisBusiness::HelloWorld()
 
 	DbData* data = new DbData;
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用户")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时间")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分数")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时\r\n间-------------------------------AAAA")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分\r\n\r\n数\r\n\r\n")));
 	pDbFieldGroup a = new DbFieldGroup;
 	a->fields.push_back(DbDataCell("xiaoming"));
 	a->fields.push_back(DbDataCell(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
@@ -40,13 +40,12 @@ void TetrisBusiness::changeScoreHistoryData()
 {
 	DbData* data = new DbData;
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用\r\nQQ\r\nQ户")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时WWW间")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时WWW间-------------------------------------")));
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分EEE数")));
 	pDbFieldGroup a = new DbFieldGroup;
 	a->fields.push_back(DbDataCell("abcdefg"));
 	a->fields.push_back(DbDataCell(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
 	a->fields.push_back(DbDataCell("66\r\n66\r\n6"));
-	data->rows.push_back(a);
 	data->rows.push_back(a);
 	data->rows.push_back(a);
 	data->rows.push_back(a);
