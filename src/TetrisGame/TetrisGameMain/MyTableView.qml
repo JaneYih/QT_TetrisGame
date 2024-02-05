@@ -18,7 +18,7 @@ Rectangle {
     property var rowHeaderCellWidthMin: 40 //行表头单元格宽度（最小值）
     property var rowHeaderCellHeightMin: 38 //行表头单元格高度（最小值）
 
-    property var columnHeaderCellWidthMin: 60 //列表头单元格宽度（最小值）
+    property var columnHeaderCellWidthMin: 40 //列表头单元格宽度（最小值）
     property var columnHeaderCellHeightMin: 40 //列表头单元格高度（最小值）
 
     property var rowColumnSpacing: 3 //行列间隙
@@ -42,7 +42,6 @@ Rectangle {
     }
 
     onWidthChanged: {
-        stretchTableWidth();
         refresh();
     }
 
@@ -58,12 +57,16 @@ Rectangle {
         border.width: 1
         clip: true
 
+        onWidthChanged: {
+            root.stretchTableWidth();
+        }
+
         Rectangle {
             id: columnHeaderItem
             x: originX
             y: 0
             width: columnHeaderRow.width
-            height: columnHeaderRow.height
+            height: root.columnHeaderCellHeightMin
             color: "transparent"
             clip: false
             property int originX: 0
@@ -75,11 +78,12 @@ Rectangle {
                 Repeater {
                     id: columnHeaderRepeater
                     model: tableView.columns > 0 ? tableView.columns : 0
+                    property var cellHeightMax: 0
 
                     Rectangle {
                         id: columnHeaderCell
                         implicitWidth: root.columnHeaderCellWidthMin
-                        implicitHeight: root.columnHeaderCellHeightMin
+                        implicitHeight: columnHeaderItem.height
                         color: "transparent"
                         border.color: root.columnHeaderBorderColor
                         border.width: 1
@@ -98,34 +102,20 @@ Rectangle {
                             clip: true
 
                             onContentWidthChanged: {
-                                setCellWidthByText(index);
+                                var curWidth = columnHeaderCellText.contentWidth;
+                                if (curWidth < root.columnHeaderCellWidthMin || curWidth === columnHeaderCell.width) {
+                                    return;
+                                }
+                                root.setColumnWidth(index, curWidth);
                             }
 
                             onContentHeightChanged: {
-                                setCellHeightByText();
-                            }
-
-                            function setCellWidthByText(index) {
-                                var curWidth = columnHeaderCellText.contentWidth;
-                                if (curWidth > root.columnHeaderCellWidthMin) {
-                                    if (tableView.columnWidths.length > index
-                                         && curWidth <= tableView.columnWidths[index]) {
-                                        return;
-                                    }
-                                    root.setColumnWidth(index, curWidth);
+                                columnHeaderRepeater.cellHeightMax = Math.max(columnHeaderCellText.contentHeight, columnHeaderRepeater.cellHeightMax);
+                                if (columnHeaderRepeater.cellHeightMax > columnHeaderItem.height) {
+                                    columnHeaderItem.height = columnHeaderRepeater.cellHeightMax;
                                 }
-                            }
-
-                            function setCellHeightByText() {
-                                var curheight = columnHeaderCellText.contentHeight;
-                                if (curheight > columnHeaderItem.height
-                                        && curheight > root.columnHeaderCellHeightMin) {
-                                    for (var i=0; i<columnHeaderRepeater.count; i++) {
-                                        var tmp = columnHeaderRepeater.itemAt(i);
-                                        if  (tmp !== null) {
-                                            tmp.height = curheight;
-                                        }
-                                    }
+                                else {
+                                    columnHeaderItem.height = Math.max(columnHeaderRepeater.cellHeightMax, root.columnHeaderCellHeightMin);
                                 }
                             }
                         }
@@ -178,15 +168,11 @@ Rectangle {
         border.width: 1
         clip: true
 
-        onWidthChanged: {
-            root.stretchTableWidth();
-        }
-
         Rectangle {
             id: rowHeaderItem
             x: 0
             y: originY
-            width: rowHeaderRow.width;
+            width: root.rowHeaderCellWidthMin
             height: rowHeaderRow.height
             color: "transparent"
             clip: false
@@ -198,11 +184,12 @@ Rectangle {
                 Repeater {
                     id: rowHeaderRepeater
                     model: tableView.rows > 0 ? tableView.rows : 0
+                    property var cellWidthMax: 0
 
                     Rectangle {
                         id: rowHeaderCell
-                        implicitWidth: root.rowHeaderCellWidthMin
-                        implicitHeight: root.rowHeaderCellHeightMin
+                        width: rowHeaderItem.width
+                        height: root.rowHeaderCellHeightMin
                         color: "transparent"
                         border.color: root.rowHeaderBorderColor
                         border.width: 1
@@ -221,37 +208,21 @@ Rectangle {
                             clip: true
 
                             onContentWidthChanged: {
-                                //console.log("onContentWidthChanged");
-                                setCellWidthByText();
+                                rowHeaderRepeater.cellWidthMax = Math.max(rowHeaderCellText.contentWidth, rowHeaderRepeater.cellWidthMax);
+                                if (rowHeaderRepeater.cellWidthMax > rowHeaderItem.width) {
+                                    rowHeaderItem.width = rowHeaderRepeater.cellWidthMax;
+                                }
+                                else {
+                                    rowHeaderItem.width = Math.max(rowHeaderRepeater.cellWidthMax, root.rowHeaderCellWidthMin);
+                                }
                             }
 
                             onContentHeightChanged: {
-                                //console.log("onContentHeightChanged");
-                                setCellHeightByText(index);
-                            }
-
-                            function setCellWidthByText() {
-                                var curWidth = rowHeaderCellText.contentWidth;
-                                if (curWidth > rowHeaderItem.width
-                                    && curWidth > root.rowHeaderCellWidthMin) {
-                                    for (var i=0; i<rowHeaderRepeater.count; i++) {
-                                        var tmp = rowHeaderRepeater.itemAt(i);
-                                        if  (tmp !== null) {
-                                            tmp.width = curWidth;
-                                        }
-                                    }
-                                }
-                            }
-
-                            function setCellHeightByText(index) {
                                 var curheight = rowHeaderCellText.contentHeight;
-                                if (curheight > root.rowHeaderCellHeightMin) {
-                                    if (tableView.rowHeights.length > index
-                                         && curheight <= tableView.rowHeights[index]) {
-                                        return;
-                                    }
-                                    root.setRowHeight(index, curheight);
+                                if (curheight < root.rowHeaderCellHeightMin || rowHeaderCell.height === curheight) {
+                                    return;
                                 }
+                                root.setRowHeight(index, curheight);
                             }
                         }
 
@@ -404,9 +375,6 @@ Rectangle {
 
         onAllDataUpdated: {
             console.log("onAllDataUpdated");
-            //表头内容更新
-            updateRowHeaderText();
-            updateColumnHeaderText();
             root.refresh();
         }
     }
@@ -418,12 +386,12 @@ Rectangle {
 
         if (index < columnHeaderRepeater.count) {
             var header = columnHeaderRepeater.itemAt(index);
-            if (header.width > width) {
+            /*if (header.width > width) {
                 width = header.width;
             }
-            else {
+            else {*/
                 header.width = width; //列表头宽度修改
-            }
+            //}
         }
 
         if (index < tableView.columnWidths.length) {
@@ -452,12 +420,12 @@ Rectangle {
 
         if (index < rowHeaderRepeater.count) {
             var header = rowHeaderRepeater.itemAt(index);
-            if (header.height > height) {
+            /*if (header.height > height) {
                 height = header.height;
             }
-            else {
+            else {*/
                 header.height = height; //行表头高度修改
-            }
+            //}
         }
 
         if (index < tableView.rowHeights.length) {
@@ -504,15 +472,19 @@ Rectangle {
     }
 
     function updateColumnHeaderText() {
+        columnHeaderRepeater.cellHeightMax = 0;
         //仅更新列表头内容，表头布局会随内容变化而更新
         for (var i=0; i<columnHeaderRepeater.count; i++) {
+            columnHeaderRepeater.itemAt(i).text = "";
             columnHeaderRepeater.itemAt(i).text = root.columnHeaderNameFunc(i);
         }
     }
 
     function updateRowHeaderText() {
+        rowHeaderRepeater.cellWidthMax = 0;
         //仅更新列表头内容，表头布局会随内容变化而更新
         for (var i=0; i<rowHeaderRepeater.count; i++) {
+            rowHeaderRepeater.itemAt(i).text = "";
             rowHeaderRepeater.itemAt(i).text = root.rowHeaderNameFunc(i);
         }
     }
@@ -520,9 +492,16 @@ Rectangle {
 
     //刷新
     function refresh() {
+        //表头内容更新
+        updateRowHeaderText();
+        updateColumnHeaderText();
+
         //刷新表格布局
         tableView.contentX = 0;
         tableView.contentY = 0;
+        tableView.forceLayout();
+
+        stretchTableWidth();
         tableView.forceLayout();
     }
 
