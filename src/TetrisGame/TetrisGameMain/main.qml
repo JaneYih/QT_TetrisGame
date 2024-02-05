@@ -6,12 +6,12 @@ import Yih.Tetris.Business 1.0
 Window {
     id: mainWin
     visible: true
-    //height: 480
-    //width: 640
-    maximumHeight : 480
-    maximumWidth : 640
-    minimumHeight : 480
-    minimumWidth : 640
+    height: 480
+    width: 640
+    //maximumHeight : 480
+    //maximumWidth : 640
+    //minimumHeight : 480
+    //minimumWidth : 640
     //flags: Qt.Popup
     //modality: Qt.WindowModal
 

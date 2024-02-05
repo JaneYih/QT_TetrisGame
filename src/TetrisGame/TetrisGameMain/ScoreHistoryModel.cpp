@@ -100,8 +100,13 @@ QVariant ScoreHistoryModel::headerData(int section, Qt::Orientation orientation,
 		}
 		else
 		{
-			//return QVariant(QString("%1-----------------------------------------\r\n").arg(section + 1));
-			return QVariant(QString("%1\r\n%1\r\n%1\r\n%1\r\n%1\r\n---------------").arg(section + 1));
+			/*QString aaa;
+			if (section < m_scoreHistoryData.fieldGroup.fields.size())
+			{
+				aaa = QString::fromStdWString(L"%1").arg(m_scoreHistoryData.fieldGroup.fields[section].value());
+			}
+			return QVariant(QString("%1%2").arg(section + 1).arg(aaa));*/
+			return QVariant(QString("%1").arg(section + 1));
 		}
 	}	
 	return QVariant();

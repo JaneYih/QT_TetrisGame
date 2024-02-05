@@ -21,8 +21,11 @@ void TetrisBusiness::HelloWorld()
 
 	DbData* data = new DbData;
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用户")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时\r\n间-------------------------------AAAA")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分\r\n\r\n数\r\n\r\n")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时间")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分数")));
+	//data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--\r\n用户\r\n--------------")));
+	//data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--\r\n\r\n\r\n时间--")));
+	//data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--\r\n\r\n分数--")));
 	pDbFieldGroup a = new DbFieldGroup;
 	a->fields.push_back(DbDataCell("xiaoming"));
 	a->fields.push_back(DbDataCell(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
@@ -39,13 +42,16 @@ void TetrisBusiness::HelloWorld()
 void TetrisBusiness::changeScoreHistoryData()
 {
 	DbData* data = new DbData;
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用\r\nQQ\r\nQ户")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时间")));
-	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分数")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--用户--")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--时间--")));
+	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--分数--")));
+	//data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--\r\n用户\r\n--------------")));
+	//data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--\r\n\r\n\r\n时间--")));
+	//data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"--\r\n\r\n分数--")));
 	pDbFieldGroup a = new DbFieldGroup;
-	a->fields.push_back(DbDataCell("abcdefg"));
-	a->fields.push_back(DbDataCell(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")));
-	a->fields.push_back(DbDataCell("66\r\n66\r\n6"));
+	a->fields.push_back(DbDataCell("abc\r\nef\r\ng"));
+	a->fields.push_back(DbDataCell(QDateTime::currentDateTime().toString("--yyyy-MM-dd hh:mm:ss--")));
+	a->fields.push_back(DbDataCell("8888\r\n55555"));
 	data->rows.push_back(a);
 	data->rows.push_back(a);
 	data->rows.push_back(a);

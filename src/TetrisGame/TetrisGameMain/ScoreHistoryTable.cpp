@@ -1,9 +1,9 @@
 #include "ScoreHistoryTable.h"
 
-static const char TableName[] = "usersData";
+static const char TableName[] = "scoreHistory";
 
-//表结构：用户名，工号，密码
-static const char _createSql[] = "CREATE TABLE  usersData\
+//表结构：用户，时间，分数
+static const char _createSql[] = "CREATE TABLE  scoreHistory\
 					  			(USER_NAME varchar(20) NOT NULL,\
 								OPERATOR_ID varchar(20) NOT NULL,\
 								PASSWORD varchar(20) NOT NULL,\
@@ -11,22 +11,22 @@ static const char _createSql[] = "CREATE TABLE  usersData\
 								)";
 
 static const char _selectSql[] = "SELECT USER_NAME,OPERATOR_ID,PASSWORD \
-								 FROM usersData \
+								 FROM scoreHistory \
 								 LIMIT 60;";
 
 static const char _select1Sql[] = "SELECT USER_NAME,OPERATOR_ID,PASSWORD \
-								  FROM usersData \
+								  FROM scoreHistory \
 								  WHERE USER_NAME = \"%s\" \
 								  LIMIT 60;";
 
-static const char _updataSql[] = "UPDATE usersData\
+static const char _updataSql[] = "UPDATE scoreHistory\
 								 SET PASSWORD = \"%s\" \
 								 WHERE USER_NAME = \"%s\";";
 
-static const char _insertSql[] = "INSERT INTO usersData(USER_NAME,OPERATOR_ID,PASSWORD)\
+static const char _insertSql[] = "INSERT INTO scoreHistory(USER_NAME,OPERATOR_ID,PASSWORD)\
 								 VALUES(\"%s\",\"%s\",\"%s\");";
 
-static const char _deleteSql[] = "DELETE FROM usersData \
+static const char _deleteSql[] = "DELETE FROM scoreHistory \
 								  WHERE USER_NAME = \"%s\";";
 
 
@@ -46,8 +46,8 @@ bool ScoreHistoryTable::CreateTable()  //建表
 	int res = 0;
 	res |= DatabaseInstence->BeginTransaction();
 	res |= DatabaseInstence->ExcuteCommand(_createSql);
-	res |= DatabaseInstence->CreateIndex(TableName, "USER_NAME", "usersData_Index1");
-	res |= DatabaseInstence->CreateIndex(TableName, "OPERATOR_ID", "usersData_Index2");
+	res |= DatabaseInstence->CreateIndex(TableName, "USER_NAME", "scoreHistory_Index1");
+	res |= DatabaseInstence->CreateIndex(TableName, "OPERATOR_ID", "scoreHistory_Index2");
 
 	if (res)
 	{
