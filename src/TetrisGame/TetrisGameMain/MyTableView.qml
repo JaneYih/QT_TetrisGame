@@ -41,13 +41,18 @@ Rectangle {
         imageSource: "qrc:/img/refresh.png"
     }
 
+    onWidthChanged: {
+        stretchTableWidth();
+        refresh();
+    }
+
     //列表头
     Rectangle {
         id: columnHeaderArea
         x: rowHeaderArea.width
         y: 0
-        implicitWidth: root.width - rowHeaderArea.width
-        implicitHeight: columnHeaderItem.height
+        width: root.width - rowHeaderArea.width
+        height: columnHeaderItem.height
         color: "transparent"
         border.color: root.columnHeaderBorderColor
         border.width: 1
@@ -166,12 +171,16 @@ Rectangle {
         id: rowHeaderArea
         x: 0
         y: columnHeaderArea.height
-        implicitWidth: rowHeaderItem.width
-        implicitHeight: root.height - columnHeaderArea.height
+        width: rowHeaderItem.width
+        height: root.height - columnHeaderArea.height
         color: "transparent"
         border.color: root.rowHeaderBorderColor
         border.width: 1
         clip: true
+
+        onWidthChanged: {
+            root.stretchTableWidth();
+        }
 
         Rectangle {
             id: rowHeaderItem
@@ -186,7 +195,6 @@ Rectangle {
             Column {
                 id: rowHeaderRow
                 spacing: root.rowColumnSpacing
-
                 Repeater {
                     id: rowHeaderRepeater
                     model: tableView.rows > 0 ? tableView.rows : 0
@@ -213,10 +221,12 @@ Rectangle {
                             clip: true
 
                             onContentWidthChanged: {
+                                //console.log("onContentWidthChanged");
                                 setCellWidthByText();
                             }
 
                             onContentHeightChanged: {
+                                //console.log("onContentHeightChanged");
                                 setCellHeightByText(index);
                             }
 
@@ -336,13 +346,15 @@ Rectangle {
                 if (index < 0) {
                     return;
                 }
+
                 var curWidth = tableCellText.contentWidth;
                 if (curWidth > root.columnHeaderCellWidthMin
                         && curWidth > tableView.columnWidths[index]) {
                     setColumnWidth(index, curWidth);
-                    if (tableView.columnWidths.length-1 === index) {
-                        stretchTableWidth(); //利用右侧空白部分扩宽各行的宽度
-                    }
+                }
+
+                if (tableView.columnWidths.length-1 === index) {
+                    stretchTableWidth(); //利用右侧空白部分扩宽各行的宽度
                 }
             }
         }
@@ -392,7 +404,9 @@ Rectangle {
 
         onAllDataUpdated: {
             console.log("onAllDataUpdated");
-            root.updateColumnHeaderText();
+            //表头内容更新
+            updateRowHeaderText();
+            updateColumnHeaderText();
             root.refresh();
         }
     }
@@ -468,13 +482,19 @@ Rectangle {
     //利用右侧空白部分扩宽各行的宽度
     function stretchTableWidth() {
         var newContentWidth = 0;
+        //for (var i=0; i<columnHeaderRepeater.count; i++) {
         for (var i in tableView.columnWidths) {
-            newContentWidth += tableView.columnWidths[i];
+            newContentWidth += tableView.columnWidths[i]; //columnHeaderRepeater.itemAt(i).width;
             newContentWidth += tableView.columnSpacing;
         }
         newContentWidth -= tableView.columnSpacing;
+        //console.log("newContentWidth: %1".arg(newContentWidth));
 
         var areaWidth = root.width - rowHeaderArea.width;
+        //console.log("root.width: %1".arg(root.width));
+        //console.log("rowHeaderArea.width: %1".arg(rowHeaderArea.width));
+        //console.log("areaWidth: %1".arg(areaWidth));
+
         if (newContentWidth < areaWidth && tableView.columnWidths.length > 0) {
             var offset = (areaWidth - newContentWidth) / tableView.columnWidths.length;
             for (var j in tableView.columnWidths) {
@@ -489,6 +509,14 @@ Rectangle {
             columnHeaderRepeater.itemAt(i).text = root.columnHeaderNameFunc(i);
         }
     }
+
+    function updateRowHeaderText() {
+        //仅更新列表头内容，表头布局会随内容变化而更新
+        for (var i=0; i<rowHeaderRepeater.count; i++) {
+            rowHeaderRepeater.itemAt(i).text = root.rowHeaderNameFunc(i);
+        }
+    }
+
 
     //刷新
     function refresh() {
