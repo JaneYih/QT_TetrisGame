@@ -116,8 +116,40 @@ Rectangle {
                             }
                         }
 
+                        //通过拖拽表头移动表格内容
                         MouseArea {
-                            z: 10
+                            z: 1
+                            anchors.fill: parent
+                            hoverEnabled: false
+                            property var pressedX: 0
+                            property bool bPressAndHold: false
+
+                            onPressed: {
+                                pressedX = mouse.x;
+                                bPressAndHold = true;
+                            }
+
+                            onReleased: {
+                                if (bPressAndHold) {
+                                    bPressAndHold = false;
+                                    tableView.returnToBounds();
+                                }
+                            }
+
+                            onMouseXChanged: {
+                                if (bPressAndHold) {
+                                    var offset = mouse.x-pressedX;
+                                    var tmp = tableView.contentX - offset;
+                                    if (tmp > tableView.originX) {
+                                        tableView.contentX = tmp;
+                                        tableView.forceLayout();
+                                    }
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            z: 2
                             width: root.rowColumnSpacing
                             height: columnHeaderCell.height
                             anchors.left: columnHeaderCell.right
@@ -222,8 +254,40 @@ Rectangle {
                             }
                         }
 
+                        //通过拖拽表头移动表格内容
                         MouseArea {
-                            z: 10
+                            z: 1
+                            anchors.fill: parent
+                            hoverEnabled: false
+                            property var pressedY: 0
+                            property bool bPressAndHold: false
+
+                            onPressed: {
+                                pressedY = mouse.y;
+                                bPressAndHold = true;
+                            }
+
+                            onReleased: {
+                                if (bPressAndHold) {
+                                    bPressAndHold = false;
+                                    tableView.returnToBounds();
+                                }
+                            }
+
+                            onMouseXChanged: {
+                                if (bPressAndHold) {
+                                    var offset = mouse.y-pressedY;
+                                    var tmp = tableView.contentY - offset;
+                                    if (tmp > tableView.originY) {
+                                        tableView.contentY = tmp;
+                                        tableView.forceLayout();
+                                    }
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            z: 2
                             width: rowHeaderCell.width
                             height: root.rowColumnSpacing
                             anchors.top: rowHeaderCell.bottom
