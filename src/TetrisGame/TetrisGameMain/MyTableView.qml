@@ -57,10 +57,6 @@ Rectangle {
         border.width: 1
         clip: true
 
-        onWidthChanged: {
-            root.stretchTableWidth();
-        }
-
         Rectangle {
             id: columnHeaderItem
             x: originX
@@ -298,7 +294,7 @@ Rectangle {
                 setColumnWidthByTextWidth();
             }
 
-            //单元格高度随内容调整(由小变大)，不能有大变小，不然手动拖拽拉大后，又会自动变回文本高度
+            //单元格高度随内容调整(由小变大)，不能由大变小，不然手动拖拽拉大后，又会自动变回文本的高度
             function setRowHeightByTextHeight() {
                 var index = model.row;
                 if (index < 0) {
@@ -311,7 +307,7 @@ Rectangle {
                 }
             }
 
-            //单元格宽度随内容调整(由小变大)，不能有大变小，不然手动拖拽拉大后，又会自动变回文本宽度
+            //单元格宽度随内容调整(由小变大)，不能由大变小，不然手动拖拽拉大后，又会自动变回文本的宽度
             function setColumnWidthByTextWidth() {
                 var index = model.column;
                 if (index < 0) {
@@ -385,13 +381,7 @@ Rectangle {
         }
 
         if (index < columnHeaderRepeater.count) {
-            var header = columnHeaderRepeater.itemAt(index);
-            /*if (header.width > width) {
-                width = header.width;
-            }
-            else {*/
-                header.width = width; //列表头宽度修改
-            //}
+            columnHeaderRepeater.itemAt(index).width = width; //列表头宽度修改
         }
 
         if (index < tableView.columnWidths.length) {
@@ -419,13 +409,7 @@ Rectangle {
         }
 
         if (index < rowHeaderRepeater.count) {
-            var header = rowHeaderRepeater.itemAt(index);
-            /*if (header.height > height) {
-                height = header.height;
-            }
-            else {*/
-                header.height = height; //行表头高度修改
-            //}
+            rowHeaderRepeater.itemAt(index).height = height; //行表头高度修改
         }
 
         if (index < tableView.rowHeights.length) {
@@ -456,13 +440,7 @@ Rectangle {
             newContentWidth += tableView.columnSpacing;
         }
         newContentWidth -= tableView.columnSpacing;
-        //console.log("newContentWidth: %1".arg(newContentWidth));
-
         var areaWidth = root.width - rowHeaderArea.width;
-        //console.log("root.width: %1".arg(root.width));
-        //console.log("rowHeaderArea.width: %1".arg(rowHeaderArea.width));
-        //console.log("areaWidth: %1".arg(areaWidth));
-
         if (newContentWidth < areaWidth && tableView.columnWidths.length > 0) {
             var offset = (areaWidth - newContentWidth) / tableView.columnWidths.length;
             for (var j in tableView.columnWidths) {
@@ -473,8 +451,7 @@ Rectangle {
 
     function updateColumnHeaderText() {
         columnHeaderRepeater.cellHeightMax = 0;
-        //仅更新列表头内容，表头布局会随内容变化而更新
-        for (var i=0; i<columnHeaderRepeater.count; i++) {
+        for (var i=0; i<columnHeaderRepeater.count; i++) { //仅更新列表头内容，表头布局会随内容变化而更新
             columnHeaderRepeater.itemAt(i).text = "";
             columnHeaderRepeater.itemAt(i).text = root.columnHeaderNameFunc(i);
         }
@@ -482,8 +459,7 @@ Rectangle {
 
     function updateRowHeaderText() {
         rowHeaderRepeater.cellWidthMax = 0;
-        //仅更新列表头内容，表头布局会随内容变化而更新
-        for (var i=0; i<rowHeaderRepeater.count; i++) {
+        for (var i=0; i<rowHeaderRepeater.count; i++) { //仅更新列表头内容，表头布局会随内容变化而更新
             rowHeaderRepeater.itemAt(i).text = "";
             rowHeaderRepeater.itemAt(i).text = root.rowHeaderNameFunc(i);
         }
