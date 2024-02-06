@@ -29,6 +29,8 @@ Window {
 
     ImageButton {
         id: btnBackHome
+        height: 40
+        width: 40
         visible: curViewIndex !== TetrisBusiness.HomeView
         anchors.bottom: parent.bottom
         anchors.right: parent.right

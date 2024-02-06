@@ -47,6 +47,7 @@ Rectangle {
     }
 
     onWidthChanged: {
+        console.log("root.onWidthChanged");
         refresh();
     }
 
@@ -425,10 +426,9 @@ Rectangle {
         rowSpacing: root.rowColumnSpacing
         columnSpacing: root.rowColumnSpacing
         clip: true
-        delegate: tableCellDelegate
         reuseItems: true
+        delegate: tableCellDelegate
         model: null
-
 
         property var columnWidths: []
         columnWidthProvider: function (column) { return columnWidths[column] }
@@ -441,6 +441,19 @@ Rectangle {
 
         onContentYChanged: {
             rowHeaderItem.y = rowHeaderItem.originY - (tableView.contentY - tableView.originY);
+        }
+
+        ScrollBar.vertical: ScrollBar {
+            id: verticalScrollBar
+            policy: ScrollBar.AsNeeded
+            onPositionChanged: {
+                console.log("tableView.contentY:", tableView.contentY);
+            }
+        }
+
+        ScrollBar.horizontal: ScrollBar {
+            id: horizontalScrollBar
+            policy: ScrollBar.AsNeeded
         }
     }
 
@@ -558,6 +571,8 @@ Rectangle {
 
     //刷新
     function refresh() {
+        console.log("refresh---");
+
         //表头内容更新
         updateRowHeaderText();
         updateColumnHeaderText();

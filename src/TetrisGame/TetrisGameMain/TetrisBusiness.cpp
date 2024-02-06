@@ -59,6 +59,25 @@ void TetrisBusiness::changeScoreHistoryData()
 	data->rows.push_back(a);
 	data->rows.push_back(a);
 	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
+	data->rows.push_back(a);
 	m_hScoreHistoryModel->setScoreHistoryData(*data);
 }
 
