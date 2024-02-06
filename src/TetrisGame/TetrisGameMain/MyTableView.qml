@@ -10,7 +10,7 @@ Rectangle {
     border.width: 1
     clip: true
     property alias model: tableView.model
-    property alias refreshButton: refreshButton
+    property alias functionButton: functionButton
 
     property var columnHeaderNameFunc: null //列表头内容回调函数
     property var rowHeaderNameFunc: null //行表头内容回调函数
@@ -38,11 +38,10 @@ Rectangle {
         width: rowHeaderArea.width
         height: columnHeaderArea.height
         ImageButton {
-            id: refreshButton
+            id: functionButton
             anchors.centerIn: parent
             width: Math.min(parent.width, parent.height)
             height: Math.min(parent.width, parent.height)
-            imageSource: "qrc:/img/refresh.png"
         }
     }
 

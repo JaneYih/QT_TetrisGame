@@ -52,7 +52,8 @@ Rectangle {
             width: scoreView.width * 0.9
             height: scoreView.height * 0.6
             model: scoreHistoryModelInstance
-            refreshButton.mouseArea.onClicked: {
+            functionButton.imageSource: "qrc:/img/refresh.png"
+            functionButton.mouseArea.onClicked: {
                 scoreHistoryTable.refresh();
                 businessInstance.changeScoreHistoryData();
             }
