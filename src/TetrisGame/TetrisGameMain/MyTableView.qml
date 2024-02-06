@@ -6,7 +6,7 @@ Rectangle {
     height: 480
     width: 640
     color: "transparent"
-    border.color: "white"
+    border.color: contentBorderColor
     border.width: 1
     clip: true
     property alias model: tableView.model
@@ -32,13 +32,18 @@ Rectangle {
     property var columnHeaderBorderColor: "green" //列表头边框颜色
 
     //左上角刷新按钮
-    ImageButton {
-        id: refreshButton
+    Item {
         x: 0
         y: 0
         width: rowHeaderArea.width
         height: columnHeaderArea.height
-        imageSource: "qrc:/img/refresh.png"
+        ImageButton {
+            id: refreshButton
+            anchors.centerIn: parent
+            width: Math.min(parent.width, parent.height)
+            height: Math.min(parent.width, parent.height)
+            imageSource: "qrc:/img/refresh.png"
+        }
     }
 
     onWidthChanged: {
@@ -46,7 +51,7 @@ Rectangle {
     }
 
     //列表头
-    Rectangle {
+    Rectangle { //亦可用Flickable实现
         id: columnHeaderArea
         x: rowHeaderArea.width
         y: 0
@@ -139,12 +144,22 @@ Rectangle {
                             onMouseXChanged: {
                                 if (bPressAndHold) {
                                     var offset = mouse.x-pressedX;
-                                    var tmp = tableView.contentX - offset;
-                                    if (tmp > tableView.originX) {
-                                        tableView.contentX = tmp;
-                                        tableView.forceLayout();
-                                    }
+                                    moveContentX(offset);
                                 }
+                            }
+
+                            onWheel: {
+                                var offset = wheel.angleDelta.y / (8*15);
+                                moveContentX(offset*15);
+                                tableView.returnToBounds();
+                            }
+
+                            function moveContentX(offset) {
+                                var tmp = tableView.contentX - offset;
+                                //if (tmp >= tableView.originX) {
+                                    tableView.contentX = tmp;
+                                    tableView.forceLayout();
+                                //}
                             }
                         }
 
@@ -185,7 +200,7 @@ Rectangle {
     }
 
     //行表头
-    Rectangle {
+    Rectangle { //亦可用Flickable实现
         id: rowHeaderArea
         x: 0
         y: columnHeaderArea.height
@@ -277,12 +292,22 @@ Rectangle {
                             onMouseXChanged: {
                                 if (bPressAndHold) {
                                     var offset = mouse.y-pressedY;
-                                    var tmp = tableView.contentY - offset;
-                                    if (tmp > tableView.originY) {
-                                        tableView.contentY = tmp;
-                                        tableView.forceLayout();
-                                    }
+                                    moveContentY(offset);
                                 }
+                            }
+
+                            onWheel: {
+                                var offset = wheel.angleDelta.y / (8*15);
+                                moveContentY(offset*15);
+                                tableView.returnToBounds();
+                            }
+
+                            function moveContentY(offset) {
+                                var tmp = tableView.contentY - offset;
+                                //if (tmp >= tableView.originY) {
+                                    tableView.contentY = tmp;
+                                    tableView.forceLayout();
+                                //}
                             }
                         }
 
@@ -403,6 +428,7 @@ Rectangle {
         delegate: tableCellDelegate
         reuseItems: true
         model: null
+
 
         property var columnWidths: []
         columnWidthProvider: function (column) { return columnWidths[column] }
@@ -543,6 +569,7 @@ Rectangle {
 
         stretchTableWidth();
         tableView.forceLayout();
+        tableView.returnToBounds();
     }
 
     Timer {
