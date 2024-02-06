@@ -446,14 +446,13 @@ Rectangle {
         ScrollBar.vertical: ScrollBar {
             id: verticalScrollBar
             policy: ScrollBar.AsNeeded
-            onPositionChanged: {
-                console.log("tableView.contentY:", tableView.contentY);
-            }
+            enabled: false
         }
 
         ScrollBar.horizontal: ScrollBar {
             id: horizontalScrollBar
             policy: ScrollBar.AsNeeded
+            enabled: false
         }
     }
 
