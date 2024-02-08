@@ -54,8 +54,8 @@ Rectangle {
             model: scoreHistoryModelInstance
             functionButton.imageSource: "qrc:/img/refresh.png"
             functionButton.mouseArea.onClicked: {
-                scoreHistoryTable.refresh();
-                //businessInstance.changeScoreHistoryData(); //用于调试
+                businessInstance.refreshScoreHistoryData();
+                //scoreHistoryTable.refresh();
             }
             columnHeaderNameFunc: function (index) {
                 return scoreHistoryTable.model.headerData(index, Qt.Horizontal, Qt.DisplayRole);

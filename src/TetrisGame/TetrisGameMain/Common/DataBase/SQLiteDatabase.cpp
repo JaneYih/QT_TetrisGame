@@ -29,7 +29,7 @@ int CSQLiteDatabase::Init()
 		QSqlError err = db.lastError();
 		QString errMsg = tr("SQLite Database open  failure(%2): %1").arg(err.text()).arg(err.type());
 		qDebug() << errMsg;
-		QMessageBox::critical(nullptr, tr("critical"), errMsg);
+		//QMessageBox::critical(nullptr, tr("critical"), errMsg);
 
 		return  static_cast<int>(err.type());
 	}
@@ -147,7 +147,7 @@ int CSQLiteDatabase::GetResultData(const char*  command, DataTable& ResultData)
 		QSqlError err = QSqlDatabase::database().lastError();
 		QString errMsg = tr("SQLite Database read failure(%2): %1").arg(err.text()).arg(err.type());
 		qDebug() << errMsg;
-		QMessageBox::critical(nullptr, tr("critical"), errMsg);
+		//QMessageBox::critical(nullptr, tr("critical"), errMsg);
 		return -1;
 	}
 

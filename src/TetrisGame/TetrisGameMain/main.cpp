@@ -9,7 +9,7 @@ QObject* qobject_singletonBusiness_provider(QQmlEngine* engine, QJSEngine* scrip
 {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
-	return new TetrisBusiness();
+    return new TetrisBusiness(nullptr);
 }
 
 int main(int argc, char *argv[])

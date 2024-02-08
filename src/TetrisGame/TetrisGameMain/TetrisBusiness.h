@@ -22,7 +22,10 @@ public:
 	};
 
 	Q_INVOKABLE void HelloWorld();
-	Q_INVOKABLE void changeScoreHistoryData();
+	Q_INVOKABLE bool refreshScoreHistoryData();
+	Q_INVOKABLE bool InsertScoreData(const QString& user, int score);
+
+	Q_INVOKABLE void changeScoreHistoryData(); //ÓÃÓÚµ÷ÊÔ
 	ScoreHistoryModel* getScoreHistoryModel() const;
 
 signals:
@@ -30,6 +33,7 @@ signals:
 
 private:
 	ScoreHistoryModel* m_hScoreHistoryModel;
+	QString m_dbPath;
 };
 
 #endif // TETRISBUSINESS_H

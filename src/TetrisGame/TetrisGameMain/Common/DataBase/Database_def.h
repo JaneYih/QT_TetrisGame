@@ -52,6 +52,13 @@ typedef struct _SqlTableInfo_
 	SqlBaseInfo baseInfo;
 	QString tableName;
 
+    /*_SqlTableInfo_(const SqlBaseInfo& info, const QString& tabName = "")
+        : baseInfo(info)
+        , tableName(tabName)
+    {
+
+    }*/
+
 	QString toString()
 	{
 		return QString::fromStdWString(L"%1±íÃû:%2;")
