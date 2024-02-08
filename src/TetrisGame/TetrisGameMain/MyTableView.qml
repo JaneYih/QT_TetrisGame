@@ -46,7 +46,7 @@ Rectangle {
     }
 
     onWidthChanged: {
-        console.log("root.onWidthChanged");
+        //console.log("root.onWidthChanged");
         refresh();
     }
 
@@ -569,7 +569,7 @@ Rectangle {
 
     //刷新
     function refresh() {
-        console.log("refresh---");
+        //console.log("refresh---");
 
         //表头内容更新
         updateRowHeaderText();

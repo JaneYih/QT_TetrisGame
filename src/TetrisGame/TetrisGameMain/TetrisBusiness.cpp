@@ -19,7 +19,7 @@ void TetrisBusiness::HelloWorld()
 {
 	qDebug() << "Welcome to Tetris!!";
 
-	DbData* data = new DbData;
+/*	DbData* data = new DbData;
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"用户")));
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"时间")));
 	data->fieldGroup.fields.push_back(DbDataCell(QString::fromStdWString(L"分数")));
@@ -36,7 +36,7 @@ void TetrisBusiness::HelloWorld()
 	data->rows.push_back(a);
 	data->rows.push_back(a);
 	data->rows.push_back(a);
-	m_hScoreHistoryModel->setScoreHistoryData(*data);
+    m_hScoreHistoryModel->setScoreHistoryData(*data);*/
 }
 
 void TetrisBusiness::changeScoreHistoryData()
