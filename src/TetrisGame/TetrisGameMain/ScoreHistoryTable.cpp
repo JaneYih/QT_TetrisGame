@@ -138,6 +138,21 @@ bool ScoreHistoryTable::SelectData(DataTable& outputData, QString& strErrorMsg)
     return ExcuteDataSelectCommand(CreateSelectDataCommand(s_timeDbKey, Qt::DescendingOrder), outputData, strErrorMsg);
 }
 
+bool ScoreHistoryTable::SelectHighestScore(int& highestScore, QString& strErrorMsg)
+{
+    DataTable outputData;
+	if (ExcuteDataSelectCommand(QString("SELECT %1 FROM %2 order by %1 desc LIMIT 1;")
+		    .arg(s_scoreDbKey).arg(m_tableName).toLocal8Bit(), outputData, strErrorMsg))
+    {
+        if (outputData.RowList.size() == 1)
+        {
+            highestScore = QString::fromStdString(outputData.RowList.at(0).FieldListValue.at(0)).toInt();
+        }
+        return true;
+    }
+	return false;
+}
+
 QString ScoreHistoryTable::CreateInsertDataCommand(const DbFieldGroup& fields, const DbFieldGroup& values)
 {
     QString strFields;
@@ -294,7 +309,7 @@ QString ScoreHistoryTable::CreateSelectDataCommand(const DbFieldGroup& fields, c
             .arg(values.fields[i].value());
     }
     strPredicate = strPredicate.mid(0, strPredicate.length() - 5);
-    return QString("SELECT * FROM %1 WHERE %2 LIMIT 100;").arg(m_tableName).arg(strPredicate);
+    return QString("SELECT * FROM %1 WHERE %2 LIMIT 1;").arg(m_tableName).arg(strPredicate);
 }
 
 //获取最新的100条数据

@@ -16,14 +16,10 @@ TetrisBusiness::TetrisBusiness(QObject* parent)
     if (parent != nullptr) {
         m_hScoreHistoryModel = new ScoreHistoryModel();
         Q_ASSERT(m_hScoreHistoryModel);
-
-		//InsertScoreData(QString::fromStdWString(L"你好"), 123);
-		//InsertScoreData(QString::fromStdWString(L"小米"), 456);
-		//InsertScoreData(QString::fromStdWString(L"校长"), 789);
-		//InsertScoreData(QString::fromStdWString(L"小张"), 1000);
-		//InsertScoreData("Yih", 2000);
-		//InsertScoreData("Jane", 3000);
-
+		//insertScoreData(QString::fromStdWString(L"小米"), 456);
+		//insertScoreData(QString::fromStdWString(L"小张"), 1000);
+		//insertScoreData("Yih", 2000);
+		//insertScoreData("Jane", 3210);
 		refreshScoreHistoryData();
     }
 }
@@ -33,7 +29,7 @@ TetrisBusiness::~TetrisBusiness()
 
 }
 
-bool TetrisBusiness::InsertScoreData(const QString& user, int score)
+bool TetrisBusiness::insertScoreData(const QString& user, int score)
 {
 	ScoreHistoryTable* pDb = new ScoreHistoryTable(m_dbPath);
 	if (pDb)
@@ -81,6 +77,22 @@ bool TetrisBusiness::refreshScoreHistoryData()
 	return false;
 }
 
+//获取历史最高分
+int TetrisBusiness::getHighestScore()
+{
+	
+	ScoreHistoryTable* pDb = new ScoreHistoryTable(m_dbPath);
+	if (pDb)
+	{
+		QString strErrorMsg;
+		int highestScore = 0;
+		if (pDb->SelectHighestScore(highestScore, strErrorMsg))
+		{
+			return highestScore;
+		}
+	}
+	return -9999;
+}
 
 void TetrisBusiness::HelloWorld()
 {

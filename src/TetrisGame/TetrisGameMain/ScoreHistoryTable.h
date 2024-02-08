@@ -21,6 +21,7 @@ public:
     bool DeleteData(const DbData& data, QString& strErrorMsg);
     bool UpdateData(const DbData& data, QString& strErrorMsg);
     bool SelectData(DataTable& outputData, QString& strErrorMsg);
+    bool SelectHighestScore(int& highestScore, QString& strErrorMsg);
     QString dbKeyName(const QString& key);
 
 private:
