@@ -21,7 +21,7 @@ Item {
 
     onLightOffChanged: {
         if (lightOff){
-            onebox.opacity = 0.3;
+            onebox.opacity = 0.5;
         }
         else{
             onebox.opacity = 1;
