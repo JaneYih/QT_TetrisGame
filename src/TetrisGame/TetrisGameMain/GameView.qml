@@ -28,8 +28,15 @@ Rectangle {
     property int gameLevel: 800 //方块下落速度(ms)
     property int gameScore: 0 //当前游戏分数
     property int gameHighestScoreRecord: 0 //游戏分数历史最高分
+    property var gameUserName: "tester"
     property int gameElapsedTime: 0 //游戏计时时间
     signal skipPage(var viewType);
+
+    onVisibleChanged: {
+        if (gameView.visible) {
+            gameView.gameHighestScoreRecord = businessInstance.getHighestScore();
+        }
+    }
 
     onGameStateChanged: {
         switch (gameState) {
@@ -536,7 +543,7 @@ Rectangle {
     //游戏结束
     function gameOver() {
         gameOverText.visible = true;
-        gameHighestScoreRecord = Math.max(gameHighestScoreRecord, gameView.gameScore);
+        businessInstance.insertScoreData(gameView.gameUserName,  gameView.gameScore);
         gameTimerItem.stop();
         gameView.skipPage(TetrisBusiness.ScoreView);//跳转到分数页面
     }
@@ -553,6 +560,7 @@ Rectangle {
         }
         gamePage.boxMountainTopRowIndex = gamePage.gameAreaRowSize-1;
         gameView.gameScore = 0;
+        gameView.gameHighestScoreRecord = businessInstance.getHighestScore();
         gameView.gameElapsedTime = 0;
         gameOverText.visible = false;
     }

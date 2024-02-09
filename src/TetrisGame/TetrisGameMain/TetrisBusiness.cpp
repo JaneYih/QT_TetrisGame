@@ -11,6 +11,7 @@ const QString s_tetrisDbName = "Tetris.db";
 
 TetrisBusiness::TetrisBusiness(QObject* parent)
 	: QObject(parent)
+	, m_iCurrentScore(0)
 {
 	m_dbPath = QApplication::applicationDirPath() + "/" + s_tetrisDbName;
     if (parent != nullptr) {
@@ -31,6 +32,8 @@ TetrisBusiness::~TetrisBusiness()
 
 bool TetrisBusiness::insertScoreData(const QString& user, int score)
 {
+	m_iCurrentScore = score;
+
 	ScoreHistoryTable* pDb = new ScoreHistoryTable(m_dbPath);
 	if (pDb)
 	{
@@ -75,6 +78,11 @@ bool TetrisBusiness::refreshScoreHistoryData()
 		}
 	}
 	return false;
+}
+
+int TetrisBusiness::getCurrentScore() const
+{
+	return m_iCurrentScore;
 }
 
 //获取历史最高分

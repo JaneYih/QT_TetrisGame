@@ -63,6 +63,12 @@ Rectangle {
             rowHeaderNameFunc: function (index) {
                 return scoreHistoryTable.model.headerData(index, Qt.Vertical, Qt.DisplayRole);
             }
+            onVisibleChanged: {
+                if (scoreHistoryTable.visible) {
+                    scoreText.text = businessInstance.getCurrentScore();
+                    businessInstance.refreshScoreHistoryData();
+                }
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ public:
 	Q_INVOKABLE void HelloWorld();
 	Q_INVOKABLE bool refreshScoreHistoryData(); //刷新最新的分数数
 	Q_INVOKABLE bool insertScoreData(const QString& user, int score); //插入一条分数
+	Q_INVOKABLE int getCurrentScore() const; //获取当前分数
 	Q_INVOKABLE int getHighestScore(); //获取历史最高分
 
 	Q_INVOKABLE void changeScoreHistoryData(); //用于调试
@@ -31,10 +32,10 @@ public:
 
 signals:
 	
-
 private:
 	ScoreHistoryModel* m_hScoreHistoryModel;
 	QString m_dbPath;
+	int m_iCurrentScore;
 };
 
 #endif // TETRISBUSINESS_H
