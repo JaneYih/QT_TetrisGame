@@ -6,13 +6,10 @@ import Yih.Tetris.Business 1.0
 Window {
     id: mainWin
     visible: true
+    //visibility: "Maximized"
     height: 480
     width: 640
-    //maximumHeight : 480
-    //maximumWidth : 640
-    //minimumHeight : 480
-    //minimumWidth : 640
-    //flags: Qt.Popup
+    //flags: Qt.Window
     //modality: Qt.WindowModal
 
     title: "TetrisGameMain"
@@ -96,6 +93,22 @@ Window {
             oneBoxEdge: mainWin.height / (gameAreaRowSize+5)
             Component.onCompleted: {
                 connectionsComponent.createObject(mainWin, {target: gameView});
+            }
+
+            onGameStateChanged: {
+                if (gameView.gameState === GameView.GameState.Running
+                        || gameView.gameState === GameView.GameState.Pause) {
+                    mainWin.maximumHeight = mainWin.height;
+                    mainWin.minimumHeight = mainWin.height;
+                    mainWin.maximumWidth = mainWin.width;
+                    mainWin.minimumWidth = mainWin.width;
+                }
+                else {
+                    mainWin.maximumHeight = 5000;
+                    mainWin.minimumHeight = 0;
+                    mainWin.maximumWidth = 5000;
+                    mainWin.minimumWidth = 0;
+                }
             }
         }
     }
