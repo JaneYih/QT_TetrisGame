@@ -45,6 +45,32 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 30
 
+        //等级选择
+        ComboBox {
+            id: gameLevelComboBox
+            width: 200
+            height: 50
+            editable: false
+            model: ListModel {
+                id: model
+                ListElement { text: "简单" }
+                ListElement { text: "普通" }
+                ListElement { text: "困难" }
+            }
+
+            enabled: (businessInstance.gameState !== TetrisBusiness.Running
+                      && businessInstance.gameState !== TetrisBusiness.Pause)
+
+            onCurrentTextChanged: {
+                businessInstance.gameLevel = currentIndex;
+            }
+
+            Component.onCompleted: {
+                businessInstance.gameState = TetrisBusiness.Ready;
+                currentIndex = TetrisBusiness.Normal;
+            }
+        }
+
         Loader {
             id: gameViewBtnLoader
             sourceComponent: btnComponent

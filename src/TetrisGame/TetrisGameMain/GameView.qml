@@ -12,20 +12,12 @@ Rectangle {
     //width: gamePage.width + gamePage.oneBoxEdge
     //height: gamePage.height
 
-    enum GameState {
-        Ready = 0,
-        Start,
-        Running,
-        Pause,
-        Over
-    }
-
     property Component oneboxComponent: null
     property Component boxGroupComponent: null
     property alias oneBoxEdge: gamePage.oneBoxEdge
     property alias gameAreaRowSize: gamePage.gameAreaRowSize
-    property int gameState: GameView.GameState.Ready //游戏状态
-    property int gameLevel: 800 //方块下落速度(ms)
+    property int gameState: TetrisBusiness.Ready //游戏状态
+    property int gameSpeed: 800 //方块下落速度(ms)
     property int gameScore: 0 //当前游戏分数
     property int gameHighestScoreRecord: 0 //游戏分数历史最高分
     property var gameUserName: "tester"
@@ -35,24 +27,27 @@ Rectangle {
     onVisibleChanged: {
         if (gameView.visible) {
             gameView.gameHighestScoreRecord = businessInstance.getHighestScore();
+            setGameSpeed(businessInstance.gameState !== TetrisBusiness.Running
+                         && businessInstance.gameState !== TetrisBusiness.Pause);
         }
     }
 
     onGameStateChanged: {
+        businessInstance.gameState = gameState;
         switch (gameState) {
-        case GameView.GameState.Ready:
+        case TetrisBusiness.Ready:
             resetGame();
             break;
-        case GameView.GameState.Start:
+        case TetrisBusiness.Start:
             startGame();
             break;
-        case GameView.GameState.Running:
+        case TetrisBusiness.Running:
             continueGame();
             break;
-        case GameView.GameState.Pause:
+        case TetrisBusiness.Pause:
             pauseGame();
             break;
-        case GameView.GameState.Over:
+        case TetrisBusiness.Over:
             gameOver();
             break;
         }
@@ -87,7 +82,7 @@ Rectangle {
         property var nextActiveBoxGroup: null //下一个方块组
 
         focus: true
-        Keys.enabled: gameState === GameView.GameState.Running
+        Keys.enabled: gameState === TetrisBusiness.Running
         Keys.onPressed: {
             if (gamePage.curActiveBoxGroup === null) {
                 return;
@@ -146,7 +141,7 @@ Rectangle {
                 gamePage.curActiveBoxGroup.backgroundBoxArray = gamePage.backgroundBoxArray; //设置游戏区域背景方块二维数组
 
                 //设置方块组自动下落
-                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = gameView.gameLevel;   //可以调节这个时间，以划分游戏难度等级
+                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = gameView.gameSpeed;
                 gamePage.curActiveBoxGroup.autoMoveDownTimer.running = true;
             }
         }
@@ -192,7 +187,7 @@ Rectangle {
                 gamePage.curActiveBoxGroup = null;
 
                 if (bGameOver) {
-                    gameState = GameView.GameState.Over; //游戏结束
+                    gameState = TetrisBusiness.Over; //游戏结束
                 }
                 else {
                     checkAndClearBoxMountainFullRow(curActiveBoxGroupTopRowIndex, curActiveBoxGroupBottomRowIndex); //消除方块山的满行，且山体下沉
@@ -269,9 +264,9 @@ Rectangle {
 
                 }
 
-                //等级选择
+                //下落速度选择
                 ComboBox {
-                    id: gameLevelComboBox
+                    id: gameSpeedComboBox
                     width: gamePage.oneBoxEdge * 4
                     height: gamePage.oneBoxEdge * 1.6
                     editable: true
@@ -283,31 +278,19 @@ Rectangle {
                         ListElement { text: "1000" }
                         ListElement { text: "300" }
                     }
-                    //currentIndex: 0
-                    enabled: (gameState !== GameView.GameState.Running
-                              && gameState !== GameView.GameState.Pause)
-
+                    enabled: (gameState !== TetrisBusiness.Running
+                              && gameState !== TetrisBusiness.Pause)
                     onAccepted: {
                         if (find(editText) === -1){
                             model.append({text: editText})
                         }
                     }
-
-                    /*onCurrentIndexChanged: {
-                        //console.log("Selected option:", currentText)
-                        gameView.gameLevel = parseInt(currentText);
-                        console.log(gameView.gameLevel);
-                    }*/
-
                     onCurrentTextChanged: {
-                        gameView.gameLevel = parseInt(currentText);
-                        //console.log("下落速度：%1ms".arg(gameView.gameLevel));
+                        gameView.gameSpeed = parseInt(currentText);
+                        //console.log("下落速度：%1ms".arg(gameView.gameSpeed));
                     }
-
                     Component.onCompleted: {
                         currentIndex = 0;
-                        //gameView.gameLevel = parseInt(currentText);
-                        //console.log("gameLevelComboBox onCompleted:", currentText);
                     }
                 }
 
@@ -397,10 +380,10 @@ Rectangle {
                     Button {
                         id: btnStartGame
                         text: qsTr("开始")
-                        enabled: (gameState === GameView.GameState.Over
-                                  || gameState === GameView.GameState.Ready)
+                        enabled: (gameState === TetrisBusiness.Over
+                                  || gameState === TetrisBusiness.Ready)
                         onClicked: {
-                            gameState = GameView.GameState.Start;
+                            gameState = TetrisBusiness.Start;
                         }
                     }
 
@@ -409,22 +392,22 @@ Rectangle {
                         text: qsTr("重新开始")
                         enabled: true
                         onClicked: {
-                            //gameState = GameView.GameState.Ready;
-                            gameState = GameView.GameState.Start;
+                            //gameState = TetrisBusiness.Ready;
+                            gameState = TetrisBusiness.Start;
                         }
                     }
 
                     Button {
                         id: btnPauseGame
                         text: qsTr("暂停")
-                        enabled: (gameState === GameView.GameState.Running || gameState === GameView.GameState.Pause)
+                        enabled: (gameState === TetrisBusiness.Running || gameState === TetrisBusiness.Pause)
                         onClicked: {
-                            if (gameState === GameView.GameState.Running) {
-                                gameState = GameView.GameState.Pause;
+                            if (gameState === TetrisBusiness.Running) {
+                                gameState = TetrisBusiness.Pause;
                                 btnPauseGame.text = qsTr("继续");
                             }
-                            else if (gameState === GameView.GameState.Pause){
-                                gameState = GameView.GameState.Running;
+                            else if (gameState === TetrisBusiness.Pause){
+                                gameState = TetrisBusiness.Running;
                                 btnPauseGame.text = qsTr("暂停");
                             }
                         }
@@ -467,6 +450,7 @@ Rectangle {
                 }
 
                 gameView.gameScore++; //得分
+                setGameSpeed(true); //可以调节这个时间，以划分游戏难度等级
             }
         }
 
@@ -537,7 +521,7 @@ Rectangle {
         resetGame();
         //.......//增加游戏难度，可以在这里增加一个函数：设置背景底部随机小box
         createNextBoxGroup();
-        gameState = GameView.GameState.Running;
+        gameState = TetrisBusiness.Running;
     }
 
     //游戏结束
@@ -561,6 +545,7 @@ Rectangle {
         gamePage.boxMountainTopRowIndex = gamePage.gameAreaRowSize-1;
         gameView.gameScore = 0;
         gameView.gameHighestScoreRecord = businessInstance.getHighestScore();
+        setGameSpeed(true);
         gameView.gameElapsedTime = 0;
         gameOverText.visible = false;
     }
@@ -702,5 +687,35 @@ Rectangle {
         gameMainArea.height = gamePage.gameAreaRowSize * gamePage.oneBoxEdge;
         gamePage.gameAreaRect = Qt.rect(TopX, TopY, gameMainArea.width, gameMainArea.height);
         return true;
+    }
+
+    function setGameSpeed(bRecalculat) {
+        if (bRecalculat) {
+            var radix = 1.0;
+            var initSpeed = 1000;
+            switch (businessInstance.gameLevel) {
+            case TetrisBusiness.Simple:
+                initSpeed = 1000;
+                radix = 1.0;
+                break;
+            case TetrisBusiness.Normal:
+                initSpeed = 800;
+                radix = 0.8;
+                break;
+            case TetrisBusiness.Hard:
+                initSpeed = 600;
+                radix = 0.5;
+                break;
+            }
+
+             //分数越高，速度越快
+            if (gameView.gameScore % 10 === 0 && gameView.gameScore > 0) {
+                gameView.gameSpeed *= radix;
+            }
+            else {
+                gameView.gameSpeed = initSpeed;
+            }
+        }
+        gameSpeedComboBox.editText = "%1".arg(gameView.gameSpeed);
     }
 }

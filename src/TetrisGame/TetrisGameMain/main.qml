@@ -96,8 +96,8 @@ Window {
             }
 
             onGameStateChanged: {
-                if (gameView.gameState === GameView.GameState.Running
-                        || gameView.gameState === GameView.GameState.Pause) {
+                if (gameView.gameState === TetrisBusiness.Running
+                        || gameView.gameState === TetrisBusiness.Pause) {
                     mainWin.maximumHeight = mainWin.height;
                     mainWin.minimumHeight = mainWin.height;
                     mainWin.maximumWidth = mainWin.width;

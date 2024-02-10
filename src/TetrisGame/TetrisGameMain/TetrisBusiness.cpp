@@ -172,3 +172,29 @@ ScoreHistoryModel* TetrisBusiness::getScoreHistoryModel() const
 {
 	return m_hScoreHistoryModel;
 }
+
+int TetrisBusiness::gameState() const
+{
+	return static_cast<int>(m_iCurrentGameState);
+}
+
+void TetrisBusiness::setGameState(int state)
+{
+	if (m_iCurrentGameState != state) {
+		m_iCurrentGameState = static_cast<GameState>(state);
+		emit gameStateChanged(state);
+	}
+}
+
+int TetrisBusiness::gameLevel() const
+{
+	return static_cast<int>(m_eGameLevel);
+}
+
+void TetrisBusiness::setGameLevel(int level)
+{
+	if (m_eGameLevel != level) {
+		m_eGameLevel = static_cast<GameLevel>(level);
+		emit gameLevelChanged(level);
+	}
+}
