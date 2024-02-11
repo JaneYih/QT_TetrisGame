@@ -80,15 +80,9 @@ bool TetrisBusiness::refreshScoreHistoryData()
 	return false;
 }
 
-int TetrisBusiness::getCurrentScore() const
-{
-	return m_iCurrentScore;
-}
-
 //获取历史最高分
 int TetrisBusiness::getHighestScore()
 {
-	
 	ScoreHistoryTable* pDb = new ScoreHistoryTable(m_dbPath);
 	if (pDb)
 	{
@@ -100,6 +94,21 @@ int TetrisBusiness::getHighestScore()
 		}
 	}
 	return -9999;
+}
+
+int TetrisBusiness::getUserLastScore(const QString& user)
+{
+	ScoreHistoryTable* pDb = new ScoreHistoryTable(m_dbPath);
+	if (pDb)
+	{
+		QString strErrorMsg;
+		int lastScore = 0;
+		if (pDb->SelectUserLastScore(user, lastScore, strErrorMsg))
+		{
+			return lastScore;
+		}
+	}
+	return 0;
 }
 
 void TetrisBusiness::HelloWorld()
@@ -171,6 +180,20 @@ void TetrisBusiness::changeScoreHistoryData()
 ScoreHistoryModel* TetrisBusiness::getScoreHistoryModel() const
 {
 	return m_hScoreHistoryModel;
+}
+
+int TetrisBusiness::currentScore() const
+{
+	return m_iCurrentScore;
+}
+
+void TetrisBusiness::setCurrentScore(int score)
+{
+	if (score != m_iCurrentScore)
+	{
+		m_iCurrentScore = score;
+		emit currentScoreChanged(score);
+	}
 }
 
 int TetrisBusiness::gameState() const

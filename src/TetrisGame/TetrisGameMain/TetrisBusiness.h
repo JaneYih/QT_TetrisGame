@@ -12,6 +12,7 @@ class TetrisBusiness: public QObject
 	Q_ENUMS(GameState)
 	Q_PROPERTY(int gameState READ gameState WRITE setGameState NOTIFY gameStateChanged)
 	Q_PROPERTY(int gameLevel READ gameLevel WRITE setGameLevel NOTIFY gameLevelChanged)
+	Q_PROPERTY(int currentScore READ currentScore WRITE setCurrentScore NOTIFY currentScoreChanged)
 
 public:
     explicit TetrisBusiness(QObject* parent = nullptr);
@@ -42,11 +43,13 @@ public:
 	Q_INVOKABLE void HelloWorld();
 	Q_INVOKABLE bool refreshScoreHistoryData(); //刷新最新的分数数
 	Q_INVOKABLE bool insertScoreData(const QString& user, int score); //插入一条分数
-	Q_INVOKABLE int getCurrentScore() const; //获取当前分数
 	Q_INVOKABLE int getHighestScore(); //获取历史最高分
+	Q_INVOKABLE int getUserLastScore(const QString& user); //获取上次的分数
 	Q_INVOKABLE void changeScoreHistoryData(); //用于调试
 	ScoreHistoryModel* getScoreHistoryModel() const;
 
+	int currentScore() const; 
+	void setCurrentScore(int score);
 	int gameState() const;
 	void setGameState(int state);
 	int gameLevel() const;
@@ -55,11 +58,12 @@ public:
 signals:
 	void gameStateChanged(int state);
 	void gameLevelChanged(int level);
+	void currentScoreChanged(int score);
 
 private:
 	ScoreHistoryModel* m_hScoreHistoryModel;
 	QString m_dbPath;
-	int m_iCurrentScore;
+	int m_iCurrentScore; //获取当前分数
 	GameState m_iCurrentGameState;
 	GameLevel m_eGameLevel;
 };

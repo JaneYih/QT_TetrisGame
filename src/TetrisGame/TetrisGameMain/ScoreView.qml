@@ -65,10 +65,17 @@ Rectangle {
             }
             onVisibleChanged: {
                 if (scoreHistoryTable.visible) {
-                    scoreText.text = businessInstance.getCurrentScore();
                     businessInstance.refreshScoreHistoryData();
+                    scoreText.text = businessInstance.currentScore;
                 }
             }
+        }
+    }
+
+    Connections {
+        target: businessInstance
+        onCurrentScoreChanged: {
+            scoreText.text = businessInstance.currentScore;
         }
     }
 }

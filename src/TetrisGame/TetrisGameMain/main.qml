@@ -21,6 +21,8 @@ Window {
     Component.onCompleted: {
         initViewObjectArray();
         backHomePage();
+        businessInstance.currentScore = 0;
+        businessInstance.gameState = TetrisBusiness.Ready;
         businessInstance.HelloWorld();
     }
 

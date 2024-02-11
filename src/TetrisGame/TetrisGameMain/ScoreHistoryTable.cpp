@@ -153,6 +153,22 @@ bool ScoreHistoryTable::SelectHighestScore(int& highestScore, QString& strErrorM
 	return false;
 }
 
+bool ScoreHistoryTable::SelectUserLastScore(const QString& user, int& lastScore, QString& strErrorMsg)
+{
+	DataTable outputData;
+	if (ExcuteDataSelectCommand(QString("SELECT %1,%5,%3 FROM %2 WHERE %3 = '%4' order by %5 desc LIMIT 1;")
+		.arg(s_scoreDbKey).arg(m_tableName).arg(s_userDbKey).arg(user).arg(s_timeDbKey).toLocal8Bit(),
+        outputData, strErrorMsg))
+	{
+		if (outputData.RowList.size() == 1)
+		{
+            lastScore = QString::fromStdString(outputData.RowList.at(0).FieldListValue.at(0)).toInt();
+		}
+		return true;
+	}
+	return false;
+}
+
 QString ScoreHistoryTable::CreateInsertDataCommand(const DbFieldGroup& fields, const DbFieldGroup& values)
 {
     QString strFields;

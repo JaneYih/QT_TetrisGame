@@ -20,6 +20,7 @@ Rectangle {
     property int gameSpeed: 800 //方块下落速度(ms)
     property int gameScore: 0 //当前游戏分数
     property int gameHighestScoreRecord: 0 //游戏分数历史最高分
+    property int gameLastScoreRecord: 0 //上一次游戏分数
     property var gameUserName: "tester"
     property int gameElapsedTime: 0 //游戏计时时间
     signal skipPage(var viewType);
@@ -27,6 +28,7 @@ Rectangle {
     onVisibleChanged: {
         if (gameView.visible) {
             gameView.gameHighestScoreRecord = businessInstance.getHighestScore();
+            gameView.gameLastScoreRecord = businessInstance.getUserLastScore(gameUserName);
             setGameSpeed(businessInstance.gameState !== TetrisBusiness.Running
                          && businessInstance.gameState !== TetrisBusiness.Pause);
         }
@@ -314,6 +316,14 @@ Rectangle {
                             text: qsTr("历史最高:%1".arg(gameView.gameHighestScoreRecord))
                         }
                         Text {
+                            width: scoreArea.width
+                            height: scoreArea.height/2
+                            color: "darkmagenta"
+                            horizontalAlignment: Text.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+                            text: qsTr("上次分数:%1".arg(gameView.gameLastScoreRecord))
+                        }
+                        Text {
                             id: element
                             width: scoreArea.width
                             height: scoreArea.height/2
@@ -450,6 +460,7 @@ Rectangle {
                 }
 
                 gameView.gameScore++; //得分
+                businessInstance.currentScore = gameView.gameScore;
                 setGameSpeed(true); //可以调节这个时间，以划分游戏难度等级
             }
         }
