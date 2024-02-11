@@ -67,6 +67,9 @@ Window {
         id: stackView
         z: 0
         anchors.fill: parent
+        onCurrentItemChanged: {
+            currentItem.forceActiveFocus();
+        }
     }
 
     Component {

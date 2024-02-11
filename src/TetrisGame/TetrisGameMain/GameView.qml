@@ -29,9 +29,13 @@ Rectangle {
         if (gameView.visible) {
             gameView.gameHighestScoreRecord = businessInstance.getHighestScore();
             gameView.gameLastScoreRecord = businessInstance.getUserLastScore(gameUserName);
-            setGameSpeed(businessInstance.gameState !== TetrisBusiness.Running
-                         && businessInstance.gameState !== TetrisBusiness.Pause);
+            setGameSpeed(businessInstance.gameState !== TetrisBusiness.Running && businessInstance.gameState !== TetrisBusiness.Pause);
+            gamePage.forceActiveFocus();
         }
+    }
+
+    onFocusChanged: {
+        focusScope.focus = true;
     }
 
     onGameStateChanged: {
@@ -64,377 +68,390 @@ Rectangle {
         source: "qrc:/img/Doraemon.jpg"
     }
 
-    Rectangle {
-        id: gamePage
+    FocusScope {
+        id: focusScope
         anchors.centerIn: parent
-        //anchors.fill: parent
-        z: 1
-        //border.color: "red"
-        border.color: "transparent"
-        border.width: 1
-        color: "transparent"
-        property int oneBoxEdge: 20 //小方块边长
-        property int gameAreaRowSize: 20 //游戏区域行数
-        property int gameAreaColSize: 10 //游戏区域列数
-        property var gameAreaRect: null //游戏区域矩形
-        property int boxMountainTopRowIndex: 0 //当前方块山最顶端的行序号
-        property var backgroundBoxArray: null //游戏区域背景方块二维数组
-        property var previewBoxArray: null //预览区域背景方块二维数组
-        property var curActiveBoxGroup: null //当前活动的方块组--唯一性，如果同时有多个活动方块自动下落，则背景不能多个同时点亮
-        property var nextActiveBoxGroup: null //下一个方块组
-
         focus: true
-        Keys.enabled: gameState === TetrisBusiness.Running
-        Keys.onPressed: {
-            if (gamePage.curActiveBoxGroup === null) {
-                return;
+
+        Rectangle {
+            id: gamePage
+            anchors.centerIn: parent
+            //anchors.fill: parent
+            z: 1
+            //border.color: "red"
+            border.color: "transparent"
+            border.width: 1
+            color: "transparent"
+            property int oneBoxEdge: 20 //小方块边长
+            property int gameAreaRowSize: 20 //游戏区域行数
+            property int gameAreaColSize: 10 //游戏区域列数
+            property var gameAreaRect: null //游戏区域矩形
+            property int boxMountainTopRowIndex: 0 //当前方块山最顶端的行序号
+            property var backgroundBoxArray: null //游戏区域背景方块二维数组
+            property var previewBoxArray: null //预览区域背景方块二维数组
+            property var curActiveBoxGroup: null //当前活动的方块组--唯一性，如果同时有多个活动方块自动下落，则背景不能多个同时点亮
+            property var nextActiveBoxGroup: null //下一个方块组
+
+            focus: true
+            Keys.enabled: gameState === TetrisBusiness.Running
+            Keys.onPressed: {
+                if (gamePage.curActiveBoxGroup === null) {
+                    return;
+                }
+
+                switch (event.key){
+                case Qt.Key_Left:
+                    gamePage.curActiveBoxGroup.moveLeft(1);
+                    break;
+                case Qt.Key_Right:
+                    gamePage.curActiveBoxGroup.moveRight(1);
+                    break;
+                //case Qt.Key_Up:
+                //    gamePage.curActiveBoxGroup.moveUp(1);
+                //    break;
+                case Qt.Key_Down:
+                    gamePage.curActiveBoxGroup.moveDown(1);
+                    break;
+                case Qt.Key_Space: //快速下移（坠落）
+                    gamePage.curActiveBoxGroup.moveQuickDown();
+                    break;
+                case Qt.Key_Up: //旋转
+                    gamePage.curActiveBoxGroup.moveRotate();
+                    break;
+                case Qt.Key_0: //暂停\继续
+                    btnPauseGame.onClicked();
+                    break;
+                default:
+                    return;
+                }
+                event.accepted = true;
             }
 
-            switch (event.key){
-            case Qt.Key_Left:
-                gamePage.curActiveBoxGroup.moveLeft(1);
-                break;
-            case Qt.Key_Right:
-                gamePage.curActiveBoxGroup.moveRight(1);
-                break;
-            //case Qt.Key_Up:
-            //    gamePage.curActiveBoxGroup.moveUp(1);
-            //    break;
-            case Qt.Key_Down:
-                gamePage.curActiveBoxGroup.moveDown(1);
-                break;
-            case Qt.Key_Space: //快速下移（坠落）
-                gamePage.curActiveBoxGroup.moveQuickDown();
-                break;
-            case Qt.Key_Up: //旋转
-                gamePage.curActiveBoxGroup.moveRotate();
-                break;
-            case Qt.Key_0: //暂停\继续
-                btnPauseGame.onClicked();
-                break;
-            default:
-                return;
+            Component.onCompleted: {
+                initBoxsBackgroud();
             }
-            event.accepted = true;
-        }
 
-        Component.onCompleted: {
-            initBoxsBackgroud();
-        }
-
-        onOneBoxEdgeChanged: {
-            initBoxsBackgroud();
-            if (gamePage.nextActiveBoxGroup !== null) {
-                gamePage.nextActiveBoxGroup.oneBoxEdgeLength = gamePage.oneBoxEdge;
+            onOneBoxEdgeChanged: {
+                initBoxsBackgroud();
+                if (gamePage.nextActiveBoxGroup !== null) {
+                    gamePage.nextActiveBoxGroup.oneBoxEdgeLength = gamePage.oneBoxEdge;
+                }
+                if (gamePage.curActiveBoxGroup !== null) {
+                    gamePage.curActiveBoxGroup.oneBoxEdgeLength = gamePage.oneBoxEdge;
+                }
             }
-            if (gamePage.curActiveBoxGroup !== null) {
-                gamePage.curActiveBoxGroup.oneBoxEdgeLength = gamePage.oneBoxEdge;
+
+            function initBoxsBackgroud() {
+                createBoxBackground(gamePage.gameAreaRowSize, gamePage.gameAreaColSize);
+                createPreviewBackground(2, 4);
             }
-        }
 
-        function initBoxsBackgroud() {
-            createBoxBackground(gamePage.gameAreaRowSize, gamePage.gameAreaColSize);
-            createPreviewBackground(2, 4);
-        }
+            onCurActiveBoxGroupChanged: {
+                if (gamePage.curActiveBoxGroup !== null) {
+                    gamePage.curActiveBoxGroup.gameAreaRect = gamePage.gameAreaRect; //游戏区域矩形
+                    gamePage.curActiveBoxGroup.backgroundBoxArray = gamePage.backgroundBoxArray; //设置游戏区域背景方块二维数组
 
-        onCurActiveBoxGroupChanged: {
-            if (gamePage.curActiveBoxGroup !== null) {
-                gamePage.curActiveBoxGroup.gameAreaRect = gamePage.gameAreaRect; //游戏区域矩形
-                gamePage.curActiveBoxGroup.backgroundBoxArray = gamePage.backgroundBoxArray; //设置游戏区域背景方块二维数组
-
-                //设置方块组自动下落
-                gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = gameView.gameSpeed;
-                gamePage.curActiveBoxGroup.autoMoveDownTimer.running = true;
+                    //设置方块组自动下落
+                    gamePage.curActiveBoxGroup.autoMoveDownTimer.interval = gameView.gameSpeed;
+                    gamePage.curActiveBoxGroup.autoMoveDownTimer.running = true;
+                }
             }
-        }
 
-        //将游戏区域的背景方块点亮--槽函数
-        Connections {
-            target: gamePage.curActiveBoxGroup
-            onBackgroundBoxsLightUp: {
-                //console.log("onBackgroundBoxsLightUp");
+            //将游戏区域的背景方块点亮--槽函数
+            Connections {
+                target: gamePage.curActiveBoxGroup
+                onBackgroundBoxsLightUp: {
+                    //console.log("onBackgroundBoxsLightUp");
 
-                var originRow = (gamePage.curActiveBoxGroup.y - gameMainArea.y) / gamePage.oneBoxEdge;
-                var originCol = (gamePage.curActiveBoxGroup.x - gameMainArea.x) / gamePage.oneBoxEdge;
-                //console.log("%1   %2".arg(originRow).arg(originCol));
+                    var originRow = (gamePage.curActiveBoxGroup.y - gameMainArea.y) / gamePage.oneBoxEdge;
+                    var originCol = (gamePage.curActiveBoxGroup.x - gameMainArea.x) / gamePage.oneBoxEdge;
+                    //console.log("%1   %2".arg(originRow).arg(originCol));
 
-                var bGameOver = false;
-                var curActiveBoxGroupBottomRowIndex = 0;
-                var curActiveBoxGroupTopRowIndex = gamePage.gameAreaRowSize-1;
-                for (var i in gamePage.curActiveBoxGroup.boxArray) {
-                    var row = originRow + gamePage.curActiveBoxGroup.boxArray[i].row;
-                    var col = originCol + gamePage.curActiveBoxGroup.boxArray[i].col;
+                    var bGameOver = false;
+                    var curActiveBoxGroupBottomRowIndex = 0;
+                    var curActiveBoxGroupTopRowIndex = gamePage.gameAreaRowSize-1;
+                    for (var i in gamePage.curActiveBoxGroup.boxArray) {
+                        var row = originRow + gamePage.curActiveBoxGroup.boxArray[i].row;
+                        var col = originCol + gamePage.curActiveBoxGroup.boxArray[i].col;
 
-                    if (row < gamePage.gameAreaRowSize && row >= 0
-                           && col < gamePage.gameAreaColSize && col >= 0) {
+                        if (row < gamePage.gameAreaRowSize && row >= 0
+                               && col < gamePage.gameAreaColSize && col >= 0) {
 
-                        gamePage.backgroundBoxArray[row][col].lightOff = false;
+                            gamePage.backgroundBoxArray[row][col].lightOff = false;
 
-                        gamePage.boxMountainTopRowIndex = Math.min(gamePage.boxMountainTopRowIndex, row);
-                        curActiveBoxGroupBottomRowIndex = Math.max(curActiveBoxGroupBottomRowIndex, row);
-                        curActiveBoxGroupTopRowIndex = Math.min(curActiveBoxGroupTopRowIndex, row);
+                            gamePage.boxMountainTopRowIndex = Math.min(gamePage.boxMountainTopRowIndex, row);
+                            curActiveBoxGroupBottomRowIndex = Math.max(curActiveBoxGroupBottomRowIndex, row);
+                            curActiveBoxGroupTopRowIndex = Math.min(curActiveBoxGroupTopRowIndex, row);
 
-                        //console.log("curActiveBoxGroupTopRowIndex:%1".arg(curActiveBoxGroupTopRowIndex));
-                        //console.log("curActiveBoxGroupBottomRowIndex:%1".arg(curActiveBoxGroupBottomRowIndex));
-                        //console.log("gamePage.boxMountainTopRowIndex:%1".arg(gamePage.boxMountainTopRowIndex));
+                            //console.log("curActiveBoxGroupTopRowIndex:%1".arg(curActiveBoxGroupTopRowIndex));
+                            //console.log("curActiveBoxGroupBottomRowIndex:%1".arg(curActiveBoxGroupBottomRowIndex));
+                            //console.log("gamePage.boxMountainTopRowIndex:%1".arg(gamePage.boxMountainTopRowIndex));
+                        }
+
+                        if (row < 0) {
+                            bGameOver = true;
+                        }
                     }
 
-                    if (row < 0) {
-                        bGameOver = true;
+                    //销毁当前方块组
+                    gamePage.curActiveBoxGroup.destroy();
+                    gamePage.curActiveBoxGroup = null;
+
+                    if (bGameOver) {
+                        gameState = TetrisBusiness.Over; //游戏结束
+                    }
+                    else {
+                        checkAndClearBoxMountainFullRow(curActiveBoxGroupTopRowIndex, curActiveBoxGroupBottomRowIndex); //消除方块山的满行，且山体下沉
+                        nextBoxGroupEnter();
                     }
                 }
-
-                //销毁当前方块组
-                gamePage.curActiveBoxGroup.destroy();
-                gamePage.curActiveBoxGroup = null;
-
-                if (bGameOver) {
-                    gameState = TetrisBusiness.Over; //游戏结束
-                }
-                else {
-                    checkAndClearBoxMountainFullRow(curActiveBoxGroupTopRowIndex, curActiveBoxGroupBottomRowIndex); //消除方块山的满行，且山体下沉
-                    nextBoxGroupEnter();
-                }
-            }
-        }
-
-        Row {
-            id: gamePageRow
-            spacing: gamePage.oneBoxEdge
-
-            onWidthChanged: {
-                gamePage.width = width;
-            }
-
-            onHeightChanged: {
-                gamePage.height = height;
             }
 
             Row {
-                spacing: 3
-                //行序号显示
-                Column {
-                    id: rowIndex
-                    spacing: 0
-                    Repeater {
-                        model: gamePage.gameAreaRowSize
-                        Text {
-                            width: gamePage.oneBoxEdge
-                            height: gamePage.oneBoxEdge
-                            text: index
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            visible: true
-                        }
-                    }
+                id: gamePageRow
+                spacing: gamePage.oneBoxEdge
+
+                onWidthChanged: {
+                    gamePage.width = width;
                 }
 
-                //游戏区域
+                onHeightChanged: {
+                    gamePage.height = height;
+                }
+
                 Row {
                     spacing: 3
+                    //行序号显示
+                    Column {
+                        id: rowIndex
+                        spacing: 0
+                        Repeater {
+                            model: gamePage.gameAreaRowSize
+                            Text {
+                                width: gamePage.oneBoxEdge
+                                height: gamePage.oneBoxEdge
+                                text: index
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                visible: true
+                            }
+                        }
+                    }
+
+                    //游戏区域
+                    Row {
+                        spacing: 3
+                        Item {
+                            id: gameMainArea
+                            x: 0
+                            y: 0
+
+                            Text {
+                                id: gameOverText
+                                anchors.fill: parent
+                                z: 3
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                font.family: "Arial"
+                                font.pointSize: 20
+                                color: "#ff0000"
+                                text: qsTr("Game Over!!")
+                                visible: false
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    gamePage.forceActiveFocus();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //游戏信息显示与控制区
+                Column {
+                    id: gameInfoArea
+                    spacing: gamePage.oneBoxEdge * 1
+
+                    //下一个方块组预览区域
                     Item {
-                        id: gameMainArea
+                        id: previewArea
                         x: 0
                         y: 0
+                    }
+
+                    //下落速度选择
+                    ComboBox {
+                        id: gameSpeedComboBox
+                        width: gamePage.oneBoxEdge * 4
+                        height: gamePage.oneBoxEdge * 1.6
+                        editable: true
+                        model: ListModel {
+                            id: model
+                            ListElement { text: "400" }
+                            ListElement { text: "600" }
+                            ListElement { text: "800" }
+                            ListElement { text: "1000" }
+                            ListElement { text: "300" }
+                        }
+                        enabled: (gameState !== TetrisBusiness.Running
+                                  && gameState !== TetrisBusiness.Pause)
+                        onAccepted: {
+                            if (find(editText) === -1){
+                                model.append({text: editText})
+                            }
+                        }
+                        onCurrentTextChanged: {
+                            gameView.gameSpeed = parseInt(currentText);
+                            //console.log("下落速度：%1ms".arg(gameView.gameSpeed));
+                        }
+                        Component.onCompleted: {
+                            currentIndex = 0;
+                        }
+                    }
+
+                    //分数显示区域
+                    Rectangle {
+                        id: scoreArea
+                        width: gamePage.oneBoxEdge * 4
+                        height: 35
+                        //border.color: "#881ad0"
+                        border.color: "transparent"
+                        color: "transparent"
+
+                        Column {
+                            spacing: 0
+                            Text {
+                                width: scoreArea.width
+                                height: scoreArea.height/2
+                                color: "red"
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignVCenter
+                                text: qsTr("历史最高:%1".arg(gameView.gameHighestScoreRecord))
+                            }
+                            Text {
+                                width: scoreArea.width
+                                height: scoreArea.height/2
+                                color: "darkmagenta"
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignVCenter
+                                text: qsTr("上次分数:%1".arg(gameView.gameLastScoreRecord))
+                            }
+                            Text {
+                                id: element
+                                width: scoreArea.width
+                                height: scoreArea.height/2
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignVCenter
+                                color: "blue"
+                                text: qsTr("分数:%1".arg(gameView.gameScore))
+                            }
+                        }
+                    }
+
+
+                    //计时器显示区域
+                    Rectangle {
+                        id: timerArea
+                        width: gamePage.oneBoxEdge * 4
+                        height: 20
+                        color: "transparent"
 
                         Text {
-                            id: gameOverText
+                            id: timerText
                             anchors.fill: parent
-                            z: 3
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.family: "Arial"
-                            font.pointSize: 20
-                            color: "#ff0000"
-                            text: qsTr("Game Over!!")
-                            visible: false
+                            text: qsTr("00:00:00:000")
+                        }
+
+                        Timer{
+                            id: gameTimerItem
+                            interval: 33
+                            repeat: true
+                            triggeredOnStart: true // gameTimerItem.start()、gameTimerItem.stop()
+
+                            onTriggered: {
+                                gameView.gameElapsedTime += gameTimerItem.interval;
+                                //console.log(gameView.gameElapsedTime);
+                                var ElapsedTime = new Date(gameView.gameElapsedTime) ;
+                                timerText.text = toTimeString(ElapsedTime);
+                            }
+
+                            function toTimeString (millisecond) {
+                                    var hours = parseInt((millisecond % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    var minutes = parseInt((millisecond % (1000 * 60 * 60)) / (1000 * 60));
+                                    var seconds = parseInt((millisecond % (1000 * 60)) / 1000);
+                                    var milliseconds = millisecond % 1000;
+
+                                    var str = "%1:%2:%3:%4"
+                                            .arg(hours.toString().padStart(2, '0'))
+                                            .arg(minutes.toString().padStart(2, '0'))
+                                            .arg(seconds.toString().padStart(2, '0'))
+                                            .arg(milliseconds.toString().padStart(3, '0'));
+
+                                    //console.log(str);
+                                    return str;
+                            }
                         }
                     }
-                }
-            }
 
-            //游戏信息显示与控制区
-            Column {
-                id: gameInfoArea
-                spacing: gamePage.oneBoxEdge * 1
-
-                //下一个方块组预览区域
-                Item {
-                    id: previewArea
-                    x: 0
-                    y: 0
-
-                }
-
-                //下落速度选择
-                ComboBox {
-                    id: gameSpeedComboBox
-                    width: gamePage.oneBoxEdge * 4
-                    height: gamePage.oneBoxEdge * 1.6
-                    editable: true
-                    model: ListModel {
-                        id: model
-                        ListElement { text: "400" }
-                        ListElement { text: "600" }
-                        ListElement { text: "800" }
-                        ListElement { text: "1000" }
-                        ListElement { text: "300" }
-                    }
-                    enabled: (gameState !== TetrisBusiness.Running
-                              && gameState !== TetrisBusiness.Pause)
-                    onAccepted: {
-                        if (find(editText) === -1){
-                            model.append({text: editText})
-                        }
-                    }
-                    onCurrentTextChanged: {
-                        gameView.gameSpeed = parseInt(currentText);
-                        //console.log("下落速度：%1ms".arg(gameView.gameSpeed));
-                    }
-                    Component.onCompleted: {
-                        currentIndex = 0;
-                    }
-                }
-
-                //分数显示区域
-                Rectangle {
-                    id: scoreArea
-                    width: gamePage.oneBoxEdge * 4
-                    height: 35
-                    //border.color: "#881ad0"
-                    border.color: "transparent"
-                    color: "transparent"
-
+                    //按钮区域
                     Column {
-                        spacing: 0
-                        Text {
-                            width: scoreArea.width
-                            height: scoreArea.height/2
-                            color: "red"
-                            horizontalAlignment: Text.AlignLeft
-                            verticalAlignment: Text.AlignVCenter
-                            text: qsTr("历史最高:%1".arg(gameView.gameHighestScoreRecord))
-                        }
-                        Text {
-                            width: scoreArea.width
-                            height: scoreArea.height/2
-                            color: "darkmagenta"
-                            horizontalAlignment: Text.AlignLeft
-                            verticalAlignment: Text.AlignVCenter
-                            text: qsTr("上次分数:%1".arg(gameView.gameLastScoreRecord))
-                        }
-                        Text {
-                            id: element
-                            width: scoreArea.width
-                            height: scoreArea.height/2
-                            horizontalAlignment: Text.AlignLeft
-                            verticalAlignment: Text.AlignVCenter
-                            color: "blue"
-                            text: qsTr("分数:%1".arg(gameView.gameScore))
-                        }
-                    }
-                }
+                        id: btnColumn
+                        spacing: 10
 
-
-                //计时器显示区域
-                Rectangle {
-                    id: timerArea
-                    width: gamePage.oneBoxEdge * 4
-                    height: 20
-                    color: "transparent"
-
-                    Text {
-                        id: timerText
-                        anchors.fill: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: qsTr("00:00:00:000")
-                    }
-
-                    Timer{
-                        id: gameTimerItem
-                        interval: 33
-                        repeat: true
-                        triggeredOnStart: true // gameTimerItem.start()、gameTimerItem.stop()
-
-                        onTriggered: {
-                            gameView.gameElapsedTime += gameTimerItem.interval;
-                            //console.log(gameView.gameElapsedTime);
-                            var ElapsedTime = new Date(gameView.gameElapsedTime) ;
-                            timerText.text = toTimeString(ElapsedTime);
-                        }
-
-                        function toTimeString (millisecond) {
-                                var hours = parseInt((millisecond % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                var minutes = parseInt((millisecond % (1000 * 60 * 60)) / (1000 * 60));
-                                var seconds = parseInt((millisecond % (1000 * 60)) / 1000);
-                                var milliseconds = millisecond % 1000;
-
-                                var str = "%1:%2:%3:%4"
-                                        .arg(hours.toString().padStart(2, '0'))
-                                        .arg(minutes.toString().padStart(2, '0'))
-                                        .arg(seconds.toString().padStart(2, '0'))
-                                        .arg(milliseconds.toString().padStart(3, '0'));
-
-                                //console.log(str);
-                                return str;
-                        }
-                    }
-                }
-
-                //按钮区域
-                Column {
-                    id: btnColumn
-                    spacing: 10
-
-                    Button {
-                        id: btnStartGame
-                        text: qsTr("开始")
-                        enabled: (gameState === TetrisBusiness.Over
-                                  || gameState === TetrisBusiness.Ready)
-                        onClicked: {
-                            gameState = TetrisBusiness.Start;
-                        }
-                    }
-
-                    Button {
-                        id: btnResetGame
-                        text: qsTr("重新开始")
-                        enabled: true
-                        onClicked: {
-                            //gameState = TetrisBusiness.Ready;
-                            gameState = TetrisBusiness.Start;
-                        }
-                    }
-
-                    Button {
-                        id: btnPauseGame
-                        text: qsTr("暂停")
-                        enabled: (gameState === TetrisBusiness.Running || gameState === TetrisBusiness.Pause)
-                        onClicked: {
-                            if (gameState === TetrisBusiness.Running) {
-                                gameState = TetrisBusiness.Pause;
-                                btnPauseGame.text = qsTr("继续");
-                            }
-                            else if (gameState === TetrisBusiness.Pause){
-                                gameState = TetrisBusiness.Running;
-                                btnPauseGame.text = qsTr("暂停");
+                        Button {
+                            id: btnStartGame
+                            text: qsTr("开始")
+                            enabled: (gameState === TetrisBusiness.Over
+                                      || gameState === TetrisBusiness.Ready)
+                            onClicked: {
+                                gameState = TetrisBusiness.Start;
                             }
                         }
-                    }
 
-                    Button {
-                        id: btnSkipScorePage
-                        text: qsTr("历史分数")
-                        enabled: true
-                        onClicked: {
-                            gameView.skipPage(TetrisBusiness.ScoreView);
+                        Button {
+                            id: btnResetGame
+                            text: qsTr("重新开始")
+                            enabled: true
+                            onClicked: {
+                                //gameState = TetrisBusiness.Ready;
+                                gameState = TetrisBusiness.Start;
+                            }
+                        }
+
+                        Button {
+                            id: btnPauseGame
+                            text: qsTr("暂停")
+                            enabled: (gameState === TetrisBusiness.Running || gameState === TetrisBusiness.Pause)
+                            onClicked: {
+                                if (gameState === TetrisBusiness.Running) {
+                                    gameState = TetrisBusiness.Pause;
+                                    btnPauseGame.text = qsTr("继续");
+                                }
+                                else if (gameState === TetrisBusiness.Pause){
+                                    gameState = TetrisBusiness.Running;
+                                    btnPauseGame.text = qsTr("暂停");
+                                }
+                            }
+                        }
+
+                        Button {
+                            id: btnSkipScorePage
+                            text: qsTr("历史分数")
+                            enabled: true
+                            onClicked: {
+                                gameView.skipPage(TetrisBusiness.ScoreView);
+                            }
                         }
                     }
                 }
             }
         }
     }
+
 
     //检测方块山的满行，且满行消除且山体下落
     function checkAndClearBoxMountainFullRow(activeBoxTopRowIndex, activeBoxBottomRowIndex) {
