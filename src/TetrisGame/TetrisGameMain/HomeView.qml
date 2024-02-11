@@ -57,7 +57,6 @@ Rectangle {
                 ListElement { text: "普通" }
                 ListElement { text: "困难" }
             }
-
             enabled: (businessInstance.gameState !== TetrisBusiness.Running
                       && businessInstance.gameState !== TetrisBusiness.Pause)
 

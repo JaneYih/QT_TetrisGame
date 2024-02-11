@@ -22,7 +22,15 @@ bool CSQLiteDatabase::IsInit()
 
 int CSQLiteDatabase::Init()
 {
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	QSqlDatabase db;// = QSqlDatabase::addDatabase("QSQLITE");
+	if (QSqlDatabase::contains("qt_sql_default_connection"))
+	{
+		db = QSqlDatabase::database("qt_sql_default_connection");
+	}
+	else 
+	{
+		db = QSqlDatabase::addDatabase("QSQLITE");
+	}
 	db.setDatabaseName(m_strDataBaseName);
 	if (!db.open())
 	{
