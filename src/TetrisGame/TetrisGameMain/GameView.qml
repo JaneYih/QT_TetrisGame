@@ -577,9 +577,22 @@ Rectangle {
     //开始游戏
     function startGame() {
         resetGame();
-        //.......//增加游戏难度，可以在这里增加一个函数：设置背景底部随机小box
+        setBackgroundLineRandomBox(); //增加游戏难度，在这里增加一个函数：设置背景底部随机小box
         createNextBoxGroup();
         gameState = TetrisBusiness.Running;
+    }
+
+    //背景底部放置随机小box
+    function setBackgroundLineRandomBox() {
+        if (businessInstance.gameLevel > TetrisBusiness.Simple
+                && gamePage.backgroundBoxArray[gamePage.gameAreaRowSize - 1] !== null) {
+            for (var i = 0; i < gamePage.gameAreaColSize; i++) {
+                var now = new Date();
+                var rand =  Math.random(now.getSeconds()) * 10 + 1; //1~10随机数
+                var randomNum = rand % 2;
+                gamePage.backgroundBoxArray[gamePage.gameAreaRowSize - 1][i].lightOff = randomNum < 1;
+            }
+        }
     }
 
     //游戏结束
