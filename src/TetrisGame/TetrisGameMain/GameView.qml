@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.13
+import QtMultimedia 5.0
 import Yih.Tetris.Business 1.0
 
 Rectangle {
@@ -23,6 +24,7 @@ Rectangle {
     property int gameLastScoreRecord: 0 //上一次游戏分数
     property var gameUserName: "tester"
     property int gameElapsedTime: 0 //游戏计时时间
+    property bool bMute: false //是否静音
     signal skipPage(var viewType);
 
     onVisibleChanged: {
@@ -57,6 +59,17 @@ Rectangle {
             gameOver();
             break;
         }
+        var bgmFile;
+        if (gameState === TetrisBusiness.Running
+                || gameState === TetrisBusiness.Pause) {
+            bgmFile = "qrc:/img/Westlife - Tonight.mp3";
+        }
+        else {
+            bgmFile = "qrc:/img/雷诺儿 - 我的钢琴很简单.mp3";
+        }
+        if (bgmFile !== bgm.source) {
+            bgm.source = bgmFile;
+        }
         gamePage.forceActiveFocus();
     }
 
@@ -66,6 +79,23 @@ Rectangle {
         z: 0
         opacity: 1
         source: "qrc:/img/Doraemon.jpg"
+    }
+
+    ImageButton {
+        id: volumeBtn
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        imageSource: bMute ? "qrc:/img/mute.png" : "qrc:/img/volume.png"
+        mouseArea.onClicked: {
+            bMute = !bMute;
+        }
+    }
+
+    MediaPlayer {
+        id: bgm
+        autoPlay: true
+        muted: bMute
+        source: "qrc:/img/雷诺儿 - 我的钢琴很简单.mp3"
     }
 
     FocusScope {

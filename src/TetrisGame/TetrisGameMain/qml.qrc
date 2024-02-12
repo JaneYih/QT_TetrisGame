@@ -23,5 +23,9 @@
         <file>img/StartGameBtn.png</file>
         <file>img/return.png</file>
         <file>img/refresh.png</file>
+        <file>img/mute.png</file>
+        <file>img/volume.png</file>
+        <file>img/Westlife - Tonight.mp3</file>
+        <file>img/雷诺儿 - 我的钢琴很简单.mp3</file>
     </qresource>
 </RCC>
