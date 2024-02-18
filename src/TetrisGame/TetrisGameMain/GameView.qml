@@ -784,7 +784,9 @@ Rectangle {
                 gameView.gameSpeed *= radix;
             }
             else {
-                gameView.gameSpeed = initSpeed;
+                if (gameView.gameScore <= 0) {
+                    gameView.gameSpeed = initSpeed;
+                }
             }
         }
         gameSpeedComboBox.editText = "%1".arg(gameView.gameSpeed);

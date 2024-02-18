@@ -20,7 +20,8 @@ Rectangle {
     Text {
         id: text
         anchors.centerIn: parent
-        text: qsTr("setting View")
-        color: "red"
+        text: qsTr("设置页面先不做了")
+        font.pointSize: 50
+        color: "aliceblue"
     }
 }
