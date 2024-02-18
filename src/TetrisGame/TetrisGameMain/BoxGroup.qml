@@ -322,6 +322,17 @@ Item {
         }
     }
 
+    NumberAnimation {
+        id: animation
+        target: boxGroup
+        property: "y"
+        //from: y
+        //to: y + stepCount*oneBoxEdgeLength
+        duration: 20
+        easing.type: Easing.Linear
+        running: false
+    }
+
     Timer {
         id: autoMoveDownTimer
         interval: 1000
