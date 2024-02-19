@@ -1,5 +1,5 @@
-# QT_TetrisGame
- 俄罗斯方块游戏-Qt Quick
+# 俄罗斯方块游戏
+这是一个使用QML实现的俄罗斯方块游戏应用程序
 
 ![演示](https://github.com/JaneYih/QT_TetrisGame/blob/master/doc/image/demonstrate.gif)
 
