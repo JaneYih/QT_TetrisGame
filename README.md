@@ -3,6 +3,17 @@
 
 ![演示](https://github.com/JaneYih/QT_TetrisGame/blob/master/doc/image/demonstrate.gif)
 
+
+
+- 按键功能：
+  - ←：方块左移
+  - →：方块右移
+  - ↓：方块下移
+  - ↑：方块旋转
+  - 空格：方块快速下落
+
+
+
 ![主页面](https://github.com/JaneYih/QT_TetrisGame/blob/master/doc/image/homePage.bmp)
 
 ![游戏页面](https://github.com/JaneYih/QT_TetrisGame/blob/master/doc/image/gamePage.bmp)
