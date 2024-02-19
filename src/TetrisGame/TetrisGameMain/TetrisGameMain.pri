@@ -16,6 +16,7 @@ $$PWD/Common/DataBase/SQLiteDatabase.cpp \
 $$PWD/Common/DataBase/usersDataTable.cpp
 	
 RESOURCES += $$PWD/qml.qrc
+RC_FILE = $$PWD/Resource.rc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

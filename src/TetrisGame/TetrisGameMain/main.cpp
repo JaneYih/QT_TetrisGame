@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QtQml>
+#include <QIcon>
 #include "TetrisBusiness.h"
 #include "ScoreHistoryModel.h"
 
@@ -17,8 +18,8 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_WIN)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-
     QGuiApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/img/icon.ico"));
 
     //注册单例类型-业务逻辑类
     qmlRegisterSingletonType<TetrisBusiness>("Yih.Tetris.Business", 1, 0, "TetrisBusiness", qobject_singletonBusiness_provider); 
